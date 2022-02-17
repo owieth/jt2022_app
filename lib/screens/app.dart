@@ -22,7 +22,7 @@ class _AppState extends State<App> {
 
   void _selectTab(int tabIndex) {
     if (tabIndex == _currentTab) {
-      _pages[tabIndex].currentState!.popUntil((route) => route.isFirst);
+      _pages[tabIndex].currentState?.popUntil((route) => route.isFirst);
     } else {
       setState(() => _currentTab = tabIndex);
     }

@@ -30,12 +30,12 @@ class CustomRouter extends StatelessWidget {
   //   );
   // }
 
-  Map<String, StatelessWidget> _routeBuilders(BuildContext context) {
+  Map<String, WidgetBuilder> _routeBuilders(BuildContext context) {
     return {
-      Routes.map: const Location(),
-      Routes.calendar: const Calendar(),
-      Routes.profile: const Profile(),
-      Routes.workshops: const Workshops(),
+      Routes.map: (context) => const Location(),
+      Routes.calendar: (context) => const Calendar(),
+      Routes.profile: (context) => const Profile(),
+      Routes.workshops: (context) => const Workshops(),
     };
   }
 
@@ -48,7 +48,7 @@ class CustomRouter extends StatelessWidget {
       initialRoute: Routes.profile,
       onGenerateRoute: (routeSettings) {
         return MaterialPageRoute(
-          builder: (context) => routeBuilders[tabItem]!,
+          builder: (context) => routeBuilders[tabItem]!(context),
         );
       },
     );
