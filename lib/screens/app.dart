@@ -1,7 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/router/router.dart';
+import 'package:jt2022_app/router/routes.dart';
+import 'package:jt2022_app/screens/calendar.dart';
+import 'package:jt2022_app/screens/home.dart';
+import 'package:jt2022_app/screens/icons.dart';
+import 'package:jt2022_app/screens/location.dart';
+import 'package:jt2022_app/screens/profile.dart';
 
-import 'bottom_navigation.dart';
+import '../constants/colors.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -11,64 +17,82 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int _currentTab = 0;
-
-  final _pages = [
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
+  final List<Widget> _pages = [
+    const Home(),
+    const SizedBox(),
+    const SizedBox(),
+    const SizedBox(),
   ];
 
-  void _selectTab(int tabIndex) {
-    if (tabIndex == _currentTab) {
-      _pages[tabIndex].currentState?.popUntil((route) => route.isFirst);
-    } else {
-      setState(() => _currentTab = tabIndex);
-    }
-  }
+  final icons = [
+    CustomIcons.homeIcon,
+    CustomIcons.calendarIcon,
+    CustomIcons.mapIcon,
+    CustomIcons.profileIcon,
+  ];
+
+  int _currentTab = 0;
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final isFirstRouteInCurrentTab =
-            !await _pages[_currentTab].currentState!.maybePop();
-
-        if (isFirstRouteInCurrentTab) {
-          if (_currentTab != 0) {
-            _selectTab(0);
-            return false;
-          }
-        }
-
-        return isFirstRouteInCurrentTab;
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(0),
-        child: Scaffold(
-          body: Stack(children: <Widget>[
-            _buildOffstageNavigator(0),
-            _buildOffstageNavigator(1),
-            _buildOffstageNavigator(2),
-            _buildOffstageNavigator(3),
-          ]),
-          bottomNavigationBar: BottomNavigation(
-            currentTab: _currentTab,
-            onSelectTab: _selectTab,
-          ),
+    return Scaffold(
+      body: WillPopScope(
+        onWillPop: () async {
+          return !await Navigator.maybePop(
+            Routes.getKeys()[_currentTab].currentState!.context,
+          );
+        },
+        child: IndexedStack(
+          index: _currentTab,
+          children: _pages,
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        type: BottomNavigationBarType.fixed,
+        items: icons.mapIndexed((index, _) => _buildItem(index)).toList(),
+        currentIndex: _currentTab,
+        onTap: (index) {
+          setState(() {
+            if (_pages[index] is SizedBox) {
+              switch (index) {
+                case 0:
+                  _pages[index] = const Home();
+                  break;
+                case 1:
+                  _pages[index] = const Calendar();
+                  break;
+                case 2:
+                  _pages[index] = const Location();
+                  break;
+                case 3:
+                  _pages[index] = const Profile();
+                  break;
+                default:
+              }
+            }
+
+            _currentTab = index;
+          });
+        },
       ),
     );
   }
 
-  Widget _buildOffstageNavigator(int index) {
-    return Offstage(
-      offstage: _currentTab != index,
-      child: CustomRouter(
-        navigatorKey: _pages[index],
-        tabItem: index,
+  BottomNavigationBarItem _buildItem(int index) {
+    return BottomNavigationBarItem(
+      icon: Icon(
+        icons[index],
+        color: _colorTabMatching(index),
+        size: 25,
       ),
+      label: '',
     );
+  }
+
+  Color _colorTabMatching(int index) {
+    return _currentTab == index
+        ? CustomColors.navigationActiveColor
+        : Colors.grey;
   }
 }
