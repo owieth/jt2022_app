@@ -24,7 +24,7 @@ class _AppState extends State<App> {
     const SizedBox(),
   ];
 
-  final icons = [
+  final _icons = [
     CustomIcons.homeIcon,
     CustomIcons.calendarIcon,
     CustomIcons.mapIcon,
@@ -50,7 +50,7 @@ class _AppState extends State<App> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         type: BottomNavigationBarType.fixed,
-        items: icons.mapIndexed((index, _) => _buildItem(index)).toList(),
+        items: _icons.mapIndexed((index, _) => _buildItem(index)).toList(),
         currentIndex: _currentTab,
         onTap: (index) {
           setState(() {
@@ -82,7 +82,7 @@ class _AppState extends State<App> {
   BottomNavigationBarItem _buildItem(int index) {
     return BottomNavigationBarItem(
       icon: Icon(
-        icons[index],
+        _icons[index],
         color: _colorTabMatching(index),
         size: 25,
       ),
