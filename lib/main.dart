@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jt2022_app/screens/app.dart';
+import 'package:jt2022_app/screens/auth/login.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
@@ -22,7 +28,22 @@ class JT2022App extends StatelessWidget {
           primaryColor: Colors.black,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent),
-      home: const App(),
+      home: const AuthenticationWrapper(),
     );
+  }
+}
+
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User>();
+
+    if (firebaseUser != null) {
+      return const App();
+    }
+
+    return Login();
   }
 }
