@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jt2022_app/screens/app.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
+import 'package:jt2022_app/screens/auth/login_model.dart';
+import 'package:jt2022_app/services/authentication_service.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -14,21 +16,41 @@ Future<void> main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(const JT2022App()));
+      .then((value) => runApp(JT2022App()));
 }
 
 class JT2022App extends StatelessWidget {
-  const JT2022App({Key? key}) : super(key: key);
+  JT2022App({Key? key}) : super(key: key);
+
+  final _authenticationService = AuthenticationService(FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          scaffoldBackgroundColor: Colors.black,
-          primaryColor: Colors.black,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent),
-      home: const AuthenticationWrapper(),
+    return MultiProvider(
+      providers: [
+        Provider<AuthenticationService>(
+          create: (_) => _authenticationService,
+        ),
+        ChangeNotifierProvider<LoginModel>(
+            create: (_) =>
+                LoginModel(authenticationService: _authenticationService)),
+        StreamProvider(
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
+          initialData: null,
+        )
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+            scaffoldBackgroundColor: Colors.black,
+            primaryColor: Colors.black,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent),
+        routes: {
+          "/login": (_) => Login(),
+        },
+        home: const AuthenticationWrapper(),
+      ),
     );
   }
 }
