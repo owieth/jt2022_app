@@ -1,22 +1,21 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/constants/custom_icons.dart';
 import 'package:jt2022_app/router/routes.dart';
 import 'package:jt2022_app/screens/calendar.dart';
-import 'package:jt2022_app/screens/home.dart';
-import 'package:jt2022_app/screens/icons.dart';
+import 'package:jt2022_app/screens/home/home.dart';
 import 'package:jt2022_app/screens/location.dart';
 import 'package:jt2022_app/screens/profile.dart';
 
-import '../constants/colors.dart';
-
-class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
+class ContainerWidget extends StatefulWidget {
+  const ContainerWidget({Key? key}) : super(key: key);
 
   @override
-  _AppState createState() => _AppState();
+  _ContainerWidgetState createState() => _ContainerWidgetState();
 }
 
-class _AppState extends State<App> {
+class _ContainerWidgetState extends State<ContainerWidget> {
   final List<Widget> _pages = [
     const Home(),
     const SizedBox(),

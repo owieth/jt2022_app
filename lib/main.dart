@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jt2022_app/screens/app.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/auth/login_model.dart';
+import 'package:jt2022_app/screens/container_widget.dart';
+import 'package:jt2022_app/screens/onboard/onboard.dart';
 import 'package:jt2022_app/services/authentication_service.dart';
 import 'package:provider/provider.dart';
 
@@ -13,14 +15,16 @@ Future<void> main() async {
 
   await Firebase.initializeApp();
 
+  GestureBinding.instance?.resamplingEnabled = true;
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(JT2022App()));
+      .then((value) => runApp(App()));
 }
 
-class JT2022App extends StatelessWidget {
-  JT2022App({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  App({Key? key}) : super(key: key);
 
   final _authenticationService = AuthenticationService(FirebaseAuth.instance);
 
@@ -42,11 +46,12 @@ class JT2022App extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-            scaffoldBackgroundColor: Colors.black,
+            // scaffoldBackgroundColor: Colors.black,
             primaryColor: Colors.black,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent),
         routes: {
+          "": (_) => const ContainerWidget(),
           "/login": (_) => Login(),
         },
         home: const AuthenticationWrapper(),
@@ -60,12 +65,12 @@ class AuthenticationWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
+    // final firebaseUser = context.watch<User>();
 
-    if (firebaseUser != null) {
-      return const App();
-    }
+    // if (firebaseUser != null) {
+    //   return const App();
+    // }
 
-    return Login();
+    return const Onboard();
   }
 }
