@@ -6,7 +6,7 @@ import 'package:jt2022_app/router/routes.dart';
 import 'package:jt2022_app/screens/calendar.dart';
 import 'package:jt2022_app/screens/home/home.dart';
 import 'package:jt2022_app/screens/location.dart';
-import 'package:jt2022_app/screens/profile.dart';
+import 'package:jt2022_app/screens/profile/profile.dart';
 
 class ContainerWidget extends StatefulWidget {
   const ContainerWidget({Key? key}) : super(key: key);

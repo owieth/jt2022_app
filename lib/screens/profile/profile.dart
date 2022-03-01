@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/widgets/navigation_button_widget.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
+    return Scaffold(
+      body: Center(
         child: Text(
           "Profile Page!",
           style: TextStyle(
@@ -16,6 +17,7 @@ class Profile extends StatelessWidget {
           ),
         ),
       ),
+      floatingActionButton: const NavigationButton(),
     );
   }
 }
