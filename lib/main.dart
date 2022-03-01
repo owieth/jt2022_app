@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/auth/login_model.dart';
-import 'package:jt2022_app/screens/container_widget.dart';
+import 'package:jt2022_app/screens/profile/profile.dart';
+import 'package:jt2022_app/widgets/container_widget.dart';
 import 'package:jt2022_app/screens/onboard/onboard.dart';
-import 'package:jt2022_app/services/authentication_service.dart';
+import 'package:jt2022_app/screens/workshop.dart';
+import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -53,6 +55,8 @@ class App extends StatelessWidget {
         routes: {
           "": (_) => const ContainerWidget(),
           "/login": (_) => Login(),
+          "/profile": (_) => Profile(),
+          "/workshop": (_) => Workshop()
         },
         home: const AuthenticationWrapper(),
       ),

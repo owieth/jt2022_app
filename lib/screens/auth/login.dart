@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/services/authentication_service.dart';
+import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatelessWidget {
