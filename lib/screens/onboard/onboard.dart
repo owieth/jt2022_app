@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/screens/container_widget.dart';
 
 class Onboard extends StatelessWidget {
   const Onboard({Key? key}) : super(key: key);
