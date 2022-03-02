@@ -46,3 +46,8 @@ flutter:
     - family: CustomIcons
       fonts:
         - asset: assets/fonts/CustomIcons.ttf
+
+    - family: Lufga
+      fonts:
+        - asset: assets/fonts/LufgaBold.ttf
+        - asset: assets/fonts/LufgaRegular.ttf

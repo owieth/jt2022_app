@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/constants/custom_icons.dart';
 import 'package:jt2022_app/router/routes.dart';
-import 'package:jt2022_app/screens/calendar.dart';
+import 'package:jt2022_app/screens/calendar/calendar.dart';
 import 'package:jt2022_app/screens/home/home.dart';
-import 'package:jt2022_app/screens/location.dart';
+import 'package:jt2022_app/screens/map/location.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 
 class ContainerWidget extends StatefulWidget {
@@ -51,6 +51,7 @@ class _ContainerWidgetState extends State<ContainerWidget> {
         type: BottomNavigationBarType.fixed,
         items: _icons.mapIndexed((index, _) => _buildItem(index)).toList(),
         currentIndex: _currentTab,
+        elevation: 0,
         onTap: (index) {
           setState(() {
             if (_pages[index] is SizedBox) {

@@ -5,12 +5,18 @@ class NavigationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => Navigator.pop(context),
-      child: const SizedBox(
-        width: 60,
-        height: 60,
-        child: Icon(Icons.arrow_back_ios),
+    return Padding(
+      padding: const EdgeInsets.only(left: 45.0, top: 100.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back))
+            ],
+          )
+        ],
       ),
     );
   }
