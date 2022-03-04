@@ -27,9 +27,9 @@ jobs:
     env:
       FLUTTER_VERSION: "2.5.3"
     steps:
-      - run: echo "🎉 The job was automatically triggered by a $GITHUB_EVENT_NAME event."
-      - run: echo "🐧 This job is now running on a $GITHUB_SERVER_URL server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is $GITHUB_REF_NAME	and your repository is $GITHUB_REPOSITORY."
+      - run: echo "🎉 The job was automatically triggered by a $(GITHUB_EVENT_NAME) event."
+      - run: echo "🐧 This job is now running on a $(GITHUB_SERVER_URL) server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is $(GITHUB_REF_NAME)	and your repository is $(GITHUB_REPOSITORY)."
       - name: Check out repository code
         uses: actions/checkout@v2
       - run: echo "💡 The $ repository has been cloned to the runner."
