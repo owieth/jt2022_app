@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/services/auth/authentication_service.dart';
 
 class LoginModel extends ChangeNotifier {
   //final AuthenticationService _authenticationService;
