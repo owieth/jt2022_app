@@ -46,35 +46,41 @@ class _ContainerWidgetState extends State<ContainerWidget> {
           children: _pages,
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        type: BottomNavigationBarType.fixed,
-        items: _icons.mapIndexed((index, _) => _buildItem(index)).toList(),
-        currentIndex: _currentTab,
-        elevation: 0,
-        onTap: (index) {
-          setState(() {
-            if (_pages[index] is SizedBox) {
-              switch (index) {
-                case 0:
-                  _pages[index] = const Home();
-                  break;
-                case 1:
-                  _pages[index] = const Calendar();
-                  break;
-                case 2:
-                  _pages[index] = const Location();
-                  break;
-                case 3:
-                  _pages[index] = const Profile();
-                  break;
-                default:
+      bottomNavigationBar: SizedBox(
+        height: 75,
+        child: BottomNavigationBar(
+          selectedFontSize: 0,
+          unselectedFontSize: 0,
+          iconSize: 20,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          type: BottomNavigationBarType.fixed,
+          items: _icons.mapIndexed((index, _) => _buildItem(index)).toList(),
+          currentIndex: _currentTab,
+          elevation: 0,
+          onTap: (index) {
+            setState(() {
+              if (_pages[index] is SizedBox) {
+                switch (index) {
+                  case 0:
+                    _pages[index] = const Home();
+                    break;
+                  case 1:
+                    _pages[index] = const Calendar();
+                    break;
+                  case 2:
+                    _pages[index] = const Location();
+                    break;
+                  case 3:
+                    _pages[index] = const Profile();
+                    break;
+                  default:
+                }
               }
-            }
 
-            _currentTab = index;
-          });
-        },
+              _currentTab = index;
+            });
+          },
+        ),
       ),
     );
   }
@@ -84,7 +90,6 @@ class _ContainerWidgetState extends State<ContainerWidget> {
       icon: Icon(
         _icons[index],
         color: _colorTabMatching(index),
-        size: 25,
       ),
       label: '',
     );
