@@ -17,7 +17,7 @@ class Onboard extends StatelessWidget {
         child: Container(
           width: 60,
           height: 60,
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.arrow_right_alt),
           decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(colors: [

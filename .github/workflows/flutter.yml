@@ -14,33 +14,37 @@ on:
     branches: 
     - master
     - feature/*
+  
+  workflow_dispatch:
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
+    name: flutter build
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    env:
+      JAVA_VERSION: "11.0"
+      FLUTTER_VERSION: "2.5.3"
     steps:
-      - uses: actions/checkout@v2
-
-      # Note: This workflow uses the latest stable version of the Dart SDK.
-      # You can specify other versions if desired, see documentation here:
-      # https://github.com/dart-lang/setup-dart/blob/main/README.md
-      # - uses: dart-lang/setup-dart@v1
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
-      - name: Analyze project source
-        run: flutter analyze
-
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
-      - name: Run tests
-        run: flutter test
+      - run: echo "🎉 The job was automatically triggered by a $ event."
+      - run: echo "🐧 This job is now running on a $ server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is $ and your repository is $."
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: echo "💡 The $ repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls $
+      - uses: actions/setup-java@v1
+        with:
+          java-version: $
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: $
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: echo "🍏 This job's status is $."
