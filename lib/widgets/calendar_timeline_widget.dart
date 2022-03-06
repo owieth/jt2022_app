@@ -5,9 +5,14 @@ import 'package:timelines/timelines.dart';
 const kTileHeight = 50.0;
 const activeTile = 0;
 
-class CalendarTimeLine extends StatelessWidget {
+class CalendarTimeLine extends StatefulWidget {
   const CalendarTimeLine({Key? key}) : super(key: key);
 
+  @override
+  State<CalendarTimeLine> createState() => _CalendarTimeLineState();
+}
+
+class _CalendarTimeLineState extends State<CalendarTimeLine> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
