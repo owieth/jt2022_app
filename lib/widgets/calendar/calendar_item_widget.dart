@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CalendarItem extends StatefulWidget {
   const CalendarItem({Key? key}) : super(key: key);
@@ -9,7 +8,7 @@ class CalendarItem extends StatefulWidget {
 }
 
 class _CalendarItemState extends State<CalendarItem> {
-  final _dateFromat = DateFormat("dd/MM/yyyy");
+  //final _dateFromat = DateFormat("dd/MM/yyyy");
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class _CalendarItemState extends State<CalendarItem> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(DateTime.parse("2022-09-09").toString()),
-            Text('Fri'),
+            const Text('Fri'),
           ],
         ),
       ),

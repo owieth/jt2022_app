@@ -4,12 +4,9 @@ import 'package:timelines/timelines.dart';
 
 const kTileHeight = 50.0;
 const activeTile = 0;
-const _defaultColor = Colors.white;
 
 class CalendarTimeLine extends StatelessWidget {
   const CalendarTimeLine({Key? key}) : super(key: key);
-
-  final _test = Colors.white;
 
   @override
   Widget build(BuildContext context) {

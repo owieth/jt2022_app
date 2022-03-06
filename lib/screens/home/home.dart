@@ -71,7 +71,7 @@ class Home extends StatelessWidget {
       stream: _workshopsStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return const Text("Loading");
         }
 
         if (snapshot.hasData) {
@@ -93,7 +93,7 @@ class Home extends StatelessWidget {
           );
         }
 
-        return Text('Something went wrong');
+        return const Text('Something went wrong');
       },
     );
   }

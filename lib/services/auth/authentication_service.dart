@@ -23,9 +23,8 @@ class AuthenticationService {
   Future<AuthenticationState> signIn(
       {required String email, required String password}) async {
     try {
-      await _firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) => print(value));
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
       return AuthenticationState(AuthStatus.signedIn, '');
     } on FirebaseAuthException catch (e) {
       return AuthenticationState(AuthStatus.error, e.message!);
@@ -35,10 +34,8 @@ class AuthenticationService {
   Future<AuthenticationState> signUp(
       {required String email, required String password}) async {
     try {
-      print(email + password);
-      await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => print(value));
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
       return AuthenticationState(AuthStatus.signedIn, '');
     } on FirebaseAuthException catch (e) {
       // if (e.code == 'weak-password') {
