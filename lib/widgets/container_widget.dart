@@ -17,7 +17,7 @@ class ContainerWidget extends StatefulWidget {
 
 class _ContainerWidgetState extends State<ContainerWidget> {
   final List<Widget> _pages = [
-    const Home(),
+    Home(),
     const SizedBox(),
     const SizedBox(),
     const SizedBox(),
@@ -62,7 +62,7 @@ class _ContainerWidgetState extends State<ContainerWidget> {
               if (_pages[index] is SizedBox) {
                 switch (index) {
                   case 0:
-                    _pages[index] = const Home();
+                    _pages[index] = Home();
                     break;
                   case 1:
                     _pages[index] = const Calendar();

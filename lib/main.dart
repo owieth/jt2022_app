@@ -46,22 +46,23 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-            scaffoldBackgroundColor: Colors.black,
-            primaryColor: Colors.black,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            fontFamily: 'Lufga',
-            textTheme: const TextTheme(
-              headline1: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-              subtitle1: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-              bodyText1: TextStyle(fontSize: 12.0, color: Colors.white),
-            )),
+          scaffoldBackgroundColor: Colors.black,
+          primaryColor: Colors.black,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          fontFamily: 'Lufga',
+          textTheme: const TextTheme(
+            headline1: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+            subtitle1: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+            bodyText1: TextStyle(fontSize: 12.0, color: Colors.white),
+          ),
+        ),
         routes: {
           "": (_) => const ContainerWidget(),
           "/login": (_) => Login(),

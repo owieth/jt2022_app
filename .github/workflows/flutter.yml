@@ -36,6 +36,7 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - uses: subosito/flutter-action@v2
         with:
+          dart_sdk: 2.16.0
           flutter-version: $FLUTTER_VERSION
       - run: flutter pub get
       - run: flutter analyze
