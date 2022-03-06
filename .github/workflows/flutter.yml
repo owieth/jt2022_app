@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FLUTTER_VERSION: "2.5.3"
+      FIREBASE_SECRET: ${{ secrets.FIREBASE_SECRET }}
+
     steps:
     - run: echo "🎉 The job was automatically triggered by a $GITHUB_EVENT_NAME event."
     - run: echo "🐧 This job is now running on a $GITHUB_SERVER_URL server hosted by GitHub!"
@@ -37,6 +39,8 @@ jobs:
       with:
         channel: 'beta'
         # flutter-version: $FLUTTER_VERSION
+
+    - run: echo $FIREBASE_SECRET > android/app/google-services.json
 
     - run: flutter pub get
 
