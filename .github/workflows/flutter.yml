@@ -23,6 +23,7 @@ jobs:
     env:
       FLUTTER_VERSION: "2.5.3"
       FIREBASE_SECRET: ${{ secrets.FIREBASE_SECRET }}
+      MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
     steps:
     - run: echo "🎉 The job was automatically triggered by a $GITHUB_EVENT_NAME event."
