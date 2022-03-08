@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:jt2022_app/models/calendar_item_model.dart';
 import 'package:jt2022_app/widgets/calendar/calendar_item_widget.dart';
 import 'package:jt2022_app/widgets/calendar_timeline_widget.dart';
@@ -14,6 +15,7 @@ class _CalendarState extends State<Calendar> {
   String _activeDay = "09";
 
   final List<CalendarItemModel> _calendarItems = [
+    CalendarItemModel("08", "Thu"),
     CalendarItemModel("09", "Fri"),
     CalendarItemModel("10", "Sat"),
     CalendarItemModel("11", "Sun"),
@@ -30,42 +32,27 @@ class _CalendarState extends State<Calendar> {
             "September $_activeDay",
             style: Theme.of(context).textTheme.headline1,
           ),
-          Flexible(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _calendarItems.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildCalendarItem(_calendarItems[index]);
-              },
+          SizedBox(
+            height: 125,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _calendarItems
+                  .mapIndexed((index, item) => _buildCalendarItem(index, item))
+                  .toList(),
             ),
           ),
-          // SizedBox(
-          //   height: 200,
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: _calendarItems
-          //         .map((item) => _buildCalendarItem(item))
-          //         .toList(),
-          //   ),
-          // ),
           const CalendarTimeLine(),
         ],
       ),
     );
   }
 
-  Widget _buildCalendarItem(CalendarItemModel item) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
-      child: CalendarItem(
-        date: item.date,
-        day: item.day,
-        emitClick: (date) => (setState(
-          () {
-            _activeDay = date;
-          },
-        )),
-      ),
+  Widget _buildCalendarItem(int index, CalendarItemModel item) {
+    return CalendarItem(
+      isActive: _calendarItems[index].date == _activeDay,
+      date: item.date,
+      day: item.day,
+      emitClick: (date) => setState(() => _activeDay = date),
     );
   }
 }

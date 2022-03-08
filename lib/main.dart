@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
-import 'package:jt2022_app/screens/auth/login_model.dart';
 import 'package:jt2022_app/screens/onboard/onboard.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 import 'package:jt2022_app/screens/workshop/workshop.dart';
@@ -34,13 +33,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AuthenticationService>(
-          create: (_) => _authenticationService,
-        ),
-        ChangeNotifierProvider<LoginModel>(create: (_) => LoginModel()),
-        StreamProvider(
-          create: (context) =>
-              context.read<AuthenticationService>().authStateChanges,
+        Provider<AuthenticationService>(create: (_) => _authenticationService),
+        StreamProvider<User?>(
+          create: (context) => _authenticationService.authStateChanges,
           initialData: null,
         )
       ],
@@ -56,11 +51,23 @@ class App extends StatelessWidget {
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.white),
+            headline2: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
             subtitle1: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            subtitle2: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
             bodyText1: TextStyle(fontSize: 12.0, color: Colors.white),
+            bodyText2: TextStyle(fontSize: 12.0, color: Colors.black),
           ),
         ),
         routes: {
@@ -80,11 +87,11 @@ class AuthenticationWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final firebaseUser = context.watch<User>();
+    final firebaseUser = context.watch<User?>();
 
-    // if (firebaseUser != null) {
-    //   return const App();
-    // }
+    if (firebaseUser == null) {
+      return Login();
+    }
 
     return const Onboard();
   }
