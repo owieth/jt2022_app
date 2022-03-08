@@ -28,9 +28,7 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
         ),
         builder: TimelineTileBuilder.connected(
           contentsBuilder: (_, __) => _CalendarEntry(),
-          connectorBuilder: (_, index, __) {
-            return const SolidLineConnector();
-          },
+          connectorBuilder: (_, __, ___) => const SolidLineConnector(),
           indicatorBuilder: (_, index) {
             if (index == activeTile) {
               return const OutlinedDotIndicator(
@@ -40,7 +38,7 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
 
             return const DotIndicator(color: Colors.white);
           },
-          itemExtent: 200,
+          itemExtent: 150,
           itemCount: 4,
         ),
       ),

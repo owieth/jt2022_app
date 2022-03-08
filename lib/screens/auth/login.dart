@@ -32,8 +32,8 @@ class Login extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   context.read<AuthenticationService>().signIn(
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
                       );
                 },
                 child: const Text("Sign in"),
@@ -41,8 +41,8 @@ class Login extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   context.read<AuthenticationService>().signUp(
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
                       );
                 },
                 child: const Text("Sign Up"),

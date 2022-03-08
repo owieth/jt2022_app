@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/widgets/avatar_widget.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -11,6 +14,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -29,7 +34,7 @@ class Home extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Text(
-                      'Nina',
+                      user?.displayName ?? 'Nina',
                       style: Theme.of(context).textTheme.subtitle1,
                     )
                   ],
@@ -71,7 +76,7 @@ class Home extends StatelessWidget {
       stream: _workshopsStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading");
+          return Lottie.asset('assets/lottie/loading.json');
         }
 
         if (snapshot.hasData) {
@@ -87,7 +92,7 @@ class Home extends StatelessWidget {
                 snapshot.data!.docs[index],
                 _workshopCount,
                 isVertical,
-                isVertical ? MediaQuery.of(context).size.width : 200,
+                MediaQuery.of(context).size.width,
               );
             },
           );
@@ -110,6 +115,7 @@ class Home extends StatelessWidget {
     if (isVertical) {
       _padding = const EdgeInsets.only(left: 35, right: 35, bottom: 35);
     } else {
+      width = 200;
       _padding = index != workshopCount - 1
           ? const EdgeInsets.only(left: 35)
           : const EdgeInsets.symmetric(horizontal: 35);
