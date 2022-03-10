@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class NavigationButton extends StatelessWidget {
@@ -5,18 +6,20 @@ class NavigationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 45.0, top: 100.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back))
-            ],
-          )
-        ],
+    return SizedBox(
+      height: 50,
+      //width: 50,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.black,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        ),
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(
+          Icons.arrow_back,
+        ),
+        label: const Text(''),
       ),
     );
   }

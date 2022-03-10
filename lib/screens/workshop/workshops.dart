@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:jt2022_app/widgets/text_overlay_widget.dart';
 
 class Workshops extends StatelessWidget {
-  final int index;
   final double width;
   final DocumentSnapshot doc;
 
-  const Workshops(
-      {Key? key, required this.index, required this.width, required this.doc})
+  const Workshops({Key? key, required this.width, required this.doc})
       : super(key: key);
 
   @override
@@ -16,7 +14,8 @@ class Workshops extends StatelessWidget {
     final _imageName = doc['image'].toString();
 
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, '/workshop'),
+      onTap: () => Navigator.pushNamed(context, '/workshop',
+          arguments: {"id": doc.id, "title": doc['name']}),
       child: Stack(
         children: [
           Container(
