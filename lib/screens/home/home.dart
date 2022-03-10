@@ -9,6 +9,11 @@ import 'package:provider/provider.dart';
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
+  final Query<Map<String, dynamic>> _usersWorkshopsStream = FirebaseFirestore
+      .instance
+      .collection('users')
+      .where('users', isEqualTo: '1cl8WviSqSONhAckmlMT1NWameL2');
+
   final Stream<QuerySnapshot> _workshopsStream =
       FirebaseFirestore.instance.collection('workshops').snapshots();
 
@@ -54,7 +59,7 @@ class Home extends StatelessWidget {
         const SizedBox(height: 20.0),
         SizedBox(
           height: 200,
-          child: _buildStreamBuilder(),
+          child: _buildStreamBuilder(stream: _workshopsStream),
         ),
         const SizedBox(height: 50.0),
         Padding(
@@ -65,15 +70,17 @@ class Home extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: _buildStreamBuilder(isVertical: true),
+          child:
+              _buildStreamBuilder(stream: _workshopsStream, isVertical: true),
         ),
       ],
     );
   }
 
-  StreamBuilder _buildStreamBuilder({bool isVertical = false}) {
+  StreamBuilder _buildStreamBuilder(
+      {required Stream<QuerySnapshot> stream, bool isVertical = false}) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _workshopsStream,
+      stream: stream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Lottie.asset('assets/lottie/loading.json');
@@ -123,7 +130,7 @@ class Home extends StatelessWidget {
 
     return Padding(
       padding: _padding,
-      child: Workshops(index: index, width: width, doc: doc),
+      child: Workshops(width: width, doc: doc),
     );
   }
 }

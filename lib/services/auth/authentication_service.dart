@@ -34,10 +34,13 @@ class AuthenticationService {
     }
   }
 
-  Future<AuthenticationState> signUp(String email, String password) async {
+  Future<AuthenticationState> signUp(
+      String email, String password, String name) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential newUser = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      await newUser.user?.updateDisplayName(name);
       return AuthenticationState(AuthStatus.signedIn, '');
     } on FirebaseAuthException catch (e) {
       return AuthenticationState(AuthStatus.error, e.code);

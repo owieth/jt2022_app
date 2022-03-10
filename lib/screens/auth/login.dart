@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 class Login extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
   Login({Key? key}) : super(key: key);
 
@@ -29,6 +30,12 @@ class Login extends StatelessWidget {
                   labelText: "Password",
                 ),
               ),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: "Name (Vor- & Nachname)",
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {
                   context.read<AuthenticationService>().signIn(
@@ -43,6 +50,7 @@ class Login extends StatelessWidget {
                   context.read<AuthenticationService>().signUp(
                         emailController.text.trim(),
                         passwordController.text.trim(),
+                        nameController.text.trim(),
                       );
                 },
                 child: const Text("Sign Up"),
