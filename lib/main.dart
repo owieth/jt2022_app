@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/onboard/onboard.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
@@ -77,10 +78,11 @@ class App extends StatelessWidget {
         ),
         routes: {
           "": (_) => const ContainerWidget(),
-          "/login": (_) => Login(),
+          "/login": (_) => const Login(),
           "/profile": (_) => const Profile(),
           "/workshop": (_) => const Workshop()
         },
+        localizationsDelegates: const [FormBuilderLocalizations.delegate],
         home: const AuthenticationWrapper(),
       ),
     );
@@ -95,7 +97,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser == null) {
-      return Login();
+      return const Login();
     }
 
     return const Onboard();

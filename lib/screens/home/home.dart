@@ -9,17 +9,28 @@ import 'package:provider/provider.dart';
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
-  final Query<Map<String, dynamic>> _usersWorkshopsStream = FirebaseFirestore
-      .instance
-      .collection('users')
-      .where('users', isEqualTo: '1cl8WviSqSONhAckmlMT1NWameL2');
-
   final Stream<QuerySnapshot> _workshopsStream =
       FirebaseFirestore.instance.collection('workshops').snapshots();
+
+  void test() async {
+    try {
+      final _usersWorkshopsStream = FirebaseFirestore.instance
+          .collectionGroup('users')
+          .where('users', isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+      var figge = FirebaseFirestore.instance.collectionGroup('users').where(
+          'workshops',
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+      print(await figge.get());
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
+
+    test();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

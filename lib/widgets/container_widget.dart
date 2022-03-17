@@ -73,7 +73,6 @@ class _ContainerWidgetState extends State<ContainerWidget> {
                   case 3:
                     _pages[index] = const Profile();
                     break;
-                  default:
                 }
               }
 

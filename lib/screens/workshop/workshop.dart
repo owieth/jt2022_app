@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/widgets/navigation_button_widget.dart';
-import 'package:provider/provider.dart';
 
 class Workshop extends StatelessWidget {
   const Workshop({Key? key}) : super(key: key);
@@ -10,13 +9,26 @@ class Workshop extends StatelessWidget {
   void _signUpForWorkshop(BuildContext context, String workshopId) async {
     final _user = FirebaseAuth.instance.currentUser;
 
-    FirebaseFirestore.instance.collection('users').doc(_user!.uid).update({
-      "workshops": FieldValue.arrayUnion([workshopId])
-    });
+    final _collectionRef = FirebaseFirestore.instance.collection('users');
+
+    if (await checkIfStoreExists(_collectionRef)) {
+      _collectionRef.doc(_user!.uid).update({
+        "workshops": FieldValue.arrayUnion([workshopId])
+      });
+    } else {
+      _collectionRef.doc(_user!.uid).set({
+        "workshops": FieldValue.arrayUnion([workshopId])
+      });
+    }
 
     // FirebaseFirestore.instance.collection('workshops').doc().set({
     //   "workshops": FieldValue.arrayUnion([workshopId])
     // });
+  }
+
+  Future<bool> checkIfStoreExists(CollectionReference collection) async {
+    final documents = await collection.get();
+    return documents.size > 0;
   }
 
   @override
@@ -24,9 +36,10 @@ class Workshop extends StatelessWidget {
     Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/images/church.jpeg'), fit: BoxFit.cover),
+            image: AssetImage("assets/images/${_arguments['image']}.jpeg"),
+            fit: BoxFit.cover),
       ),
       child: Stack(
         children: [

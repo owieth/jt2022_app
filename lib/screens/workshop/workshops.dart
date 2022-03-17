@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:jt2022_app/widgets/text_overlay_widget.dart';
 
 class Workshops extends StatelessWidget {
@@ -15,7 +16,7 @@ class Workshops extends StatelessWidget {
 
     return InkWell(
       onTap: () => Navigator.pushNamed(context, '/workshop',
-          arguments: {"id": doc.id, "title": doc['name']}),
+          arguments: {"id": doc.id, "title": doc['name'], "image": _imageName}),
       child: Stack(
         children: [
           Container(
@@ -24,8 +25,10 @@ class Workshops extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25.0),
               image: DecorationImage(
-                  image: AssetImage("assets/images/$_imageName.jpeg"),
-                  fit: BoxFit.cover),
+                image: AssetImage("assets/images/$_imageName.jpeg"),
+                fit: BoxFit.cover,
+              ),
+              //child: const BlurHash(hash: "LDE.-AQ90\$9F02?b]\$?uNHJ#}TXl"),
             ),
           ),
           TextOverlay(
