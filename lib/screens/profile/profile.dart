@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/widgets/avatar_widget.dart';
@@ -8,13 +9,15 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _user = Provider.of<User?>(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Avatar(radius: 75),
           Text(
-            'Nina',
+            _user!.displayName as String,
             style: Theme.of(context).textTheme.headline1,
           ),
           Text(
