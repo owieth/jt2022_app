@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
-import 'package:jt2022_app/screens/onboard/onboard.dart';
+import 'package:jt2022_app/screens/home/home.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 import 'package:jt2022_app/screens/workshop/workshop.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
@@ -100,6 +100,6 @@ class AuthenticationWrapper extends StatelessWidget {
       return const Login();
     }
 
-    return const Onboard();
+    return const ContainerWidget();
   }
 }

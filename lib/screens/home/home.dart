@@ -6,31 +6,35 @@ import 'package:jt2022_app/widgets/avatar_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final Stream<QuerySnapshot> _workshopsStream =
       FirebaseFirestore.instance.collection('workshops').snapshots();
 
-  void test() async {
-    try {
-      final _usersWorkshopsStream = FirebaseFirestore.instance
-          .collectionGroup('users')
-          .where('users', isEqualTo: FirebaseAuth.instance.currentUser!.uid);
-      var figge = FirebaseFirestore.instance.collectionGroup('users').where(
-          'workshops',
-          isEqualTo: FirebaseAuth.instance.currentUser!.uid);
-      print(await figge.get());
-    } catch (e) {
-      print(e);
-    }
+  late Stream<DocumentSnapshot<Map<String, dynamic>>> _userWorkshopsStream;
+
+  @override
+  void initState() {
+    final _user = Provider.of<User?>(context, listen: false);
+
+    _userWorkshopsStream = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_user!.uid)
+        .get()
+        .asStream();
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
-
-    test();
+    final _user = Provider.of<User?>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,11 +50,11 @@ class Home extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello there,',
+                      'Hi 👋,',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Text(
-                      user?.displayName ?? 'Nina',
+                      _user!.displayName as String,
                       style: Theme.of(context).textTheme.subtitle1,
                     )
                   ],
@@ -70,7 +74,7 @@ class Home extends StatelessWidget {
         const SizedBox(height: 20.0),
         SizedBox(
           height: 200,
-          child: _buildStreamBuilder(stream: _workshopsStream),
+          child: _buildUsersWorkshopsStreamBuilder(),
         ),
         const SizedBox(height: 50.0),
         Padding(
@@ -81,53 +85,85 @@ class Home extends StatelessWidget {
           ),
         ),
         Expanded(
-          child:
-              _buildStreamBuilder(stream: _workshopsStream, isVertical: true),
+          child: _buildWorkshopsStreamBuilder(),
         ),
       ],
     );
   }
 
-  StreamBuilder _buildStreamBuilder(
-      {required Stream<QuerySnapshot> stream, bool isVertical = false}) {
+  StreamBuilder _buildUsersWorkshopsStreamBuilder() {
     return StreamBuilder<QuerySnapshot>(
-      stream: stream,
+      stream: _workshopsStream,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> workshops) {
+        return StreamBuilder<DocumentSnapshot>(
+          stream: _userWorkshopsStream,
+          builder: (BuildContext context,
+              AsyncSnapshot<DocumentSnapshot> usersWorkshops) {
+            if (!usersWorkshops.hasData) {
+              return Lottie.asset('assets/lottie/loading.json');
+            }
+
+            List _usersWorkshops = usersWorkshops.data!.get('workshops');
+
+            final _workshops = workshops.data!.docs
+                .where((element) => _usersWorkshops.contains(element.id));
+
+            final _workshopCount = _usersWorkshops.length;
+
+            if (_usersWorkshops.isNotEmpty) {
+              return ListView.builder(
+                padding: const EdgeInsets.only(top: 20),
+                scrollDirection: Axis.horizontal,
+                itemCount: _workshopCount,
+                itemBuilder: (BuildContext context, int index) {
+                  return _buildWorkshopItem(
+                    index,
+                    _workshops.elementAt(index),
+                    _workshopCount,
+                    MediaQuery.of(context).size.width,
+                  );
+                },
+              );
+            }
+
+            return const Text('Workshops konnten nicht geladen werden!');
+          },
+        );
+      },
+    );
+  }
+
+  StreamBuilder _buildWorkshopsStreamBuilder() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _workshopsStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return Lottie.asset('assets/lottie/loading.json');
         }
 
-        if (snapshot.hasData) {
-          final _workshopCount = snapshot.data!.docs.length;
+        List<QueryDocumentSnapshot> _workshops = snapshot.data!.docs;
+        final _workshopCount = _workshops.length;
 
+        if (_workshops.isNotEmpty) {
           return ListView.builder(
             padding: const EdgeInsets.only(top: 20),
-            scrollDirection: isVertical ? Axis.vertical : Axis.horizontal,
+            scrollDirection: Axis.vertical,
             itemCount: _workshopCount,
             itemBuilder: (BuildContext context, int index) {
-              return _buildWorkshopItem(
-                index,
-                snapshot.data!.docs[index],
-                _workshopCount,
-                isVertical,
-                MediaQuery.of(context).size.width,
-              );
+              return _buildWorkshopItem(index, snapshot.data!.docs[index],
+                  _workshopCount, MediaQuery.of(context).size.width, true);
             },
           );
         }
 
-        return const Text('Something went wrong');
+        return const Text('Workshops konnten nicht geladen werden!');
       },
     );
   }
 
   Widget _buildWorkshopItem(
-    int index,
-    DocumentSnapshot doc,
-    int workshopCount,
-    bool isVertical,
-    double width,
-  ) {
+      int index, DocumentSnapshot doc, int workshopCount, double width,
+      [bool isVertical = false]) {
     EdgeInsets _padding;
 
     if (isVertical) {
