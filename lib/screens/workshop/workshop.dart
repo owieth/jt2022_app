@@ -2,38 +2,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/widgets/navigation_button_widget.dart';
+import 'package:provider/provider.dart';
 
-class Workshop extends StatelessWidget {
+class Workshop extends StatefulWidget {
   const Workshop({Key? key}) : super(key: key);
 
-  void _signUpForWorkshop(BuildContext context, String workshopId) async {
-    final _user = FirebaseAuth.instance.currentUser;
+  @override
+  State<Workshop> createState() => _WorkshopState();
+}
 
-    final _collectionRef = FirebaseFirestore.instance.collection('users');
-
-    if (await checkIfStoreExists(_collectionRef)) {
-      _collectionRef.doc(_user!.uid).update({
-        "workshops": FieldValue.arrayUnion([workshopId])
-      });
-    } else {
-      _collectionRef.doc(_user!.uid).set({
-        "workshops": FieldValue.arrayUnion([workshopId])
-      });
-    }
-
-    // FirebaseFirestore.instance.collection('workshops').doc().set({
-    //   "workshops": FieldValue.arrayUnion([workshopId])
-    // });
-  }
-
-  Future<bool> checkIfStoreExists(CollectionReference collection) async {
-    final documents = await collection.get();
-    return documents.size > 0;
-  }
+class _WorkshopState extends State<Workshop> {
+  late final CollectionReference<Map<String, dynamic>> _usersCollection;
+  bool isUserAlreadySignedUp = false;
 
   @override
   Widget build(BuildContext context) {
     Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
+
+    setState(() {
+      isUserAlreadySignedUp =
+          _arguments['isUserAlreadySignedUp'].toString().isNotEmpty;
+    });
+
+    final String _buttonText = isUserAlreadySignedUp ? "Abmelden" : "Anmelden";
 
     return Container(
       decoration: BoxDecoration(
@@ -84,14 +75,16 @@ class Workshop extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   height: 50.0,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        _signUpForWorkshop(context, _arguments['id']),
+                    onPressed: () {
+                      return _changeWorkshopAttendance(
+                          context, _arguments['id']);
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0)),
                     ),
-                    child: Text("Anmelden",
+                    child: Text(_buttonText,
                         style: Theme.of(context).textTheme.subtitle2),
                   ),
                 ),
@@ -101,5 +94,45 @@ class Workshop extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _signUpForWorkshop(BuildContext context, User user, usersCollection,
+      workshopsCollection, String _workshopId) async {
+    await usersCollection.doc(user.uid).set({
+      "workshops": FieldValue.arrayUnion([_workshopId])
+    }, SetOptions(merge: true));
+
+    await workshopsCollection.doc(_workshopId).update({
+      "attendees": FieldValue.arrayUnion([user.uid])
+    });
+  }
+
+  void _dropOutOfWorkshop(BuildContext context, User user, usersCollection,
+      workshopsCollection, String _workshopId) async {
+    await usersCollection.doc(user.uid).update({
+      "workshops": FieldValue.arrayRemove([_workshopId])
+    });
+
+    await workshopsCollection.doc(_workshopId).update({
+      "attendees": FieldValue.arrayRemove([user.uid])
+    });
+  }
+
+  void _changeWorkshopAttendance(BuildContext context, String _workshopId) {
+    final _user = Provider.of<User?>(context, listen: false);
+
+    _usersCollection = FirebaseFirestore.instance.collection('users');
+
+    final _workshopsCollection =
+        FirebaseFirestore.instance.collection('workshops');
+
+    if (isUserAlreadySignedUp) {
+      _dropOutOfWorkshop(
+          context, _user!, _usersCollection, _workshopsCollection, _workshopId);
+    } else {
+      _signUpForWorkshop(
+          context, _user!, _usersCollection, _workshopsCollection, _workshopId);
+    }
+    Navigator.pop(context);
   }
 }

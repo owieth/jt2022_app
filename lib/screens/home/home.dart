@@ -21,14 +21,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    final _user = Provider.of<User?>(context, listen: false);
-
-    _userWorkshopsStream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(_user!.uid)
-        .get()
-        .asStream();
-
+    _userWorkshopsStream = _getUsersWorkshop();
     super.initState();
   }
 
@@ -67,7 +60,7 @@ class _HomeState extends State<Home> {
         Padding(
           padding: const EdgeInsets.only(left: 35),
           child: Text(
-            'My Workshops',
+            'Meine Workshops',
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
@@ -91,6 +84,16 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> _getUsersWorkshop() {
+    final _user = Provider.of<User?>(context, listen: false);
+
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_user!.uid)
+        .get()
+        .asStream();
+  }
+
   StreamBuilder _buildUsersWorkshopsStreamBuilder() {
     return StreamBuilder<QuerySnapshot>(
       stream: _workshopsStream,
@@ -103,11 +106,15 @@ class _HomeState extends State<Home> {
               return Lottie.asset('assets/lottie/loading.json');
             }
 
-            List _usersWorkshops = usersWorkshops.data!.get('workshops');
+            List _usersWorkshops;
+            if (usersWorkshops.data!.exists) {
+              _usersWorkshops = usersWorkshops.data?.get('workshops');
+            } else {
+              _usersWorkshops = List.of(const Iterable.empty());
+            }
 
             final _workshops = workshops.data!.docs
                 .where((element) => _usersWorkshops.contains(element.id));
-
             final _workshopCount = _usersWorkshops.length;
 
             if (_usersWorkshops.isNotEmpty) {
@@ -177,7 +184,13 @@ class _HomeState extends State<Home> {
 
     return Padding(
       padding: _padding,
-      child: Workshops(width: width, doc: doc),
+      child: Workshops(
+        width: width,
+        doc: doc,
+        isUserAlreadySignedUp: !isVertical,
+        emitWorkshopChange: () =>
+            setState(() => _userWorkshopsStream = _getUsersWorkshop()),
+      ),
     );
   }
 }

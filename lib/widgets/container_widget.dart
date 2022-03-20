@@ -62,7 +62,7 @@ class _ContainerWidgetState extends State<ContainerWidget> {
               if (_pages[index] is SizedBox) {
                 switch (index) {
                   case 0:
-                    _pages[index] = Home();
+                    _pages[index] = const Home();
                     break;
                   case 1:
                     _pages[index] = const Calendar();

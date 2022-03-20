@@ -1,22 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:jt2022_app/widgets/text_overlay_widget.dart';
 
 class Workshops extends StatelessWidget {
   final double width;
   final DocumentSnapshot doc;
+  final Function emitWorkshopChange;
+  final bool isUserAlreadySignedUp;
 
-  const Workshops({Key? key, required this.width, required this.doc})
+  const Workshops(
+      {Key? key,
+      required this.width,
+      required this.doc,
+      required this.emitWorkshopChange,
+      required this.isUserAlreadySignedUp})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _imageName = doc['image'].toString();
+    final _imageName = doc.data()!.toString().contains('image')
+        ? doc['image'].toString()
+        : 'placeholder';
 
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, '/workshop',
-          arguments: {"id": doc.id, "title": doc['name'], "image": _imageName}),
+      onTap: () => Navigator.pushNamed(context, '/workshop', arguments: {
+        "id": doc.id,
+        "title": doc['name'],
+        "image": _imageName,
+        "isUserAlreadySignedUp": isUserAlreadySignedUp ? "true" : ""
+      }).then((value) => emitWorkshopChange()),
       child: Stack(
         children: [
           Container(
@@ -28,7 +40,6 @@ class Workshops extends StatelessWidget {
                 image: AssetImage("assets/images/$_imageName.jpeg"),
                 fit: BoxFit.cover,
               ),
-              //child: const BlurHash(hash: "LDE.-AQ90\$9F02?b]\$?uNHJ#}TXl"),
             ),
           ),
           TextOverlay(
