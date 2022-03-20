@@ -78,9 +78,9 @@ class App extends StatelessWidget {
         ),
         routes: {
           "": (_) => const ContainerWidget(),
-          "/login": (_) => const Login(),
+          "/login": (_) => Login(),
           "/profile": (_) => const Profile(),
-          "/workshop": (_) => const Workshop()
+          "/workshop": (_) => const Workshop(),
         },
         localizationsDelegates: const [FormBuilderLocalizations.delegate],
         home: const AuthenticationWrapper(),
@@ -97,7 +97,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser == null) {
-      return const Login();
+      return Login();
     }
 
     return const ContainerWidget();

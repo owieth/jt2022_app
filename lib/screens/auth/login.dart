@@ -5,17 +5,13 @@ import 'package:provider/provider.dart';
 
 enum ButtonEvent { login, signUp, forgotPassword }
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Login extends StatelessWidget {
+  Login({Key? key}) : super(key: key);
 
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
   AuthMode currentMode = AuthMode.login;
 
-  Future<String> _onButtonClick(dynamic data, ButtonEvent event) async {
+  Future<String> _onButtonClick(
+      BuildContext context, dynamic data, ButtonEvent event) async {
     switch (event) {
       case ButtonEvent.login:
         await context
@@ -42,11 +38,11 @@ class _LoginState extends State<Login> {
       body: Center(
         child: AnimatedLogin(
           onLogin: (LoginData data) async =>
-              _onButtonClick(data, ButtonEvent.login),
+              _onButtonClick(context, data, ButtonEvent.login),
           onSignup: (SignUpData data) async =>
-              _onButtonClick(data, ButtonEvent.signUp),
+              _onButtonClick(context, data, ButtonEvent.signUp),
           onForgotPassword: (String data) async =>
-              _onButtonClick(data, ButtonEvent.forgotPassword),
+              _onButtonClick(context, data, ButtonEvent.forgotPassword),
           initialMode: currentMode,
           validatePassword: false,
           loginTexts: LoginTexts(
