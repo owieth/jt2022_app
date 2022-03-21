@@ -17,7 +17,7 @@ class ContainerWidget extends StatefulWidget {
 
 class _ContainerWidgetState extends State<ContainerWidget> {
   final List<Widget> _pages = [
-    Home(),
+    const Home(),
     const SizedBox(),
     const SizedBox(),
     const SizedBox(),

@@ -27,6 +27,13 @@ dependencies:
   line_icons: ^2.0.0
   animated_login: ^1.5.1
 
+  # App Icon
+  # flutter_launcher_icons: ^0.9.2
+  flutter_launcher_icons:
+    git:
+      url: https://github.com/Davenchy/flutter_launcher_icons.git
+      ref: fixMinSdkParseFlutter2.8
+
   # Firebase Stuff
   firebase_core: ^1.12.0
 
@@ -42,6 +49,11 @@ dependencies:
   firebase_crashlytics: ^2.5.1
   firebase_performance: ^0.8.0+5
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/launcher_icon.png"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -54,6 +66,7 @@ flutter:
   assets:     
     - assets/images/
     - assets/lottie/
+    - assets/icon/
 
   fonts:
     - family: CustomIcons

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
-import 'package:jt2022_app/screens/home/home.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 import 'package:jt2022_app/screens/workshop/workshop.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
@@ -78,7 +77,7 @@ class App extends StatelessWidget {
         ),
         routes: {
           "": (_) => const ContainerWidget(),
-          "/login": (_) => Login(),
+          "/login": (_) => const Login(),
           "/profile": (_) => const Profile(),
           "/workshop": (_) => const Workshop(),
         },
@@ -97,7 +96,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser == null) {
-      return Login();
+      return const Login();
     }
 
     return const ContainerWidget();
