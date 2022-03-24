@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Text(
-                      _user!.displayName as String,
+                      _user?.displayName ?? "",
                       style: Theme.of(context).textTheme.subtitle1,
                     )
                   ],

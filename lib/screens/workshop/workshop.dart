@@ -98,9 +98,9 @@ class _WorkshopState extends State<Workshop> {
 
   void _signUpForWorkshop(BuildContext context, User user, usersCollection,
       workshopsCollection, String _workshopId) async {
-    await usersCollection.doc(user.uid).set({
+    await usersCollection.doc(user.uid).update({
       "workshops": FieldValue.arrayUnion([_workshopId])
-    }, SetOptions(merge: true));
+    });
 
     await workshopsCollection.doc(_workshopId).update({
       "attendees": FieldValue.arrayUnion([user.uid])
