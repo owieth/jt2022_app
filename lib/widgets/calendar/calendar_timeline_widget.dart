@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jt2022_app/widgets/avatar_widget.dart';
+import 'package:lottie/lottie.dart';
 import 'package:timelines/timelines.dart';
 
 const kTileHeight = 50.0;
@@ -60,39 +61,35 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
       future: _getCalendarEntries(),
       builder: (BuildContext context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> workshop) {
-        if (workshop.connectionState == ConnectionState.done) {
-          return Flexible(
-            child: Timeline.tileBuilder(
-              theme: TimelineThemeData(
-                nodePosition: 0,
-                connectorTheme: const ConnectorThemeData(
-                  color: Colors.white,
-                ),
-                indicatorTheme: const IndicatorThemeData(
-                  size: 15.0,
-                ),
+        return Flexible(
+          child: Timeline.tileBuilder(
+            theme: TimelineThemeData(
+              nodePosition: 0,
+              connectorTheme: const ConnectorThemeData(
+                color: Colors.white,
               ),
-              builder: TimelineTileBuilder.connected(
-                contentsBuilder: (_, index) => CalendarEntry(
-                    workshop: workshop.data?.docs[index].data() ?? HashMap()),
-                connectorBuilder: (_, __, ___) => const SolidLineConnector(),
-                indicatorBuilder: (_, index) {
-                  if (index == activeTile) {
-                    return const OutlinedDotIndicator(
-                      color: Colors.white,
-                    );
-                  }
-
-                  return const DotIndicator(color: Colors.white);
-                },
-                itemExtent: 150,
-                itemCount: workshop.data?.docs.length ?? 0,
+              indicatorTheme: const IndicatorThemeData(
+                size: 15.0,
               ),
             ),
-          );
-        } else {
-          return Text("jdsflökjasdölf");
-        }
+            builder: TimelineTileBuilder.connected(
+              contentsBuilder: (_, index) => CalendarEntry(
+                  workshop: workshop.data?.docs[index].data() ?? HashMap()),
+              connectorBuilder: (_, __, ___) => const SolidLineConnector(),
+              indicatorBuilder: (_, index) {
+                if (index == activeTile) {
+                  return const OutlinedDotIndicator(
+                    color: Colors.white,
+                  );
+                }
+
+                return const DotIndicator(color: Colors.white);
+              },
+              itemExtent: 150,
+              itemCount: workshop.data?.docs.length ?? 0,
+            ),
+          ),
+        );
       },
       // builder: (BuildContext context,
       //     AsyncSnapshot<List<QuerySnapshot<Map<String, dynamic>>>> workshop) {
