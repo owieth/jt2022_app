@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:jt2022_app/models/calendar_item_model.dart';
 import 'package:jt2022_app/widgets/calendar/calendar_item_widget.dart';
-import 'package:jt2022_app/widgets/calendar_timeline_widget.dart';
+import 'package:jt2022_app/widgets/calendar/calendar_timeline_widget.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
