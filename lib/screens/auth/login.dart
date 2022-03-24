@@ -5,14 +5,9 @@ import 'package:provider/provider.dart';
 
 enum ButtonEvent { login, signUp, forgotPassword }
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Login extends StatelessWidget {
+  Login({Key? key}) : super(key: key);
 
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
   AuthMode currentMode = AuthMode.login;
 
   Future<String> _onButtonClick(
