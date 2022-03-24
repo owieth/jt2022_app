@@ -17,7 +17,7 @@ Future<void> main() async {
 
   await Firebase.initializeApp();
 
-  GestureBinding.instance?.resamplingEnabled = true;
+  GestureBinding.instance!.resamplingEnabled = true;
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 

@@ -15,7 +15,7 @@ class Profile extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Avatar(radius: 75),
+          const Avatar(radius: 50),
           Text(
             _user!.displayName as String,
             style: Theme.of(context).textTheme.headline1,

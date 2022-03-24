@@ -12,7 +12,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  String _activeDay = "09";
+  String _activeDay = "10";
 
   final List<CalendarItemModel> _calendarItems = [
     CalendarItemModel("08", "Thu"),
@@ -41,7 +41,9 @@ class _CalendarState extends State<Calendar> {
                   .toList(),
             ),
           ),
-          const CalendarTimeLine(),
+          CalendarTimeLine(
+            date: _activeDay,
+          ),
         ],
       ),
     );
