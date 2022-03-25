@@ -34,10 +34,13 @@ class _WorkshopState extends State<Workshop> {
       ),
       child: Stack(
         children: [
-          const Positioned(
+          Positioned(
             top: 100,
             left: 35,
-            child: NavigationButton(),
+            child: NavigationButton(
+              icon: Icons.arrow_back_ios_new,
+              onPressedButton: () => Navigator.pop(context),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
