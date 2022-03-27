@@ -5,6 +5,7 @@ import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/widgets/avatar_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletons/skeletons.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -103,7 +104,18 @@ class _HomeState extends State<Home> {
           builder: (BuildContext context,
               AsyncSnapshot<DocumentSnapshot> usersWorkshops) {
             if (!usersWorkshops.hasData) {
-              return Lottie.asset('assets/lottie/loading.json');
+              return ListView.builder(
+                padding: const EdgeInsets.only(top: 20),
+                scrollDirection: Axis.horizontal,
+                itemCount: 2,
+                itemBuilder: (BuildContext context, int index) {
+                  return const SkeletonAvatar(
+                    style: SkeletonAvatarStyle(
+                      width: 200,
+                    ),
+                  );
+                },
+              );
             }
 
             List _usersWorkshops;
@@ -117,23 +129,19 @@ class _HomeState extends State<Home> {
                 .where((element) => _usersWorkshops.contains(element.id));
             final _workshopCount = _usersWorkshops.length;
 
-            if (_usersWorkshops.isNotEmpty) {
-              return ListView.builder(
-                padding: const EdgeInsets.only(top: 20),
-                scrollDirection: Axis.horizontal,
-                itemCount: _workshopCount,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildWorkshopItem(
-                    index,
-                    _workshops.elementAt(index),
-                    _workshopCount,
-                    MediaQuery.of(context).size.width,
-                  );
-                },
-              );
-            }
-
-            return const Text('Workshops konnten nicht geladen werden!');
+            return ListView.builder(
+              padding: const EdgeInsets.only(top: 20),
+              scrollDirection: Axis.horizontal,
+              itemCount: _workshopCount,
+              itemBuilder: (BuildContext context, int index) {
+                return _buildWorkshopItem(
+                  index,
+                  _workshops.elementAt(index),
+                  _workshopCount,
+                  MediaQuery.of(context).size.width,
+                );
+              },
+            );
           },
         );
       },
