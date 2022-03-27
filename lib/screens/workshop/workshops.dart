@@ -28,7 +28,7 @@ class Workshops extends StatelessWidget {
         "title": doc['name'],
         "image": _imageName,
         "isUserAlreadySignedUp": isUserAlreadySignedUp ? "true" : ""
-      }).then((value) => emitWorkshopChange()),
+      }).then((_) => emitWorkshopChange()),
       child: Stack(
         children: [
           Container(
