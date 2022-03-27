@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/widgets/action_button.dart';
 import 'package:jt2022_app/widgets/navigation_button_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -74,21 +75,11 @@ class _WorkshopState extends State<Workshop> {
                 const SizedBox(
                   height: 35.0,
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50.0,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      return _changeWorkshopAttendance(
-                          context, _arguments['id']);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
-                    ),
-                    child: Text(_buttonText,
-                        style: Theme.of(context).textTheme.subtitle2),
+                ActionButton(
+                  buttonText: _buttonText,
+                  callback: () => _changeWorkshopAttendance(
+                    context,
+                    _arguments['id'],
                   ),
                 ),
               ],

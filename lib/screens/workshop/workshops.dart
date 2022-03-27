@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/widgets/text_overlay_widget.dart';
+import 'package:jt2022_app/widgets/workshop/text_overlay_widget.dart';
 
 class Workshops extends StatelessWidget {
   final double width;

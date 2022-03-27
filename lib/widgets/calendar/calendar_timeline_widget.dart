@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jt2022_app/widgets/avatar_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:timelines/timelines.dart';
 
 const kTileHeight = 50.0;
