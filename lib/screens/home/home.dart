@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/widgets/avatar_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -65,7 +64,6 @@ class _HomeState extends State<Home> {
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
-        const SizedBox(height: 20.0),
         SizedBox(
           height: 200,
           child: _buildUsersWorkshopsStreamBuilder(),
@@ -104,17 +102,8 @@ class _HomeState extends State<Home> {
           builder: (BuildContext context,
               AsyncSnapshot<DocumentSnapshot> usersWorkshops) {
             if (!usersWorkshops.hasData) {
-              return ListView.builder(
-                padding: const EdgeInsets.only(top: 20),
-                scrollDirection: Axis.horizontal,
-                itemCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  return const SkeletonAvatar(
-                    style: SkeletonAvatarStyle(
-                      width: 200,
-                    ),
-                  );
-                },
+              return const SkeletonLoader(
+                padding: EdgeInsets.symmetric(horizontal: 35),
               );
             }
 
@@ -134,12 +123,12 @@ class _HomeState extends State<Home> {
               scrollDirection: Axis.horizontal,
               itemCount: _workshopCount,
               itemBuilder: (BuildContext context, int index) {
-                return _buildWorkshopItem(
-                  index,
-                  _workshops.elementAt(index),
-                  _workshopCount,
-                  MediaQuery.of(context).size.width,
-                );
+                final _padding = index != _workshopCount - 1
+                    ? const EdgeInsets.only(left: 35)
+                    : const EdgeInsets.symmetric(horizontal: 35);
+
+                return _buildWorkshopItem(index, _workshops.elementAt(index),
+                    _workshopCount, _padding);
               },
             );
           },
@@ -152,8 +141,13 @@ class _HomeState extends State<Home> {
     return StreamBuilder<QuerySnapshot>(
       stream: _workshopsStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        final _width = MediaQuery.of(context).size.width;
+
         if (!snapshot.hasData) {
-          return Lottie.asset('assets/lottie/loading.json');
+          return SkeletonLoader(
+            width: _width,
+            padding: const EdgeInsets.only(left: 35, right: 35, bottom: 35),
+          );
         }
 
         List<QueryDocumentSnapshot> _workshops = snapshot.data!.docs;
@@ -165,8 +159,10 @@ class _HomeState extends State<Home> {
             scrollDirection: Axis.vertical,
             itemCount: _workshopCount,
             itemBuilder: (BuildContext context, int index) {
+              const _padding = EdgeInsets.only(left: 35, right: 35, bottom: 35);
+
               return _buildWorkshopItem(index, snapshot.data!.docs[index],
-                  _workshopCount, MediaQuery.of(context).size.width, true);
+                  _workshopCount, _padding, _width, true);
             },
           );
         }
@@ -177,21 +173,10 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildWorkshopItem(
-      int index, DocumentSnapshot doc, int workshopCount, double width,
-      [bool isVertical = false]) {
-    EdgeInsets _padding;
-
-    if (isVertical) {
-      _padding = const EdgeInsets.only(left: 35, right: 35, bottom: 35);
-    } else {
-      width = 200;
-      _padding = index != workshopCount - 1
-          ? const EdgeInsets.only(left: 35)
-          : const EdgeInsets.symmetric(horizontal: 35);
-    }
-
+      int index, DocumentSnapshot doc, int workshopCount, EdgeInsets padding,
+      [double width = 200, bool isVertical = false]) {
     return Padding(
-      padding: _padding,
+      padding: padding,
       child: Workshops(
         width: width,
         doc: doc,
@@ -199,6 +184,38 @@ class _HomeState extends State<Home> {
         emitWorkshopChange: () =>
             setState(() => _userWorkshopsStream = _getUsersWorkshop()),
       ),
+    );
+  }
+}
+
+class SkeletonLoader extends StatelessWidget {
+  final EdgeInsets padding;
+  final double width;
+
+  const SkeletonLoader({
+    Key? key,
+    required this.padding,
+    this.width = 200,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 20),
+      scrollDirection: Axis.horizontal,
+      itemCount: 2,
+      itemBuilder: (BuildContext context, int index) {
+        return Padding(
+          padding: padding,
+          child: SkeletonLine(
+            style: SkeletonLineStyle(
+              height: 200,
+              width: width,
+              borderRadius: const BorderRadius.all(Radius.circular(25)),
+            ),
+          ),
+        );
+      },
     );
   }
 }
