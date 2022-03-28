@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
-import 'package:jt2022_app/widgets/avatar_widget.dart';
+import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletons/skeletons.dart';
 

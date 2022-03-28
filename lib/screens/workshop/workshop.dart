@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/widgets/action_button.dart';
-import 'package:jt2022_app/widgets/navigation_button_widget.dart';
+import 'package:jt2022_app/widgets/shared/action_button.dart';
+import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:provider/provider.dart';
 
 class Workshop extends StatefulWidget {
