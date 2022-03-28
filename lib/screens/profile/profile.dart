@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
-import 'package:jt2022_app/widgets/avatar_widget.dart';
-import 'package:jt2022_app/widgets/navigation_button_widget.dart';
+import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
+import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:jt2022_app/widgets/profile/profile_edit_button.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
