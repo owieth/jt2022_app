@@ -127,8 +127,19 @@ class _HomeState extends State<Home> {
                     ? const EdgeInsets.only(left: 35)
                     : const EdgeInsets.symmetric(horizontal: 35);
 
-                return _buildWorkshopItem(index, _workshops.elementAt(index),
-                    _workshopCount, _padding);
+                return Stack(
+                  children: [
+                    _buildWorkshopItem(index, _workshops.elementAt(index),
+                        _workshopCount, _padding),
+                    Positioned(
+                      top: 10,
+                      left: 185,
+                      child: CircleAvatar(
+                        child: Text("#${index + 1}"),
+                      ),
+                    ),
+                  ],
+                );
               },
             );
           },
