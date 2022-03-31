@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletons/skeletons.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,21 +13,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final Stream<QuerySnapshot> _workshopsStream =
-      FirebaseFirestore.instance.collection('workshops').snapshots();
-
   late Stream<DocumentSnapshot<Map<String, dynamic>>> _userWorkshopsStream;
+  late final User _user;
 
   @override
   void initState() {
-    _userWorkshopsStream = _getUsersWorkshop();
+    _user = Provider.of<User?>(context, listen: false)!;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<User?>(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -47,7 +42,7 @@ class _HomeState extends State<Home> {
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     Text(
-                      _user?.displayName ?? "",
+                      _user.displayName ?? "",
                       style: Theme.of(context).textTheme.subtitle1,
                     )
                   ],
@@ -64,10 +59,10 @@ class _HomeState extends State<Home> {
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
-        SizedBox(
-          height: 200,
-          child: _buildUsersWorkshopsStreamBuilder(),
-        ),
+        // SizedBox(
+        //   height: 200,
+        //   child: _buildUsersWorkshopsStreamBuilder(),
+        // ),
         const SizedBox(height: 50.0),
         Padding(
           padding: const EdgeInsets.only(left: 35),
@@ -76,157 +71,99 @@ class _HomeState extends State<Home> {
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
-        Expanded(
-          child: _buildWorkshopsStreamBuilder(),
+        const Expanded(
+          child: Workshops(),
         ),
       ],
     );
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> _getUsersWorkshop() {
-    final _user = Provider.of<User?>(context, listen: false);
+  // StreamBuilder _buildUsersWorkshopsStreamBuilder() {
+  //   return StreamBuilder<DocumentSnapshot>(
+  //     stream: _userWorkshopsStream,
+  //     builder: (BuildContext context,
+  //         AsyncSnapshot<DocumentSnapshot> usersWorkshops) {
+  //       if (!usersWorkshops.hasData) {
+  //         return const SkeletonLoader(
+  //           padding: EdgeInsets.symmetric(horizontal: 35),
+  //         );
+  //       }
 
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(_user!.uid)
-        .get()
-        .asStream();
-  }
+  //       // List _usersWorkshops = List<String>.filled(6, '');
 
-  StreamBuilder _buildUsersWorkshopsStreamBuilder() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _workshopsStream,
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> workshops) {
-        return StreamBuilder<DocumentSnapshot>(
-          stream: _userWorkshopsStream,
-          builder: (BuildContext context,
-              AsyncSnapshot<DocumentSnapshot> usersWorkshops) {
-            if (!usersWorkshops.hasData) {
-              return const SkeletonLoader(
-                padding: EdgeInsets.symmetric(horizontal: 35),
-              );
-            }
+  //       // if (usersWorkshops.data!.exists) {
+  //       //   final List<String> workshops =
+  //       //       List<String>.from(usersWorkshops.data?.get('workshops'));
+  //       //   workshops.forEachIndexed((index, workshop) {
+  //       //     _usersWorkshops[index] = workshop;
+  //       //   });
+  //       // }
 
-            List _usersWorkshops;
-            if (usersWorkshops.data!.exists) {
-              _usersWorkshops = usersWorkshops.data?.get('workshops');
-            } else {
-              _usersWorkshops = List.of(const Iterable.empty());
-            }
+  //       final _workshops = workshops.data!.docs
+  //           .where((element) => _usersWorkshops.contains(element.id));
+  //       final _workshopCount = _workshops.length;
 
-            final _workshops = workshops.data!.docs
-                .where((element) => _usersWorkshops.contains(element.id));
-            final _workshopCount = _usersWorkshops.length;
+  //       return ListView.builder(
+  //         padding: const EdgeInsets.only(top: 20),
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: Workshop.maxUserWorkshops,
+  //         itemBuilder: (BuildContext context, int index) {
+  //           final _padding = index != _workshopCount - 1
+  //               ? const EdgeInsets.only(left: 35)
+  //               : const EdgeInsets.symmetric(horizontal: 35);
 
-            return ListView.builder(
-              padding: const EdgeInsets.only(top: 20),
-              scrollDirection: Axis.horizontal,
-              itemCount: _workshopCount,
-              itemBuilder: (BuildContext context, int index) {
-                final _padding = index != _workshopCount - 1
-                    ? const EdgeInsets.only(left: 35)
-                    : const EdgeInsets.symmetric(horizontal: 35);
+  //           print(_workshops);
 
-                return Stack(
-                  children: [
-                    _buildWorkshopItem(index, _workshops.elementAt(index),
-                        _workshopCount, _padding),
-                    Positioned(
-                      top: 10,
-                      left: 185,
-                      child: CircleAvatar(
-                        child: Text("#${index + 1}"),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
+  //           final _workshop = _workshops.elementAt(index);
 
-  StreamBuilder _buildWorkshopsStreamBuilder() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _workshopsStream,
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        final _width = MediaQuery.of(context).size.width;
+  //           return Stack(
+  //             children: [
+  //               if (_workshop != '') ...{
+  //                 _buildWorkshopItem(
+  //                     index, _workshop, _workshopCount, _padding),
+  //               } else ...{
+  //                 Padding(
+  //                   padding: _padding,
+  //                   child: Container(
+  //                     height: 200,
+  //                     width: 200,
+  //                     decoration: BoxDecoration(
+  //                       borderRadius: BorderRadius.circular(25.0),
+  //                       border: Border.all(
+  //                         color: Colors.white,
+  //                         width: 2,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               },
+  //               Positioned(
+  //                 top: 10,
+  //                 left: 185,
+  //                 child: CircleAvatar(
+  //                   child: Text("#${index + 1}"),
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
-        if (!snapshot.hasData) {
-          return SkeletonLoader(
-            width: _width,
-            padding: const EdgeInsets.only(left: 35, right: 35, bottom: 35),
-          );
-        }
-
-        List<QueryDocumentSnapshot> _workshops = snapshot.data!.docs;
-        final _workshopCount = _workshops.length;
-
-        if (_workshops.isNotEmpty) {
-          return ListView.builder(
-            padding: const EdgeInsets.only(top: 20),
-            scrollDirection: Axis.vertical,
-            itemCount: _workshopCount,
-            itemBuilder: (BuildContext context, int index) {
-              const _padding = EdgeInsets.only(left: 35, right: 35, bottom: 35);
-
-              return _buildWorkshopItem(index, snapshot.data!.docs[index],
-                  _workshopCount, _padding, _width, true);
-            },
-          );
-        }
-
-        return const Text('Workshops konnten nicht geladen werden!');
-      },
-    );
-  }
-
-  Widget _buildWorkshopItem(
-      int index, DocumentSnapshot doc, int workshopCount, EdgeInsets padding,
-      [double width = 200, bool isVertical = false]) {
-    return Padding(
-      padding: padding,
-      child: Workshops(
-        width: width,
-        doc: doc,
-        isUserAlreadySignedUp: !isVertical,
-        emitWorkshopChange: () =>
-            setState(() => _userWorkshopsStream = _getUsersWorkshop()),
-      ),
-    );
-  }
-}
-
-class SkeletonLoader extends StatelessWidget {
-  final EdgeInsets padding;
-  final double width;
-
-  const SkeletonLoader({
-    Key? key,
-    required this.padding,
-    this.width = 200,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.only(top: 20),
-      scrollDirection: Axis.horizontal,
-      itemCount: 2,
-      itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: padding,
-          child: SkeletonLine(
-            style: SkeletonLineStyle(
-              height: 200,
-              width: width,
-              borderRadius: const BorderRadius.all(Radius.circular(25)),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Widget _buildWorkshopItem(
+  //     int index, DocumentSnapshot doc, int workshopCount, EdgeInsets padding,
+  //     [double width = 200, bool isVertical = false]) {
+  //   return Padding(
+  //     padding: padding,
+  //     child: WorkshopItem(
+  //       width: width,
+  //       doc: doc,
+  //       isUserAlreadySignedUp: !isVertical,
+  //       emitWorkshopClick: () => setState(() =>
+  //           _userWorkshopsStream = WorkshopsService().getUsersWorkshop(_user)),
+  //     ),
+  //   );
+  // }
 }

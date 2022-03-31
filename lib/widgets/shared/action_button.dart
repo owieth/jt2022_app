@@ -17,8 +17,9 @@ class ActionButton extends StatelessWidget {
         onPressed: callback,
         style: ElevatedButton.styleFrom(
           primary: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
         ),
         child: Text(buttonText, style: Theme.of(context).textTheme.subtitle2),
       ),

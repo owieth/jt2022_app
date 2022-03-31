@@ -20,12 +20,7 @@ class _WorkshopState extends State<Workshop> {
   Widget build(BuildContext context) {
     Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
-    setState(() {
-      isUserAlreadySignedUp =
-          _arguments['isUserAlreadySignedUp'].toString().isNotEmpty;
-    });
-
-    final String _buttonText = isUserAlreadySignedUp ? "Abmelden" : "Anmelden";
+    final _workshopId = _arguments['id'];
 
     return Container(
       decoration: BoxDecoration(
@@ -76,11 +71,15 @@ class _WorkshopState extends State<Workshop> {
                   height: 35.0,
                 ),
                 ActionButton(
-                  buttonText: _buttonText,
-                  callback: () => _changeWorkshopAttendance(
-                    context,
-                    _arguments['id'],
-                  ),
+                  buttonText: _arguments['isUserAlreadySignedUp']
+                      ? "Abmelden"
+                      : "Anmelden",
+                  callback: () {
+                    return _changeWorkshopAttendance(
+                      context,
+                      _workshopId,
+                    );
+                  },
                 ),
               ],
             ),
@@ -90,32 +89,8 @@ class _WorkshopState extends State<Workshop> {
     );
   }
 
-  void _signUpForWorkshop(BuildContext context, User user, usersCollection,
-      workshopsCollection, String _workshopId) async {
-    await usersCollection.doc(user.uid).update({
-      "workshops": FieldValue.arrayUnion([_workshopId])
-    });
-
-    await workshopsCollection.doc(_workshopId).update({
-      "attendees": FieldValue.arrayUnion([user.uid])
-    });
-  }
-
-  void _dropOutOfWorkshop(BuildContext context, User user, usersCollection,
-      workshopsCollection, String _workshopId) async {
-    await usersCollection.doc(user.uid).update({
-      "workshops": FieldValue.arrayRemove([_workshopId])
-    });
-
-    await workshopsCollection.doc(_workshopId).update({
-      "attendees": FieldValue.arrayRemove([user.uid])
-    });
-  }
-
   void _changeWorkshopAttendance(BuildContext context, String _workshopId) {
     final _user = Provider.of<User?>(context, listen: false);
-
-    _usersCollection = FirebaseFirestore.instance.collection('users');
 
     final _workshopsCollection =
         FirebaseFirestore.instance.collection('workshops');
@@ -128,5 +103,27 @@ class _WorkshopState extends State<Workshop> {
           context, _user!, _usersCollection, _workshopsCollection, _workshopId);
     }
     Navigator.pop(context);
+  }
+
+  void _dropOutOfWorkshop(BuildContext context, User user, usersCollection,
+      workshopsCollection, String _workshopId) async {
+    await usersCollection.workshop(user.uid).update({
+      "workshops": FieldValue.arrayRemove([_workshopId])
+    });
+
+    await workshopsCollection.workshop(_workshopId).update({
+      "attendees": FieldValue.arrayRemove([user.uid])
+    });
+  }
+
+  void _signUpForWorkshop(BuildContext context, User user, usersCollection,
+      workshopsCollection, String _workshopId) async {
+    await usersCollection.workshop(user.uid).update({
+      "workshops": FieldValue.arrayUnion([_workshopId])
+    });
+
+    await workshopsCollection.workshop(_workshopId).update({
+      "attendees": FieldValue.arrayUnion([user.uid])
+    });
   }
 }
