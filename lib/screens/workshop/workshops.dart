@@ -1,14 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/workshop_item_widget.dart';
+import 'package:provider/provider.dart';
 
 class Workshops extends StatelessWidget {
   const Workshops({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _user = Provider.of<User?>(context, listen: false);
+
     return StreamBuilder(
       stream: WorkshopsService().workshops,
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> snapshot) {
@@ -35,7 +39,8 @@ class Workshops extends StatelessWidget {
               child: WorkshopItem(
                 width: _width,
                 workshop: workshop,
-                isUserAlreadySignedUp: true,
+                isUserAlreadySignedUp: workshop.attendees.contains(_user!.uid),
+                emitWorkshopChange: () {},
               ),
             );
           },

@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:provider/provider.dart';
@@ -13,19 +13,20 @@ class Workshop extends StatefulWidget {
 }
 
 class _WorkshopState extends State<Workshop> {
-  late final CollectionReference<Map<String, dynamic>> _usersCollection;
   bool isUserAlreadySignedUp = false;
 
   @override
   Widget build(BuildContext context) {
     Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
 
-    final _workshopId = _arguments['id'];
+    final _workshop = _arguments['workshop'];
+    isUserAlreadySignedUp = _arguments['isUserAlreadySignedUp'];
+    final _user = Provider.of<User?>(context, listen: false);
 
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage("assets/images/${_arguments['image']}.jpeg"),
+            image: AssetImage("assets/images/${_workshop.image}.jpeg"),
             fit: BoxFit.cover),
       ),
       child: Stack(
@@ -60,24 +61,27 @@ class _WorkshopState extends State<Workshop> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_arguments['title'],
+                Text(_workshop.name,
                     style: Theme.of(context).textTheme.headline1),
                 const SizedBox(
                   height: 20.0,
                 ),
-                Text("Lorem isdmfölkasdjf ölkjasdföl jasdöfl jkasdöflj as",
-                    style: Theme.of(context).textTheme.headline6),
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 100),
+                  child: SingleChildScrollView(
+                    child: Text(_workshop.description,
+                        style: Theme.of(context).textTheme.headline6),
+                  ),
+                ),
                 const SizedBox(
                   height: 35.0,
                 ),
                 ActionButton(
-                  buttonText: _arguments['isUserAlreadySignedUp']
-                      ? "Abmelden"
-                      : "Anmelden",
+                  buttonText: isUserAlreadySignedUp ? "Abmelden" : "Anmelden",
                   callback: () {
                     return _changeWorkshopAttendance(
-                      context,
-                      _workshopId,
+                      _user!.uid,
+                      _workshop.id,
                     );
                   },
                 ),
@@ -89,41 +93,11 @@ class _WorkshopState extends State<Workshop> {
     );
   }
 
-  void _changeWorkshopAttendance(BuildContext context, String _workshopId) {
-    final _user = Provider.of<User?>(context, listen: false);
+  void _changeWorkshopAttendance(String userId, String _workshopId) {
+    isUserAlreadySignedUp
+        ? WorkshopsService().dropOutOfWorkshop(userId, _workshopId)
+        : WorkshopsService().signUpForWorkshop(userId, _workshopId);
 
-    final _workshopsCollection =
-        FirebaseFirestore.instance.collection('workshops');
-
-    if (isUserAlreadySignedUp) {
-      _dropOutOfWorkshop(
-          context, _user!, _usersCollection, _workshopsCollection, _workshopId);
-    } else {
-      _signUpForWorkshop(
-          context, _user!, _usersCollection, _workshopsCollection, _workshopId);
-    }
     Navigator.pop(context);
-  }
-
-  void _dropOutOfWorkshop(BuildContext context, User user, usersCollection,
-      workshopsCollection, String _workshopId) async {
-    await usersCollection.workshop(user.uid).update({
-      "workshops": FieldValue.arrayRemove([_workshopId])
-    });
-
-    await workshopsCollection.workshop(_workshopId).update({
-      "attendees": FieldValue.arrayRemove([user.uid])
-    });
-  }
-
-  void _signUpForWorkshop(BuildContext context, User user, usersCollection,
-      workshopsCollection, String _workshopId) async {
-    await usersCollection.workshop(user.uid).update({
-      "workshops": FieldValue.arrayUnion([_workshopId])
-    });
-
-    await workshopsCollection.workshop(_workshopId).update({
-      "attendees": FieldValue.arrayUnion([user.uid])
-    });
   }
 }

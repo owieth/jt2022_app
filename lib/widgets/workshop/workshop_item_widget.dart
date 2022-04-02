@@ -6,29 +6,27 @@ class WorkshopItem extends StatelessWidget {
   final double width;
   final Workshop workshop;
   final bool isUserAlreadySignedUp;
+  final Function emitWorkshopChange;
 
   const WorkshopItem(
       {Key? key,
       required this.width,
       required this.workshop,
-      required this.isUserAlreadySignedUp})
+      required this.isUserAlreadySignedUp,
+      required this.emitWorkshopChange})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _imageName = workshop.image.isEmpty ? 'placeholder' : workshop.image;
-
     return InkWell(
       onTap: () => Navigator.pushNamed(
         context,
         '/workshop',
         arguments: {
-          "id": workshop.id,
-          "title": workshop.name,
-          "image": _imageName,
+          "workshop": workshop,
           "isUserAlreadySignedUp": isUserAlreadySignedUp
         },
-      ),
+      ).then((_) => emitWorkshopChange()),
       child: Stack(
         children: [
           Container(
@@ -37,14 +35,14 @@ class WorkshopItem extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25.0),
               image: DecorationImage(
-                image: AssetImage("assets/images/$_imageName.jpeg"),
+                image: AssetImage("assets/images/${workshop.image}.jpeg"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           TextOverlay(
             text: workshop.name,
-          )
+          ),
         ],
       ),
     );
