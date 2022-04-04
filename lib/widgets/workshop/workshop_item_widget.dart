@@ -42,6 +42,7 @@ class WorkshopItem extends StatelessWidget {
           ),
           TextOverlay(
             text: workshop.name,
+            maxWidth: width == 200 ? 150 : 250,
           ),
         ],
       ),

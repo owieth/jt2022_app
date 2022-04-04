@@ -21,15 +21,6 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
   Stream<List<Workshop>> _getCalendarEntries() {
     DateTime _formatedDate = Dates().parseDate(widget.date);
     final _user = FirebaseAuth.instance.currentUser;
-
-    // Stream _events = FirebaseFirestore.instance
-    //     .collection('events')
-    //     .where('date', isEqualTo: _formatedDate)
-    //     .get()
-    //     .asStream();
-
-    //return CombineLatestStream.list([_userWorkshops, _events]);
-    //return _events;
     return WorkshopsService().getUserWorkshopsByDay(_formatedDate, _user!.uid);
   }
 
@@ -69,6 +60,7 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
             ),
           );
         } else {
+          // TODO Emtpy State?
           return const Text("jdsflökjasdölf");
         }
       },

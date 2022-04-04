@@ -1,8 +1,7 @@
-import 'dart:core';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/util/dates.dart';
+import 'package:rxdart/rxdart.dart';
 
 class WorkshopsService {
   final CollectionReference workshopsCollection =
@@ -10,6 +9,9 @@ class WorkshopsService {
 
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
+
+  final CollectionReference eventsCollection =
+      FirebaseFirestore.instance.collection('events');
 
   Stream<List<Workshop>> get workshops {
     return workshopsCollection.snapshots().map(_mapToWorkshopList);
@@ -21,13 +23,21 @@ class WorkshopsService {
   }
 
   Stream<List<Workshop>> getUserWorkshopsByDay(DateTime day, String userId) {
-    return workshopsCollection
+    Stream<List<Workshop>> _workshops = workshopsCollection
         .where('date', isEqualTo: day)
         .where('attendees', arrayContains: userId)
         .orderBy('startTime')
         .get()
         .asStream()
         .map(_mapToWorkshopList);
+
+    Stream<List<Workshop>> _events = eventsCollection
+        .where('date', isEqualTo: day)
+        .get()
+        .asStream()
+        .map(_mapToWorkshopList);
+
+    return Rx.merge([_workshops, _events]);
   }
 
   void dropOutOfWorkshop(String userId, String _workshopId) async {
@@ -55,7 +65,7 @@ class WorkshopsService {
     final List<String> _workshops =
         List<String>.from((snapshot.data() as Map)['workshops'] as List);
 
-    List<Workshop> s = [];
+    List<Workshop> workshopDtos = [];
 
     for (var workshopId in _workshops) {
       final workshop = workshopsCollection
@@ -63,48 +73,41 @@ class WorkshopsService {
           .snapshots()
           .first;
 
-      Workshop workshop2 = _mapToWorkshop(await workshop, workshopId);
-      s.add(workshop2);
+      Workshop _workshop = _mapToWorkshop(await workshop, workshopId);
+      workshopDtos.add(_workshop);
     }
 
-    return s;
+    return workshopDtos;
   }
 
   List<Workshop> _mapToWorkshopList(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       final workshop = doc.data() as Map;
-      return Workshop(
-        id: doc.id,
-        name: workshop['name'],
-        attendees: workshop["attendees"] == null
-            ? []
-            : workshop["attendees"].cast<String>(),
-        date: workshop['date'].toString(),
-        endTime: workshop['endTime'] == null
-            ? ""
-            : Dates().formatDate(workshop['endTime']?.toDate()),
-        image: workshop['image'] ?? 'placeholder',
-        startTime: workshop['startTime'] == null
-            ? ""
-            : Dates().formatDate(workshop['startTime']?.toDate()),
-        description: workshop['description'],
-      );
+      return _returnWorkshop(doc.id, workshop);
     }).toList();
   }
 
   Workshop _mapToWorkshop(QuerySnapshot snapshot, String documentId) {
     final workshop = snapshot.docs[0].data() as Map;
+    return _returnWorkshop(documentId, workshop);
+  }
+
+  Workshop _returnWorkshop(String documentId, Map<dynamic, dynamic> workshop) {
     return Workshop(
       id: documentId,
-      name: workshop['name'],
+      name: workshop['name'] ?? "",
       attendees: workshop["attendees"] == null
           ? []
           : workshop["attendees"].cast<String>(),
       date: workshop['date'].toString(),
-      endTime: workshop['endTime'].toString(),
+      endTime: workshop['endTime'] == null
+          ? ""
+          : Dates().formatDate(workshop['endTime']?.toDate()),
       image: workshop['image'] ?? 'placeholder',
-      startTime: workshop['starTime'].toString(),
-      description: workshop['description'],
+      startTime: workshop['startTime'] == null
+          ? ""
+          : Dates().formatDate(workshop['startTime']?.toDate()),
+      description: workshop['description'] ?? "",
     );
   }
 }

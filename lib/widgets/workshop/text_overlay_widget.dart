@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class TextOverlay extends StatelessWidget {
   final String text;
+  final double maxWidth;
 
-  const TextOverlay({Key? key, required this.text}) : super(key: key);
+  const TextOverlay({Key? key, required this.text, required this.maxWidth})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,9 @@ class TextOverlay extends StatelessWidget {
           child: Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 15.0),
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Container(
-                  constraints: const BoxConstraints(maxWidth: 180),
+                  constraints: BoxConstraints(maxWidth: maxWidth),
                   child: SingleChildScrollView(
                     child: Text(text,
                         overflow: TextOverflow.ellipsis,
