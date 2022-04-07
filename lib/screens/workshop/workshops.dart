@@ -7,7 +7,9 @@ import 'package:jt2022_app/widgets/workshop/workshop_item_widget.dart';
 import 'package:provider/provider.dart';
 
 class Workshops extends StatelessWidget {
-  const Workshops({Key? key}) : super(key: key);
+  final Function emitWorkshopChange;
+  const Workshops({Key? key, required this.emitWorkshopChange})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class Workshops extends StatelessWidget {
                 width: _width,
                 workshop: workshop,
                 isUserAlreadySignedUp: workshop.attendees.contains(_user!.uid),
-                emitWorkshopChange: () {},
+                emitWorkshopChange: emitWorkshopChange,
               ),
             );
           },
