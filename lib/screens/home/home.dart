@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/screens/workshop/user_workshops.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
+import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -14,10 +16,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late final User _user;
+  late Stream<List<Workshop>> _userWorkshopsStream;
 
   @override
   void initState() {
     _user = Provider.of<User?>(context, listen: false)!;
+    _getUsersWorkshop();
     super.initState();
   }
 
@@ -58,9 +62,9 @@ class _HomeState extends State<Home> {
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
-        const SizedBox(
+        SizedBox(
           height: 200,
-          child: UserWorkshops(),
+          child: _buildUserWorkshops(),
         ),
         const SizedBox(height: 50.0),
         Padding(
@@ -70,10 +74,32 @@ class _HomeState extends State<Home> {
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ),
-        const Expanded(
-          child: Workshops(),
+        Expanded(
+          child: _buildWorkshops(),
         ),
       ],
+    );
+  }
+
+  Workshops _buildWorkshops() {
+    return Workshops(
+      emitWorkshopChange: () => _getUsersWorkshop(),
+    );
+  }
+
+  Widget _buildUserWorkshops() {
+    return UserWorkshops(
+      userWorkshopsStream: _userWorkshopsStream,
+      emitWorkshopChange: () => _getUsersWorkshop(),
+    );
+  }
+
+  void _getUsersWorkshop() {
+    final _user = Provider.of<User?>(context, listen: false);
+    setState(
+      () => _userWorkshopsStream = Stream.fromFuture(
+        WorkshopsService().getUserWorkshops(_user!.uid),
+      ),
     );
   }
 }
