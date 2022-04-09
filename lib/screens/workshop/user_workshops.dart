@@ -5,22 +5,23 @@ import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/workshop_item_widget.dart';
 
 class UserWorkshops extends StatelessWidget {
-  final Stream<List<Workshop>> userWorkshopsStream;
+  final Future<List<Workshop>> userWorkshops;
   final Function emitWorkshopChange;
   const UserWorkshops(
-      {Key? key,
-      required this.userWorkshopsStream,
-      required this.emitWorkshopChange})
+      {Key? key, required this.userWorkshops, required this.emitWorkshopChange})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: userWorkshopsStream,
+    return FutureBuilder(
+      future: userWorkshops,
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> snapshot) {
         if (!snapshot.hasData) {
-          return const SkeletonLoader(
-            padding: EdgeInsets.only(left: 35),
+          return const Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: SkeletonLoader(
+              padding: EdgeInsets.only(left: 35),
+            ),
           );
         }
 

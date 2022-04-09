@@ -16,12 +16,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late final User _user;
-  late Stream<List<Workshop>> _userWorkshopsStream;
+  late Future<List<Workshop>> _userWorkshops;
 
   @override
   void initState() {
     _user = Provider.of<User?>(context, listen: false)!;
-    _getUsersWorkshop();
+    _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
     super.initState();
   }
 
@@ -34,7 +34,10 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.fromLTRB(35, 70, 35, 0),
           child: Row(
             children: [
-              const Avatar(radius: 30),
+              Avatar(
+                radius: 30,
+                image: _user.photoURL ?? '',
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Column(
@@ -89,17 +92,14 @@ class _HomeState extends State<Home> {
 
   Widget _buildUserWorkshops() {
     return UserWorkshops(
-      userWorkshopsStream: _userWorkshopsStream,
+      userWorkshops: _userWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(),
     );
   }
 
   void _getUsersWorkshop() {
-    final _user = Provider.of<User?>(context, listen: false);
-    setState(
-      () => _userWorkshopsStream = Stream.fromFuture(
-        WorkshopsService().getUserWorkshops(_user!.uid),
-      ),
-    );
+    setState(() {
+      _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
+    });
   }
 }

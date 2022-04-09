@@ -26,8 +26,7 @@ class _WorkshopState extends State<Workshop> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage("assets/images/${_workshop.image}.jpeg"),
-            fit: BoxFit.cover),
+            image: NetworkImage(_workshop.image), fit: BoxFit.cover),
       ),
       child: Stack(
         children: [

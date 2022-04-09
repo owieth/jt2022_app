@@ -7,13 +7,18 @@ import 'package:jt2022_app/widgets/profile/profile_edit_button.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final _user = Provider.of<User?>(context);
+  State<Profile> createState() => _ProfileState();
+}
 
+class _ProfileState extends State<Profile> {
+  User _user = _getCurrentUser();
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Positioned(
@@ -37,11 +42,16 @@ class Profile extends StatelessWidget {
                 children: [
                   Stack(
                     children: [
-                      const Avatar(radius: 50),
+                      Avatar(
+                        radius: 50,
+                        image: _user.photoURL ?? '',
+                      ),
                       ProfileEditButton(
                         icon: LineIcons.pen,
                         callback: () =>
-                            Navigator.pushNamed(context, '/profile/edit'),
+                            Navigator.pushNamed(context, '/profile/edit').then(
+                                (_) =>
+                                    setState(() => _user = _getCurrentUser())),
                       )
                     ],
                   ),
@@ -49,7 +59,7 @@ class Profile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _user!.displayName as String,
+                        _user.displayName as String,
                         style: Theme.of(context).textTheme.headline1,
                       ),
                       Row(
@@ -74,4 +84,8 @@ class Profile extends StatelessWidget {
       ],
     );
   }
+}
+
+User _getCurrentUser() {
+  return FirebaseAuth.instance.currentUser!;
 }

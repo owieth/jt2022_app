@@ -16,7 +16,6 @@ class SkeletonLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 20),
       scrollDirection: axis,
       itemCount: 2,
       itemBuilder: (BuildContext context, int index) {
