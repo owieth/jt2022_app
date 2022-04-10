@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/models/workshop.dart';
-import 'package:jt2022_app/util/dates.dart';
+import 'package:jt2022_app/services/workshops/workshops_service.dart';
+import 'package:lottie/lottie.dart';
 import 'package:timelines/timelines.dart';
 
 const activeTile = 0;
@@ -16,52 +17,52 @@ class CalendarTimeLine extends StatefulWidget {
 }
 
 class _CalendarTimeLineState extends State<CalendarTimeLine> {
-  Stream<List<Workshop>> _getCalendarEntries() {
-    DateTime _formatedDate = Dates().parseDate(widget.date);
+  Future<List<Workshop>> _getCalendarEntries() {
+    //DateTime _formatedDate = Dates().parseDate(widget.date);
     final _user = FirebaseAuth.instance.currentUser;
-    //return WorkshopsService().getUserWorkshopsByDay(_formatedDate, _user!.uid);
-    return const Stream.empty();
+    return WorkshopsService().getUserWorkshopsByDay(widget.date, _user!.uid);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _getCalendarEntries(),
+    return FutureBuilder(
+      future: _getCalendarEntries(),
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> workshop) {
-        if (workshop.connectionState == ConnectionState.done) {
-          return Flexible(
-            child: Timeline.tileBuilder(
-              theme: TimelineThemeData(
-                nodePosition: 0,
-                connectorTheme: const ConnectorThemeData(
-                  color: Colors.white,
-                ),
-                indicatorTheme: const IndicatorThemeData(
-                  size: 15.0,
-                ),
-              ),
-              builder: TimelineTileBuilder.connected(
-                contentsBuilder: (_, index) =>
-                    CalendarEntry(workshop: workshop.data![index]),
-                connectorBuilder: (_, __, ___) => const SolidLineConnector(),
-                indicatorBuilder: (_, index) {
-                  if (index == activeTile) {
-                    return const OutlinedDotIndicator(
-                      color: Colors.white,
-                    );
-                  }
+        if (!workshop.hasData) {
+          return Center(
+            child: Lottie.asset('assets/lottie/spinner.json'),
+          );
+        }
 
-                  return const DotIndicator(color: Colors.white);
-                },
-                itemExtent: 150,
-                itemCount: workshop.data?.length ?? 0,
+        return Flexible(
+          child: Timeline.tileBuilder(
+            theme: TimelineThemeData(
+              nodePosition: 0,
+              connectorTheme: const ConnectorThemeData(
+                color: Colors.white,
+              ),
+              indicatorTheme: const IndicatorThemeData(
+                size: 15.0,
               ),
             ),
-          );
-        } else {
-          // TODO Emtpy State?
-          return const Text("jdsflökjasdölf");
-        }
+            builder: TimelineTileBuilder.connected(
+              contentsBuilder: (_, index) =>
+                  CalendarEntry(workshop: workshop.data![index]),
+              connectorBuilder: (_, __, ___) => const SolidLineConnector(),
+              indicatorBuilder: (_, index) {
+                if (index == activeTile) {
+                  return const OutlinedDotIndicator(
+                    color: Colors.white,
+                  );
+                }
+
+                return const DotIndicator(color: Colors.white);
+              },
+              itemExtent: 150,
+              itemCount: workshop.data?.length ?? 0,
+            ),
+          ),
+        );
       },
     );
   }

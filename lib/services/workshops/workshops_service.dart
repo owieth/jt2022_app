@@ -17,28 +17,32 @@ class WorkshopsService {
     return await _mapToWorkshopList();
   }
 
+  Future<List<Workshop>> getUserWorkshopsByDay(
+      String day, String userId) async {
+    List<Workshop> _events = [];
+    QuerySnapshot snapshot = await eventsCollection.get();
+
+    for (QueryDocumentSnapshot doc in snapshot.docs) {
+      final eventObject = doc.data() as Map;
+      final workshop = await _returnEvent(doc.id, eventObject);
+      if (workshop.date == day) _events.add(workshop);
+    }
+
+    List<Workshop> tempList = await workshops;
+    List<Workshop> sortedEvents = tempList
+        .where((workshop) => workshop.date == day)
+        .where((workshop) => workshop.attendees.contains(userId))
+        .toList();
+
+    List<Workshop> events = [..._events, ...sortedEvents];
+    events.sort((a, b) => a.startTime.compareTo(b.startTime));
+    return events;
+  }
+
   Future<List<Workshop>> getUserWorkshops(String userId) async {
     final workshops = await usersCollection.doc(userId).get();
     return _mapToUsersWorkshopList(workshops);
   }
-
-  // Stream<List<Workshop>> getUserWorkshopsByDay(DateTime day, String userId) {
-  //   Stream<List<Workshop>> _workshops = workshopsCollection
-  //       .where('date', isEqualTo: day)
-  //       .where('attendees', arrayContains: userId)
-  //       .orderBy('startTime')
-  //       .get()
-  //       .asStream()
-  //       .map(_mapToWorkshopList);
-
-  //   Stream<List<Workshop>> _events = eventsCollection
-  //       .where('date', isEqualTo: day)
-  //       .get()
-  //       .asStream()
-  //       .map(_mapToWorkshopList);
-
-  //   return Rx.merge([_workshops, _events]);
-  // }
 
   void dropOutOfWorkshop(String userId, String _workshopId) async {
     await usersCollection.doc(userId).update({
@@ -107,14 +111,16 @@ class WorkshopsService {
       attendees: workshop["attendees"] == null
           ? []
           : workshop["attendees"].cast<String>(),
-      date: workshop['date'].toString(),
+      date: workshop['date'] == null
+          ? ""
+          : Dates().formatDateToDay(workshop['date']?.toDate()),
       endTime: workshop['endTime'] == null
           ? ""
-          : Dates().formatDate(workshop['endTime']?.toDate()),
+          : Dates().formatDateToHM(workshop['endTime']?.toDate()),
       image: image,
       startTime: workshop['startTime'] == null
           ? ""
-          : Dates().formatDate(workshop['startTime']?.toDate()),
+          : Dates().formatDateToHM(workshop['startTime']?.toDate()),
       description: workshop['description'] ?? "",
     );
   }
@@ -125,5 +131,21 @@ class WorkshopsService {
         .getDownloadURL();
 
     return image;
+  }
+
+  Future<Workshop> _returnEvent(
+      String documentId, Map<dynamic, dynamic> workshop) async {
+    return Workshop(
+      id: documentId,
+      name: workshop['name'] ?? "",
+      attendees: [],
+      date: workshop['date'] == null
+          ? ""
+          : Dates().formatDateToDay(workshop['date']?.toDate()),
+      endTime: Dates().formatDateToHM(workshop['endTime']?.toDate()),
+      image: '',
+      startTime: Dates().formatDateToHM(workshop['startTime']?.toDate()),
+      description: '',
+    );
   }
 }
