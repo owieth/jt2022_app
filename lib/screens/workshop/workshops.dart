@@ -6,17 +6,30 @@ import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/workshop_item_widget.dart';
 import 'package:provider/provider.dart';
 
-class Workshops extends StatelessWidget {
+class Workshops extends StatefulWidget {
   final Function emitWorkshopChange;
   const Workshops({Key? key, required this.emitWorkshopChange})
       : super(key: key);
 
   @override
+  State<Workshops> createState() => _WorkshopsState();
+}
+
+class _WorkshopsState extends State<Workshops> {
+  late Future<List<Workshop>> _workshops;
+
+  @override
+  void initState() {
+    _workshops = WorkshopsService().workshops;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _user = Provider.of<User?>(context, listen: false);
 
-    return StreamBuilder(
-      stream: WorkshopsService().workshops,
+    return FutureBuilder(
+      future: _workshops,
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> snapshot) {
         final _width = MediaQuery.of(context).size.width;
 
@@ -24,25 +37,27 @@ class Workshops extends StatelessWidget {
           return SkeletonLoader(
             width: _width,
             axis: Axis.vertical,
-            padding: const EdgeInsets.only(left: 35, right: 35, bottom: 35),
+            padding: const EdgeInsets.only(top: 20),
+            innerPadding:
+                const EdgeInsets.only(left: 35, right: 35, bottom: 35),
           );
         }
 
         return ListView.builder(
           padding: const EdgeInsets.only(top: 20),
+          cacheExtent: 9999,
           scrollDirection: Axis.vertical,
           itemCount: snapshot.data!.length,
           itemBuilder: (BuildContext context, int index) {
-            const _padding = EdgeInsets.only(left: 35, right: 35, bottom: 35);
-            final workshop = snapshot.data![index];
+            final Workshop workshop = snapshot.data![index];
 
             return Padding(
-              padding: _padding,
+              padding: const EdgeInsets.only(left: 35, right: 35, bottom: 35),
               child: WorkshopItem(
                 width: _width,
                 workshop: workshop,
                 isUserAlreadySignedUp: workshop.attendees.contains(_user!.uid),
-                emitWorkshopChange: emitWorkshopChange,
+                emitWorkshopChange: widget.emitWorkshopChange,
               ),
             );
           },

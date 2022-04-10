@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/util/dates.dart';
-import 'package:rxdart/rxdart.dart';
 
 class WorkshopsService {
   final CollectionReference workshopsCollection =
@@ -13,8 +13,8 @@ class WorkshopsService {
   final CollectionReference eventsCollection =
       FirebaseFirestore.instance.collection('events');
 
-  Stream<List<Workshop>> get workshops {
-    return workshopsCollection.snapshots().map(_mapToWorkshopList);
+  Future<List<Workshop>> get workshops async {
+    return await _mapToWorkshopList();
   }
 
   Future<List<Workshop>> getUserWorkshops(String userId) async {
@@ -22,23 +22,23 @@ class WorkshopsService {
     return _mapToUsersWorkshopList(workshops);
   }
 
-  Stream<List<Workshop>> getUserWorkshopsByDay(DateTime day, String userId) {
-    Stream<List<Workshop>> _workshops = workshopsCollection
-        .where('date', isEqualTo: day)
-        .where('attendees', arrayContains: userId)
-        .orderBy('startTime')
-        .get()
-        .asStream()
-        .map(_mapToWorkshopList);
+  // Stream<List<Workshop>> getUserWorkshopsByDay(DateTime day, String userId) {
+  //   Stream<List<Workshop>> _workshops = workshopsCollection
+  //       .where('date', isEqualTo: day)
+  //       .where('attendees', arrayContains: userId)
+  //       .orderBy('startTime')
+  //       .get()
+  //       .asStream()
+  //       .map(_mapToWorkshopList);
 
-    Stream<List<Workshop>> _events = eventsCollection
-        .where('date', isEqualTo: day)
-        .get()
-        .asStream()
-        .map(_mapToWorkshopList);
+  //   Stream<List<Workshop>> _events = eventsCollection
+  //       .where('date', isEqualTo: day)
+  //       .get()
+  //       .asStream()
+  //       .map(_mapToWorkshopList);
 
-    return Rx.merge([_workshops, _events]);
-  }
+  //   return Rx.merge([_workshops, _events]);
+  // }
 
   void dropOutOfWorkshop(String userId, String _workshopId) async {
     await usersCollection.doc(userId).update({
@@ -73,26 +73,34 @@ class WorkshopsService {
           .snapshots()
           .first;
 
-      Workshop _workshop = _mapToWorkshop(await workshop, workshopId);
-      workshopDtos.add(_workshop);
+      Future<Workshop> _workshop = _mapToWorkshop(await workshop, workshopId);
+      workshopDtos.add(await _workshop);
     }
 
     return workshopDtos;
   }
 
-  List<Workshop> _mapToWorkshopList(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
+  Future<List<Workshop>> _mapToWorkshopList() async {
+    List<Workshop> workshops = [];
+    QuerySnapshot snapshot = await workshopsCollection.get();
+
+    for (QueryDocumentSnapshot doc in snapshot.docs) {
       final workshop = doc.data() as Map;
-      return _returnWorkshop(doc.id, workshop);
-    }).toList();
+      workshops.add(await _returnWorkshop(doc.id, workshop));
+    }
+
+    return workshops;
   }
 
-  Workshop _mapToWorkshop(QuerySnapshot snapshot, String documentId) {
+  Future<Workshop> _mapToWorkshop(
+      QuerySnapshot snapshot, String documentId) async {
     final workshop = snapshot.docs[0].data() as Map;
     return _returnWorkshop(documentId, workshop);
   }
 
-  Workshop _returnWorkshop(String documentId, Map<dynamic, dynamic> workshop) {
+  Future<Workshop> _returnWorkshop(
+      String documentId, Map<dynamic, dynamic> workshop) async {
+    String image = await _getWorkshopImage(documentId);
     return Workshop(
       id: documentId,
       name: workshop['name'] ?? "",
@@ -103,11 +111,19 @@ class WorkshopsService {
       endTime: workshop['endTime'] == null
           ? ""
           : Dates().formatDate(workshop['endTime']?.toDate()),
-      image: workshop['image'] ?? 'placeholder',
+      image: image,
       startTime: workshop['startTime'] == null
           ? ""
           : Dates().formatDate(workshop['startTime']?.toDate()),
       description: workshop['description'] ?? "",
     );
+  }
+
+  Future<String> _getWorkshopImage(String workshopId) async {
+    String image = await FirebaseStorage.instance
+        .ref('workshops/$workshopId')
+        .getDownloadURL();
+
+    return image;
   }
 }

@@ -3,12 +3,14 @@ import 'package:skeletons/skeletons.dart';
 
 class SkeletonLoader extends StatelessWidget {
   final EdgeInsets padding;
+  final EdgeInsets innerPadding;
   final Axis axis;
   final double width;
 
   const SkeletonLoader({
     Key? key,
-    required this.padding,
+    required this.innerPadding,
+    this.padding = EdgeInsets.zero,
     this.width = 200,
     this.axis = Axis.horizontal,
   }) : super(key: key);
@@ -16,12 +18,12 @@ class SkeletonLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 20),
+      padding: padding,
       scrollDirection: axis,
       itemCount: 2,
       itemBuilder: (BuildContext context, int index) {
         return Padding(
-          padding: padding,
+          padding: innerPadding,
           child: SkeletonLine(
             style: SkeletonLineStyle(
               height: 200,

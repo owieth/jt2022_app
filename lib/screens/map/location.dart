@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' as latLng;
+import 'package:latlong2/latlong.dart' as lat_lng;
 
 class Location extends StatefulWidget {
   const Location({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class _LocationState extends State<Location> {
                 minZoom: 5,
                 maxZoom: 18,
                 zoom: 17.6,
-                center: latLng.LatLng(46.663370, 7.275294),
+                center: lat_lng.LatLng(46.663370, 7.275294),
               ),
               nonRotatedLayers: [
                 TileLayerOptions(
@@ -61,10 +61,10 @@ class _LocationState extends State<Location> {
   }
 
   List<Marker> _buildMapMarkers() {
-    List<latLng.LatLng> coordinates = [
-      latLng.LatLng(46.663370, 7.275294),
-      latLng.LatLng(46.662973, 7.275370),
-      latLng.LatLng(46.663235, 7.276022),
+    List<lat_lng.LatLng> coordinates = [
+      lat_lng.LatLng(46.663370, 7.275294),
+      lat_lng.LatLng(46.662973, 7.275370),
+      lat_lng.LatLng(46.663235, 7.276022),
     ];
 
     return coordinates

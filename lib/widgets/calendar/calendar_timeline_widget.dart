@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/models/workshop.dart';
-import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/dates.dart';
-import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:timelines/timelines.dart';
 
 const activeTile = 0;
@@ -21,7 +19,8 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
   Stream<List<Workshop>> _getCalendarEntries() {
     DateTime _formatedDate = Dates().parseDate(widget.date);
     final _user = FirebaseAuth.instance.currentUser;
-    return WorkshopsService().getUserWorkshopsByDay(_formatedDate, _user!.uid);
+    //return WorkshopsService().getUserWorkshopsByDay(_formatedDate, _user!.uid);
+    return const Stream.empty();
   }
 
   @override
@@ -106,7 +105,7 @@ class CalendarEntry extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Avatar(radius: 15),
+                //const Avatar(radius: 15),
                 Text("${workshop.startTime} - ${workshop.endTime}"),
               ],
             ),

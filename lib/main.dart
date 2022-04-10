@@ -37,6 +37,10 @@ class App extends StatelessWidget {
           create: (context) => _authenticationService.authStateChanges,
           initialData: null,
         )
+        //         StreamProvider<User?>(
+        //   create: (context) => _authenticationService.authStateChanges,
+        //   initialData: null,
+        // )
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -67,7 +71,7 @@ class App extends StatelessWidget {
             ),
             headline6: TextStyle(
               fontSize: 18.0,
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.w100,
               color: Colors.white,
             ),
             bodyText1: TextStyle(fontSize: 12.0, color: Colors.white),
@@ -76,7 +80,7 @@ class App extends StatelessWidget {
         ),
         routes: {
           "": (_) => const ContainerWidget(),
-          "/login": (_) => Login(),
+          "/login": (_) => const Login(),
           "/profile": (_) => const Profile(),
           "/workshop": (_) => const Workshop(),
           "/onboarding": (_) => const Onboarding(),
@@ -97,7 +101,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser == null) {
-      return Login();
+      return const Login();
     }
 
     return const ContainerWidget();

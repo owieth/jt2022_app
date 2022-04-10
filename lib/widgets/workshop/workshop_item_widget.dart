@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/models/workshop.dart';
+import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/text_overlay_widget.dart';
 
 class WorkshopItem extends StatelessWidget {
@@ -29,15 +31,22 @@ class WorkshopItem extends StatelessWidget {
       ).then((_) => emitWorkshopChange()),
       child: Stack(
         children: [
-          Container(
+          SizedBox(
             height: 200,
             width: width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25.0),
-              image: DecorationImage(
-                image: AssetImage("assets/images/${workshop.image}.jpeg"),
-                fit: BoxFit.cover,
+            child: CachedNetworkImage(
+              imageUrl: workshop.image,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25.0),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
+              placeholder: (_, __) => _returnSkeletonLoader(),
+              errorWidget: (_, __, ___) => _returnSkeletonLoader(),
             ),
           ),
           TextOverlay(
@@ -46,6 +55,14 @@ class WorkshopItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _returnSkeletonLoader() {
+    return SkeletonLoader(
+      width: width,
+      axis: width > 200 ? Axis.vertical : Axis.horizontal,
+      innerPadding: EdgeInsets.zero,
     );
   }
 }

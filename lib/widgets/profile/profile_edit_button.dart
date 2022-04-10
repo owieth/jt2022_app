@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProfileEditButton extends StatelessWidget {
-  final VoidCallback callback;
+  final Function callback;
   final IconData icon;
 
   const ProfileEditButton(
@@ -14,7 +14,7 @@ class ProfileEditButton extends StatelessWidget {
       top: 55,
       left: 50,
       child: ElevatedButton(
-        onPressed: callback,
+        onPressed: () => callback(),
         child: Icon(
           icon,
           color: Colors.black,
