@@ -5,7 +5,11 @@ class Dates {
     return DateFormat('d/M/y').parse('$date/09/2022');
   }
 
-  String formatDate(DateTime date) {
+  String formatDateToHM(DateTime date) {
     return DateFormat.Hm().format(date);
+  }
+
+  String formatDateToDay(DateTime date) {
+    return DateFormat.d().format(date);
   }
 }
