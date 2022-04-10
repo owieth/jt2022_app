@@ -20,7 +20,7 @@ class UserWorkshops extends StatelessWidget {
           return const Padding(
             padding: EdgeInsets.only(top: 20),
             child: SkeletonLoader(
-              padding: EdgeInsets.only(left: 35),
+              innerPadding: EdgeInsets.only(left: 35),
             ),
           );
         }

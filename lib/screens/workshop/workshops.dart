@@ -34,13 +34,12 @@ class _WorkshopsState extends State<Workshops> {
         final _width = MediaQuery.of(context).size.width;
 
         if (!snapshot.hasData) {
-          return Padding(
+          return SkeletonLoader(
+            width: _width,
+            axis: Axis.vertical,
             padding: const EdgeInsets.only(top: 20),
-            child: SkeletonLoader(
-              width: _width,
-              axis: Axis.vertical,
-              padding: const EdgeInsets.only(left: 35, right: 35, bottom: 35),
-            ),
+            innerPadding:
+                const EdgeInsets.only(left: 35, right: 35, bottom: 35),
           );
         }
 

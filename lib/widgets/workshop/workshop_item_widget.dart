@@ -61,8 +61,8 @@ class WorkshopItem extends StatelessWidget {
   Widget _returnSkeletonLoader() {
     return SkeletonLoader(
       width: width,
-      //axis: width > 200 ? Axis.vertical : Axis.horizontal,
-      padding: EdgeInsets.zero,
+      axis: width > 200 ? Axis.vertical : Axis.horizontal,
+      innerPadding: EdgeInsets.zero,
     );
   }
 }
