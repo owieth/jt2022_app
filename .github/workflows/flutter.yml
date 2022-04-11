@@ -38,8 +38,7 @@ jobs:
     - run: echo "🖥️ The workflow is now ready to test your code on the runner."
     - uses: subosito/flutter-action@v2
       with:
-        channel: 'beta'
-        # flutter-version: $FLUTTER_VERSION
+        channel: 'stable'
 
     - run: echo $FIREBASE_SECRET > android/app/google-services.json
 
@@ -52,6 +51,9 @@ jobs:
     # - run: flutter test
 
     - run: flutter build apk
+    - run: flutter build appbundle
+
+    - run: flutter build ios --release --no-codesign
 
     - uses: actions/upload-artifact@v2
       with:
