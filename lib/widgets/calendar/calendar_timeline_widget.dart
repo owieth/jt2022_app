@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
-import 'package:lottie/lottie.dart';
 import 'package:timelines/timelines.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 const activeTile = 0;
 
@@ -18,7 +17,6 @@ class CalendarTimeLine extends StatefulWidget {
 
 class _CalendarTimeLineState extends State<CalendarTimeLine> {
   Future<List<Workshop>> _getCalendarEntries() {
-    //DateTime _formatedDate = Dates().parseDate(widget.date);
     final _user = FirebaseAuth.instance.currentUser;
     return WorkshopsService().getUserWorkshopsByDay(widget.date, _user!.uid);
   }
@@ -28,41 +26,67 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
     return FutureBuilder(
       future: _getCalendarEntries(),
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> workshop) {
-        if (!workshop.hasData) {
-          return Center(
-            child: Lottie.asset('assets/lottie/spinner.json'),
+        if (workshop.connectionState == ConnectionState.waiting) {
+          return NeumorphicTheme(
+            themeMode: ThemeMode.dark,
+            child: const NeumorphicProgressIndeterminate(
+              height: 10,
+              curve: Curves.ease,
+            ),
           );
         }
 
-        return Flexible(
-          child: Timeline.tileBuilder(
-            theme: TimelineThemeData(
-              nodePosition: 0,
-              connectorTheme: const ConnectorThemeData(
-                color: Colors.white,
-              ),
-              indicatorTheme: const IndicatorThemeData(
-                size: 15.0,
-              ),
-            ),
-            builder: TimelineTileBuilder.connected(
-              contentsBuilder: (_, index) =>
-                  CalendarEntry(workshop: workshop.data![index]),
-              connectorBuilder: (_, __, ___) => const SolidLineConnector(),
-              indicatorBuilder: (_, index) {
-                if (index == activeTile) {
-                  return const OutlinedDotIndicator(
-                    color: Colors.white,
-                  );
-                }
+        final _itemCount = workshop.data?.length ?? 0;
 
-                return const DotIndicator(color: Colors.white);
-              },
-              itemExtent: 150,
-              itemCount: workshop.data?.length ?? 0,
-            ),
-          ),
-        );
+        return _itemCount == 0
+            ? Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 350,
+                      child: Image.asset('assets/images/empty.jpeg'),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Text(
+                      "Keine Termine gefunden!",
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ],
+                ),
+              )
+            : Flexible(
+                child: Timeline.tileBuilder(
+                  theme: TimelineThemeData(
+                    nodePosition: 0,
+                    connectorTheme: const ConnectorThemeData(
+                      color: Colors.white,
+                    ),
+                    indicatorTheme: const IndicatorThemeData(
+                      size: 15.0,
+                    ),
+                  ),
+                  builder: TimelineTileBuilder.connected(
+                    contentsBuilder: (_, index) =>
+                        CalendarEntry(workshop: workshop.data![index]),
+                    connectorBuilder: (_, __, ___) =>
+                        const SolidLineConnector(),
+                    indicatorBuilder: (_, index) {
+                      // TODO Should dynamically changed based on Date
+                      // if (index == activeTile) {
+                      //   return const OutlinedDotIndicator(
+                      //     color: Colors.white,
+                      //   );
+                      // }
+
+                      return const DotIndicator(color: Colors.white);
+                    },
+                    itemExtent: 150,
+                    itemCount: _itemCount,
+                  ),
+                ),
+              );
       },
     );
   }

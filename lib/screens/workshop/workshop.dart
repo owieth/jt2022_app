@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
@@ -23,13 +24,21 @@ class _WorkshopState extends State<Workshop> {
     isUserAlreadySignedUp = _arguments['isUserAlreadySignedUp'];
     final _user = Provider.of<User?>(context, listen: false);
 
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: NetworkImage(_workshop.image), fit: BoxFit.cover),
-      ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
       child: Stack(
         children: [
+          CachedNetworkImage(
+            imageUrl: _workshop.image,
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
           Positioned(
             top: 100,
             left: 35,
@@ -66,7 +75,7 @@ class _WorkshopState extends State<Workshop> {
                   height: 20.0,
                 ),
                 Container(
-                  constraints: const BoxConstraints(maxHeight: 100),
+                  constraints: const BoxConstraints(maxHeight: 150),
                   child: SingleChildScrollView(
                     child: Text(_workshop.description,
                         style: Theme.of(context).textTheme.headline6),

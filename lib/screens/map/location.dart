@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Location extends StatefulWidget {
   const Location({Key? key}) : super(key: key);
@@ -20,12 +21,32 @@ class _LocationState extends State<Location> {
           itemCount: 5,
           itemBuilder: (_, index) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 25),
-              child: Card(
-                elevation: 10,
-                child: ListTile(
-                  leading: Image.asset('assets/images/church.jpeg'),
-                  title: const Text('I like icecream'),
+              padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+              child: SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/images/church.jpeg',
+                        height: 75,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Bern Süd',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        Text(
+                          'Bümpliz',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             );
@@ -39,8 +60,12 @@ class _LocationState extends State<Location> {
               options: MapOptions(
                 minZoom: 5,
                 maxZoom: 18,
-                zoom: 17.6,
+                zoom: 17.75,
                 center: lat_lng.LatLng(46.663370, 7.275294),
+                // bounds: LatLngBounds(
+                //   lat_lng.LatLng(46.661362, 7.271638),
+                //   lat_lng.LatLng(46.665130, 7.279211),
+                // ),
               ),
               nonRotatedLayers: [
                 TileLayerOptions(
@@ -73,8 +98,11 @@ class _LocationState extends State<Location> {
               width: 50,
               point: location,
               builder: (_) => InkWell(
+                //onTap: () => _pageController.animateToPage(page, duration: duration, curve: curve),
                 onTap: () {},
-                child: Image.asset('assets/icon/marker.png'),
+                child: SvgPicture.asset(
+                  'assets/icon/marker.svg',
+                ),
               ),
             ))
         .toList();

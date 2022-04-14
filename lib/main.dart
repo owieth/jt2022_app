@@ -9,6 +9,8 @@ import 'package:jt2022_app/screens/profile/edit_profile.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 import 'package:jt2022_app/screens/workshop/workshop.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
+import 'package:jt2022_app/services/users/users_service.dart';
+import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/container_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -27,20 +29,24 @@ class App extends StatelessWidget {
   App({Key? key}) : super(key: key);
 
   final _authenticationService = AuthenticationService(FirebaseAuth.instance);
+  final _userService = UserService();
+  final _workshopsService = WorkshopsService();
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<AuthenticationService>(create: (_) => _authenticationService),
+        Provider<UserService>(create: (_) => _userService),
+        Provider<WorkshopsService>(create: (_) => _workshopsService),
         StreamProvider<User?>(
-          create: (context) => _authenticationService.authStateChanges,
+          create: (_) => _authenticationService.authStateChanges,
           initialData: null,
-        )
-        //         StreamProvider<User?>(
-        //   create: (context) => _authenticationService.authStateChanges,
-        //   initialData: null,
-        // )
+        ),
+        FutureProvider<List<Workshop>>(
+            create: (_) =>
+                _workshopsService.workshops as Future<List<Workshop>>,
+            initialData: const [])
       ],
       child: MaterialApp(
         theme: ThemeData(

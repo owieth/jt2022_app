@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/constants/workshop.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/widgets/shared/skeleton.dart';
@@ -61,7 +62,11 @@ class UserWorkshops extends StatelessWidget {
                   top: 10,
                   left: 185,
                   child: CircleAvatar(
-                    child: Text("#${index + 1}"),
+                    backgroundColor: CustomColors.primaryColor,
+                    child: Text(
+                      "#${index + 1}",
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
                   ),
                 ),
               ],

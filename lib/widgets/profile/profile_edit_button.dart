@@ -23,6 +23,7 @@ class ProfileEditButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           shape: const CircleBorder(),
           primary: Colors.white,
+          onPrimary: Colors.black,
           fixedSize: const Size(30, 30),
         ),
       ),

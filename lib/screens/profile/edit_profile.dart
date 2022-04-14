@@ -21,17 +21,13 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormBuilderState>();
-  late final User user;
   File? imageFile;
 
   @override
-  void initState() {
-    user = Provider.of<User>(context, listen: false);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final User user = Provider.of<User>(context);
+    print(user);
+
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Stack(
@@ -51,10 +47,6 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 Stack(
                   children: [
-                    // Avatar(
-                    //   radius: 50,
-                    //   image: imageFile,
-                    // ),
                     imageFile == null
                         ? Avatar(radius: 50, image: user.photoURL!)
                         : CircleAvatar(
@@ -173,7 +165,7 @@ class _EditProfileState extends State<EditProfile> {
                   buttonText: "Profil speichern",
                   callback: () async {
                     _formKey.currentState!.save();
-                    await UserService(userId: user.uid).updateUser(
+                    await context.read<UserService>().updateUser(
                         _formKey.currentState!.value, user, imageFile);
                     Navigator.maybePop(context);
                   },
