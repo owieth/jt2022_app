@@ -48,7 +48,9 @@ class _EditProfileState extends State<EditProfile> {
                 Stack(
                   children: [
                     imageFile == null
-                        ? Avatar(radius: 50, image: user.photoURL!)
+                        ? Avatar(
+                            radius: user.photoURL != null ? 50 : 48,
+                            image: user.photoURL!)
                         : CircleAvatar(
                             radius: 50,
                             backgroundImage: FileImage(

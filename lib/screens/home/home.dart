@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
           child: Row(
             children: [
               Avatar(
-                radius: 30,
+                radius: _user.photoURL != null ? 30 : 28,
                 image: _user.photoURL ?? '',
               ),
               Padding(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 class Avatar extends StatelessWidget {
   final double radius;
@@ -9,8 +10,27 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-        backgroundImage: image == '' ? null : NetworkImage(image),
-        radius: radius);
+    return image == ''
+        ? Container(
+            child: CircleAvatar(
+              child: const Icon(
+                LineIcons.user,
+                color: Colors.white,
+              ),
+              radius: radius,
+              backgroundColor: Colors.black,
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 2.0,
+              ),
+            ),
+          )
+        : CircleAvatar(
+            backgroundImage: NetworkImage(image),
+            radius: radius,
+          );
   }
 }
