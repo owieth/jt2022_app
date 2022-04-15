@@ -43,7 +43,7 @@ class _ProfileState extends State<Profile> {
                   Stack(
                     children: [
                       Avatar(
-                        radius: 50,
+                        radius: _user.photoURL != null ? 50 : 48,
                         image: _user.photoURL ?? '',
                       ),
                       ProfileEditButton(
