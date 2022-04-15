@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:timelines/timelines.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
@@ -39,20 +41,30 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
         final _itemCount = workshop.data?.length ?? 0;
 
         return _itemCount == 0
-            ? Center(
+            ? Expanded(
                 child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 350,
+                    Expanded(
+                      flex: 2,
+                      child: Container(),
+                    ),
+                    Expanded(
+                      flex: 5,
                       child: Image.asset('assets/images/empty.jpeg'),
                     ),
-                    const SizedBox(
-                      height: 25,
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
                     ),
-                    Text(
-                      "Keine Termine gefunden!",
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        "Keine Termine gefunden!",
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    )
                   ],
                 ),
               )
@@ -104,6 +116,29 @@ class CalendarEntry extends StatelessWidget {
       height: 100.0,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0), color: Colors.white),
+      // TODO Maybe consider this variant?
+      // child: CachedNetworkImage(
+      //   imageUrl: workshop.image,
+      //   imageBuilder: (context, imageProvider) => Container(
+      //     decoration: BoxDecoration(
+      //       borderRadius: BorderRadius.circular(15.0),
+      //       gradient: const LinearGradient(
+      //         begin: Alignment.topCenter,
+      //         end: Alignment.bottomCenter,
+      //         colors: [
+      //           Color.fromARGB(255, 0, 0, 0),
+      //           Color(0x00000000),
+      //           Color(0x00000000),
+      //           Color(0xCC000000),
+      //         ],
+      //       ),
+      //       image: DecorationImage(
+      //         image: imageProvider,
+      //         fit: BoxFit.cover,
+      //       ),
+      //     ),
+      //   ),
+      // ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -112,17 +147,38 @@ class CalendarEntry extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(workshop.name),
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 175),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      workshop.name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(25),
                   child: Container(
                     width: 60,
                     height: 25,
-                    color: Colors.blue[200],
-                    child: Center(
-                        child: Text(
-                      workshop.attendees.length.toString(),
-                    )),
+                    color: CustomColors.primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            workshop.attendees.length.toString(),
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          const Icon(
+                            LineIcons.user,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -130,7 +186,15 @@ class CalendarEntry extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                //const Avatar(radius: 15),
+                Row(
+                  children: const [
+                    Icon(
+                      LineIcons.mapMarker,
+                      size: 16,
+                    ),
+                    Text("3. Stock"),
+                  ],
+                ),
                 Text("${workshop.startTime} - ${workshop.endTime}"),
               ],
             ),

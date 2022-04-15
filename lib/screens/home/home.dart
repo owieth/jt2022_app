@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/screens/workshop/user_workshops.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
+import 'package:jt2022_app/util/snackbar.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -20,9 +22,15 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    super.initState();
     _user = Provider.of<User?>(context, listen: false)!;
     _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
-    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback(
+      (_) => GlobalSnackBar.show(
+          context,
+          '👋 Eingeloggt als ${_user.displayName}',
+          CustomColors.successSnackBarColor),
+    );
   }
 
   @override
@@ -101,5 +109,8 @@ class _HomeState extends State<Home> {
     setState(() {
       _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
     });
+
+    GlobalSnackBar.show(context, '🎫  Meine Workshops geändert!',
+        CustomColors.infoSnackBarColor);
   }
 }
