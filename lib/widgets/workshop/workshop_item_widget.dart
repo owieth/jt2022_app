@@ -8,6 +8,7 @@ class WorkshopItem extends StatelessWidget {
   final double width;
   final Workshop workshop;
   final bool isUserAlreadySignedUp;
+  final bool hasMaxAmountOfWorkshops;
   final Function emitWorkshopChange;
 
   const WorkshopItem(
@@ -15,7 +16,8 @@ class WorkshopItem extends StatelessWidget {
       required this.width,
       required this.workshop,
       required this.isUserAlreadySignedUp,
-      required this.emitWorkshopChange})
+      required this.emitWorkshopChange,
+      required this.hasMaxAmountOfWorkshops})
       : super(key: key);
 
   @override
@@ -26,9 +28,12 @@ class WorkshopItem extends StatelessWidget {
         '/workshop',
         arguments: {
           "workshop": workshop,
-          "isUserAlreadySignedUp": isUserAlreadySignedUp
+          "isUserAlreadySignedUp": isUserAlreadySignedUp,
+          "hasMaxAmountOfWorkshops": hasMaxAmountOfWorkshops
         },
-      ).then((_) => emitWorkshopChange()),
+      ).then((dynamic value) => {
+            if (value != null) {emitWorkshopChange()}
+          }),
       child: Stack(
         children: [
           SizedBox(

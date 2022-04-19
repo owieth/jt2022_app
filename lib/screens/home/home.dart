@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/constants/workshop.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/screens/workshop/user_workshops.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
-import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/util/snackbar.dart';
+import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -19,12 +20,22 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late final User _user;
   late Future<List<Workshop>> _userWorkshops;
+  int amountOfUserWorkshops = 0;
+
+  _setAmountOfUsers() async {
+    List<Workshop> workshops =
+        await WorkshopsService().getUserWorkshops(_user.uid);
+    setState(() {
+      amountOfUserWorkshops = workshops.length;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _user = Provider.of<User?>(context, listen: false)!;
     _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
+    _setAmountOfUsers();
     WidgetsBinding.instance?.addPostFrameCallback(
       (_) => GlobalSnackBar.show(
           context,
@@ -94,6 +105,8 @@ class _HomeState extends State<Home> {
 
   Workshops _buildWorkshops() {
     return Workshops(
+      hasMaxAmountOfWorkshops:
+          amountOfUserWorkshops >= WorkshopConstants.maxUserWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(),
     );
   }

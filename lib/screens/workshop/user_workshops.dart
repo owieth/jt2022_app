@@ -44,6 +44,7 @@ class UserWorkshops extends StatelessWidget {
                           width: 200,
                           workshop: snapshot.data![index],
                           isUserAlreadySignedUp: true,
+                          hasMaxAmountOfWorkshops: false,
                           emitWorkshopChange: () => emitWorkshopChange(),
                         )
                       : Container(
