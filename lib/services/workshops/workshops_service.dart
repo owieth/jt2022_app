@@ -126,9 +126,16 @@ class WorkshopsService {
   }
 
   Future<String> _getWorkshopImage(String workshopId) async {
-    String image = await FirebaseStorage.instance
-        .ref('workshops/$workshopId')
-        .getDownloadURL();
+    String image;
+    try {
+      image = await FirebaseStorage.instance
+          .ref('workshops/$workshopId')
+          .getDownloadURL();
+    } on FirebaseException catch (_) {
+      image = await FirebaseStorage.instance
+          .ref('workshops/placeholder')
+          .getDownloadURL();
+    }
 
     return image;
   }

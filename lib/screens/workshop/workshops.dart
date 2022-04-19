@@ -8,7 +8,12 @@ import 'package:provider/provider.dart';
 
 class Workshops extends StatefulWidget {
   final Function emitWorkshopChange;
-  const Workshops({Key? key, required this.emitWorkshopChange})
+  final bool hasMaxAmountOfWorkshops;
+
+  const Workshops(
+      {Key? key,
+      required this.emitWorkshopChange,
+      required this.hasMaxAmountOfWorkshops})
       : super(key: key);
 
   @override
@@ -16,20 +21,12 @@ class Workshops extends StatefulWidget {
 }
 
 class _WorkshopsState extends State<Workshops> {
-  late Future<List<Workshop>> _workshops;
-
-  @override
-  void initState() {
-    _workshops = WorkshopsService().workshops;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<User?>(context, listen: false);
 
     return FutureBuilder(
-      future: _workshops,
+      future: WorkshopsService().workshops,
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> snapshot) {
         final _width = MediaQuery.of(context).size.width;
 
@@ -57,6 +54,7 @@ class _WorkshopsState extends State<Workshops> {
                 width: _width,
                 workshop: workshop,
                 isUserAlreadySignedUp: workshop.attendees.contains(_user!.uid),
+                hasMaxAmountOfWorkshops: widget.hasMaxAmountOfWorkshops,
                 emitWorkshopChange: widget.emitWorkshopChange,
               ),
             );
