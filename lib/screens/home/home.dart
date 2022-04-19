@@ -8,6 +8,7 @@ import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
+import 'package:jt2022_app/util/snackbar.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
