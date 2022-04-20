@@ -44,7 +44,7 @@ class _ProfileState extends State<Profile> {
                     children: [
                       Avatar(
                         radius: _user.photoURL != null ? 50 : 48,
-                        image: _user.photoURL ?? '',
+                        image: _user.photoURL,
                       ),
                       ProfileEditButton(
                         icon: LineIcons.pen,

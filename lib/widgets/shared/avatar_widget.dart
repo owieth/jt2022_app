@@ -3,14 +3,14 @@ import 'package:line_icons/line_icons.dart';
 
 class Avatar extends StatelessWidget {
   final double radius;
-  final String image;
+  final String? image;
 
   const Avatar({Key? key, required this.radius, required this.image})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return image == ''
+    return image == null
         ? Container(
             child: CircleAvatar(
               child: const Icon(
@@ -29,7 +29,7 @@ class Avatar extends StatelessWidget {
             ),
           )
         : CircleAvatar(
-            backgroundImage: NetworkImage(image),
+            backgroundImage: NetworkImage(image!),
             radius: radius,
           );
   }

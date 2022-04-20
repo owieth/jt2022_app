@@ -26,7 +26,6 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<User>(context);
-    print(user);
 
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -50,7 +49,7 @@ class _EditProfileState extends State<EditProfile> {
                     imageFile == null
                         ? Avatar(
                             radius: user.photoURL != null ? 50 : 48,
-                            image: user.photoURL!)
+                            image: user.photoURL)
                         : CircleAvatar(
                             radius: 50,
                             backgroundImage: FileImage(

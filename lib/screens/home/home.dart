@@ -8,7 +8,6 @@ import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
-import 'package:jt2022_app/util/snackbar.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -56,7 +55,7 @@ class _HomeState extends State<Home> {
             children: [
               Avatar(
                 radius: _user.photoURL != null ? 30 : 28,
-                image: _user.photoURL ?? '',
+                image: _user.photoURL,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
