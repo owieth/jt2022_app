@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/onboarding/onboarding.dart';
+import 'package:jt2022_app/screens/profile/change_credentials.dart';
 import 'package:jt2022_app/screens/profile/edit_profile.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 import 'package:jt2022_app/screens/workshop/workshop.dart';
@@ -91,6 +92,10 @@ class App extends StatelessWidget {
           "/workshop": (_) => const Workshop(),
           "/onboarding": (_) => const Onboarding(),
           "/profile/edit": (_) => const EditProfile(),
+          "/profile/changeEmail": (_) => const ChangeCredentials(
+              changeUserCredentials: ChangeUserCredentials.email),
+          "/profile/changePw": (_) => const ChangeCredentials(
+              changeUserCredentials: ChangeUserCredentials.password),
         },
         localizationsDelegates: const [FormBuilderLocalizations.delegate],
         home: const AuthenticationWrapper(),
