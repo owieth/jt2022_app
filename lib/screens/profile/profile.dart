@@ -165,9 +165,7 @@ class _ProfileState extends State<Profile> {
         };
         break;
       case 3:
-        onTap = () {
-          print('delete account');
-        };
+        onTap = () {};
         break;
     }
 

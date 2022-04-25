@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
+import 'package:provider/provider.dart';
 
 enum ChangeUserCredentials { email, password }
 
@@ -45,23 +47,34 @@ class _ChangeCredentialsState extends State<ChangeCredentials> {
                     children: [
                       if (widget.changeUserCredentials ==
                           ChangeUserCredentials.password) ...{
+                        ..._buildFormTextField('Neues Passwort', 'password'),
                         ..._buildFormTextField(
-                            'Neues Passwort', 'password', ''),
-                        ..._buildFormTextField(
-                            'Passwort wiederholen', 'confirmPassword', ''),
+                            'Passwort wiederholen', 'confirmPassword'),
+                        ActionButton(
+                          buttonText: "Passwort speichern",
+                          callback: () async {
+                            _formKey.currentState!.save();
+                            await context
+                                .read<AuthenticationService>()
+                                .changePassword(context,
+                                    _formKey.currentState!.value['password']);
+                          },
+                        ),
                       } else ...{
-                        ..._buildFormTextField('Neue Email', 'email', ''),
+                        ..._buildFormTextField('Neue Email', 'email'),
                         ..._buildFormTextField(
-                            'Email wiederholen', 'confirmEmail', ''),
+                            'Email wiederholen', 'confirmEmail'),
+                        ActionButton(
+                          buttonText: "Email speichern",
+                          callback: () async {
+                            _formKey.currentState!.save();
+                            await context
+                                .read<AuthenticationService>()
+                                .changeEmail(context,
+                                    _formKey.currentState!.value['email']);
+                          },
+                        ),
                       },
-                      ActionButton(
-                        buttonText: "Änderungen speichern",
-                        callback: () async {
-                          _formKey.currentState!.save();
-                          // await context.read<UserService>().updateUser(context,
-                          //     _formKey.currentState!.value, user, imageFile);
-                        },
-                      ),
                     ],
                   ),
                 ),
@@ -73,8 +86,7 @@ class _ChangeCredentialsState extends State<ChangeCredentials> {
     );
   }
 
-  List<Widget> _buildFormTextField(
-      String fieldName, String userAttribute, String value) {
+  List<Widget> _buildFormTextField(String fieldName, String userAttribute) {
     return [
       Text(
         fieldName,
@@ -83,7 +95,7 @@ class _ChangeCredentialsState extends State<ChangeCredentials> {
       const SizedBox(height: 8),
       FormBuilderTextField(
         name: userAttribute,
-        initialValue: value,
+        initialValue: '',
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide:
