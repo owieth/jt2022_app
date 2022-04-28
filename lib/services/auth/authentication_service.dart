@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/util/snackbar.dart';
 
 enum AuthStatus {
   signedIn,
@@ -30,6 +33,12 @@ class AuthenticationService {
           email: email, password: password);
       return AuthenticationState(AuthStatus.signedIn, '');
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return AuthenticationState(AuthStatus.error, 'Account nicht gefunden!');
+      } else if (e.code == 'wrong-password') {
+        return AuthenticationState(AuthStatus.error, 'Falsches Passwort!');
+      }
+
       return AuthenticationState(AuthStatus.error, e.code);
     }
   }
@@ -43,7 +52,50 @@ class AuthenticationService {
       await newUser.user?.updateDisplayName(name);
       return AuthenticationState(AuthStatus.signedIn, '');
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return AuthenticationState(AuthStatus.error, 'Email bereits vergeben!');
+      }
+
       return AuthenticationState(AuthStatus.error, e.code);
+    }
+  }
+
+  Future<void> changeEmail(BuildContext context, String credential) async {
+    try {
+      await _firebaseAuth.currentUser!.updateEmail(credential);
+      GlobalSnackBar.show(context, 'Deine Email wurde geändert!',
+          CustomColors.successSnackBarColor);
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        GlobalSnackBar.show(
+            context,
+            'Du musst dich neu einloggen um Änderungen an deinem Profil machen zu können!',
+            CustomColors.errorSnackBarColor);
+        AuthenticationService(FirebaseAuth.instance).signOut();
+      }
+    }
+  }
+
+  Future<void> changePassword(BuildContext context, String credential) async {
+    try {
+      await _firebaseAuth.currentUser!.updatePassword(credential);
+      GlobalSnackBar.show(context, 'Dein Passwort wurde geändert!',
+          CustomColors.successSnackBarColor);
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        GlobalSnackBar.show(
+            context,
+            'Du musst dich neu einloggen um Änderungen an deinem Profil machen zu können!',
+            CustomColors.errorSnackBarColor);
+        AuthenticationService(FirebaseAuth.instance).signOut();
+      }
+
+      if (e.code == 'weak-password') {
+        GlobalSnackBar.show(context, 'Das eingegebene Passwort ist zu schwach!',
+            CustomColors.errorSnackBarColor);
+      }
     }
   }
 }

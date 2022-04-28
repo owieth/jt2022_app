@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:line_icons/line_icons.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Location extends StatefulWidget {
   const Location({Key? key}) : super(key: key);
@@ -11,76 +13,114 @@ class Location extends StatefulWidget {
 }
 
 class _LocationState extends State<Location> {
+  final double _initFabHeight = 120.0;
+  double _buttonPositon = 0;
+  double _maxPanelHeight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _buttonPositon = _initFabHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ListView.builder(
-          padding:
-              EdgeInsets.only(top: MediaQuery.of(context).size.height - 255),
-          itemCount: 5,
-          itemBuilder: (_, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
-              child: SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        'assets/images/church.jpeg',
-                        height: 75,
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Bern Süd',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        Text(
-                          'Bümpliz',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+    _maxPanelHeight = MediaQuery.of(context).size.height * .30;
+
+    return Material(
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: <Widget>[
+          SlidingUpPanel(
+            maxHeight: _maxPanelHeight,
+            minHeight: 100,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            parallaxEnabled: true,
+            parallaxOffset: 0.25,
+            body: _buildMap(),
+            panelBuilder: (ScrollController scrollController) =>
+                _panel(scrollController),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+            margin: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+            onPanelSlide: (double pos) => setState(() => _buttonPositon =
+                pos * (_maxPanelHeight - 95.0) + _initFabHeight),
+          ),
+          Positioned(
+            right: 15.0,
+            bottom: _buttonPositon,
+            child: FloatingActionButton(
+              child: Icon(
+                LineIcons.locationArrow,
+                color: Theme.of(context).primaryColor,
               ),
-            );
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 200),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(40)),
-            child: FlutterMap(
-              options: MapOptions(
-                minZoom: 5,
-                maxZoom: 18,
-                zoom: 17.75,
-                center: lat_lng.LatLng(46.663370, 7.275294),
-                // bounds: LatLngBounds(
-                //   lat_lng.LatLng(46.661362, 7.271638),
-                //   lat_lng.LatLng(46.665130, 7.279211),
-                // ),
-              ),
-              nonRotatedLayers: [
-                TileLayerOptions(
-                  urlTemplate:
-                      'https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}',
-                  additionalOptions: {
-                    'accessToken':
-                        'pk.eyJ1Ijoib3J0ZXhoZCIsImEiOiJjbDFsMmZ3N2UwMWthM2NxcjY3cGFvNjJ2In0.-4xH_hTNDBZQVwGvdY0-UQ'
-                  },
-                ),
-                MarkerLayerOptions(markers: _buildMapMarkers()),
-              ],
+              onPressed: () {},
+              backgroundColor: Colors.white,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _panel(ScrollController scrollController) {
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: ListView(
+        controller: scrollController,
+        children: <Widget>[
+          const SizedBox(
+            height: 12.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 30,
+                height: 5,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 18.0,
+          ),
+          _buildWorkshops(),
+          _buildWorkshops(),
+          _buildWorkshops(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMap() {
+    return FlutterMap(
+      options: MapOptions(
+        minZoom: 5,
+        maxZoom: 18,
+        zoom: 17.75,
+        center: lat_lng.LatLng(46.663370, 7.275294),
+        // bounds: LatLngBounds(
+        //   lat_lng.LatLng(46.661362, 7.271638),
+        //   lat_lng.LatLng(46.665130, 7.279211),
+        // ),
+      ),
+      nonRotatedLayers: [
+        TileLayerOptions(
+          urlTemplate:
+              'https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}',
+          additionalOptions: {
+            'accessToken':
+                'pk.eyJ1Ijoib3J0ZXhoZCIsImEiOiJjbDFsMmZ3N2UwMWthM2NxcjY3cGFvNjJ2In0.-4xH_hTNDBZQVwGvdY0-UQ'
+          },
         ),
+        MarkerLayerOptions(markers: _buildMapMarkers()),
       ],
     );
   }
@@ -93,18 +133,53 @@ class _LocationState extends State<Location> {
     ];
 
     return coordinates
-        .map((location) => Marker(
-              height: 50,
-              width: 50,
-              point: location,
-              builder: (_) => InkWell(
-                //onTap: () => _pageController.animateToPage(page, duration: duration, curve: curve),
-                onTap: () {},
-                child: SvgPicture.asset(
-                  'assets/icon/marker.svg',
-                ),
+        .map(
+          (location) => Marker(
+            height: 50,
+            width: 50,
+            point: location,
+            builder: (_) => InkWell(
+              //onTap: () => _pageController.animateToPage(page, duration: duration, curve: curve),
+              onTap: () {},
+              child: SvgPicture.asset(
+                'assets/icon/marker.svg',
               ),
-            ))
+            ),
+          ),
+        )
         .toList();
+  }
+
+  _buildWorkshops() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+      child: SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                'assets/images/church.jpeg',
+                height: 75,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Bern Süd',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                Text(
+                  'Bümpliz',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:animated_login/animated_login.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
+import 'package:jt2022_app/util/snackbar.dart';
 import 'package:provider/provider.dart';
 
 enum ButtonEvent { login, signUp, forgotPassword }
@@ -19,9 +21,15 @@ class _LoginState extends State<Login> {
       BuildContext context, dynamic data, ButtonEvent event) async {
     switch (event) {
       case ButtonEvent.login:
-        await context
+        AuthenticationState onSignIn = await context
             .read<AuthenticationService>()
             .signIn(data.email, data.password);
+        if (onSignIn.authStatus == AuthStatus.error) {
+          GlobalSnackBar.show(
+              context,
+              'Fehler bei der Anmeldung: ${onSignIn.authError}',
+              CustomColors.errorSnackBarColor);
+        }
         break;
 
       case ButtonEvent.signUp:

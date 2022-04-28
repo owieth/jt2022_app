@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/widgets/profile/profile_edit_button.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
@@ -11,6 +12,7 @@ import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:switcher_button/switcher_button.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -40,7 +42,7 @@ class _EditProfileState extends State<EditProfile> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 35),
+            padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -63,113 +65,36 @@ class _EditProfileState extends State<EditProfile> {
                   ],
                 ),
                 const SizedBox(height: 24),
-                FormBuilder(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Name',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      const SizedBox(height: 8),
-                      FormBuilderTextField(
-                        name: 'displayName',
-                        initialValue: user.displayName ?? '',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.white, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          filled: true,
+                Expanded(
+                  child: FormBuilder(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ..._buildFormTextField(
+                            'Name', 'displayName', user.displayName ?? ''),
+                        ..._buildFormTextField('Bezirk', 'region', 'Bern Süd'),
+                        ..._buildFormTextField(
+                            'Gemeinde', 'muncipality', 'Bümpliz'),
+                        SwitcherButton(
+                          onColor: CustomColors.primaryColor,
+                          offColor: Colors.white,
+                          value: true,
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Email',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      const SizedBox(height: 8),
-                      FormBuilderTextField(
-                        name: 'email',
-                        initialValue: user.email ?? '',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.white, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          filled: true,
+                        ActionButton(
+                          buttonText: "Profil speichern",
+                          callback: () async {
+                            _formKey.currentState!.save();
+                            await context.read<UserService>().updateUser(
+                                context,
+                                _formKey.currentState!.value,
+                                user,
+                                imageFile);
+                          },
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Bezirk',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      const SizedBox(height: 8),
-                      FormBuilderTextField(
-                        name: 'region',
-                        initialValue: 'Bern Süd',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.white, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          filled: true,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Gemeinde',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      const SizedBox(height: 8),
-                      FormBuilderTextField(
-                        name: 'muncipality',
-                        initialValue: 'Bümpliz',
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.white, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          filled: true,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                ActionButton(
-                  buttonText: "Profil speichern",
-                  callback: () async {
-                    _formKey.currentState!.save();
-                    await context.read<UserService>().updateUser(
-                        _formKey.currentState!.value, user, imageFile);
-                    Navigator.maybePop(context);
-                  },
                 ),
               ],
             ),
@@ -177,6 +102,33 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildFormTextField(
+      String fieldName, String userAttribute, String value) {
+    return [
+      Text(
+        fieldName,
+        style: Theme.of(context).textTheme.subtitle1,
+      ),
+      const SizedBox(height: 8),
+      FormBuilderTextField(
+        name: userAttribute,
+        initialValue: value,
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide:
+                const BorderSide(color: CustomColors.primaryColor, width: 2),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white, width: 2),
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      ),
+      const SizedBox(height: 24),
+    ];
   }
 
   Future _pickImage() async {
