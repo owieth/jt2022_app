@@ -40,18 +40,6 @@ class _ProfileState extends State<Profile> {
     _getCurrentUser();
   }
 
-  //   Positioned(
-  //   top: 35,
-  //   right: 35,
-  //   child: NavigationButton(
-  //     icon: Icons.logout,
-  //     onPressedButton: () {
-  //       context.read<AuthenticationService>().signOut();
-  //       Navigator.pushReplacementNamed(context, '/login');
-  //     },
-  //   ),
-  // ),
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -165,7 +153,9 @@ class _ProfileState extends State<Profile> {
         };
         break;
       case 3:
-        onTap = () {};
+        onTap = () {
+          // Todo Delete Account --> https://firebase.flutter.dev/docs/auth/usage/#linking-user-accounts
+        };
         break;
     }
 
