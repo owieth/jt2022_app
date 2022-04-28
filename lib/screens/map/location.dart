@@ -42,15 +42,15 @@ class _LocationState extends State<Location> {
             panelBuilder: (ScrollController scrollController) =>
                 _panel(scrollController),
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(18.0),
-              topRight: Radius.circular(18.0),
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
             ),
-            onPanelSlide: (double pos) => setState(() {
-              _buttonPositon = pos * (_maxPanelHeight - 95.0) + _initFabHeight;
-            }),
+            margin: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
+            onPanelSlide: (double pos) => setState(() => _buttonPositon =
+                pos * (_maxPanelHeight - 95.0) + _initFabHeight),
           ),
           Positioned(
-            right: 35.0,
+            right: 15.0,
             bottom: _buttonPositon,
             child: FloatingActionButton(
               child: Icon(
