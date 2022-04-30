@@ -44,6 +44,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
@@ -88,7 +89,16 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
-        const SizedBox(height: 45),
+        const SizedBox(height: 25),
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Text(
+            'Meine Workshops',
+            style: Theme.of(context).textTheme.subtitle1,
+            textAlign: TextAlign.start,
+          ),
+        ),
+        const SizedBox(height: 25),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: SizedBox(

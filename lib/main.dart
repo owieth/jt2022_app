@@ -15,6 +15,8 @@ import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/container_widget.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/workshop/workshop_priority.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -90,6 +92,7 @@ class App extends StatelessWidget {
           "/login": (_) => const Login(),
           "/profile": (_) => const Profile(),
           "/workshop": (_) => const Workshop(),
+          "/workshop/priority": (_) => const WorkshopPriority(),
           "/onboarding": (_) => const Onboarding(),
           "/profile/edit": (_) => const EditProfile(),
           "/profile/changeEmail": (_) => const ChangeCredentials(
