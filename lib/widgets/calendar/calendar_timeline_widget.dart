@@ -43,13 +43,8 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
         return _itemCount == 0
             ? Expanded(
                 child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: 2,
-                      child: Container(),
-                    ),
                     Expanded(
                       flex: 5,
                       child: Image.asset('assets/images/empty.jpeg'),
