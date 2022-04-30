@@ -8,6 +8,7 @@ import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -22,20 +23,12 @@ class _HomeState extends State<Home> {
   late Future<List<Workshop>> _userWorkshops;
   int amountOfUserWorkshops = 0;
 
-  _setAmountOfUsers() async {
-    List<Workshop> workshops =
-        await WorkshopsService().getUserWorkshops(_user.uid);
-    setState(() {
-      amountOfUserWorkshops = workshops.length;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     _user = Provider.of<User?>(context, listen: false)!;
     _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
-    _setAmountOfUsers();
+    _setAmountOfUserWorkshops();
     WidgetsBinding.instance?.addPostFrameCallback(
       (_) => GlobalSnackBar.show(
           context,
@@ -78,10 +71,26 @@ class _HomeState extends State<Home> {
         ),
         const SizedBox(height: 50.0),
         Padding(
-          padding: const EdgeInsets.only(left: 35),
-          child: Text(
-            'Meine Workshops',
-            style: Theme.of(context).textTheme.subtitle1,
+          padding: const EdgeInsets.symmetric(horizontal: 35),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Meine Workshops',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              IconButton(
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/workshop/priority')
+                        .then((dynamic value) => {
+                              if (value != null) {_getUsersWorkshop()}
+                            }),
+                icon: const Icon(
+                  LineIcons.pen,
+                  color: Colors.white,
+                ),
+              )
+            ],
           ),
         ),
         SizedBox(
@@ -125,5 +134,13 @@ class _HomeState extends State<Home> {
 
     GlobalSnackBar.show(context, '🎫  Meine Workshops geändert!',
         CustomColors.infoSnackBarColor);
+  }
+
+  _setAmountOfUserWorkshops() async {
+    List<Workshop> workshops =
+        await WorkshopsService().getUserWorkshops(_user.uid);
+    setState(() {
+      amountOfUserWorkshops = workshops.length;
+    });
   }
 }

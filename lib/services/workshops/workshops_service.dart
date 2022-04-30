@@ -64,6 +64,11 @@ class WorkshopsService {
     });
   }
 
+  void changePriorityOfUserWorkshops(
+      String userId, List<String> workshops) async {
+    await usersCollection.doc(userId).update({"workshops": workshops});
+  }
+
   Future<List<Workshop>> _mapToUsersWorkshopList(
       DocumentSnapshot snapshot) async {
     final List<String> _workshops =
