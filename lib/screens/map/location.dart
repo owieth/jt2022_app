@@ -45,20 +45,32 @@ class _LocationState extends State<Location> {
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0),
             ),
-            margin: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 0.0),
             onPanelSlide: (double pos) => setState(() => _buttonPositon =
                 pos * (_maxPanelHeight - 95.0) + _initFabHeight),
           ),
           Positioned(
             right: 15.0,
             bottom: _buttonPositon,
-            child: FloatingActionButton(
-              child: Icon(
-                LineIcons.locationArrow,
-                color: Theme.of(context).primaryColor,
+            child: SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  onPrimary: Colors.black,
+                  shape: const CircleBorder(),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 2.0, bottom: 2.0),
+                  child: RotationTransition(
+                    turns: const AlwaysStoppedAnimation(45 / 360),
+                    child: Icon(
+                      LineIcons.locationArrow,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
               ),
-              onPressed: () {},
-              backgroundColor: Colors.white,
             ),
           ),
         ],

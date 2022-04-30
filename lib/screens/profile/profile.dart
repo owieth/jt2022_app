@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/constants/workshop.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
@@ -42,11 +43,11 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Stack(
@@ -86,31 +87,46 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
-          const SizedBox(height: 45),
-          SizedBox(
+        ),
+        const SizedBox(height: 45),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          child: SizedBox(
             height: 100,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: 4,
-              itemBuilder: (_, __) => Container(
-                width: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25.0),
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
+              itemCount: WorkshopConstants.maxUserWorkshopsAttendance,
+              itemBuilder: (_, index) {
+                final _padding =
+                    index != WorkshopConstants.maxUserWorkshopsAttendance - 1
+                        ? const EdgeInsets.only(left: 20)
+                        : const EdgeInsets.symmetric(horizontal: 20);
+                return Padding(
+                  padding: _padding,
+                  child: Container(
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.pending_actions,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                child: const Icon(
-                  Icons.pending_actions,
-                  color: Colors.white,
-                ),
-              ),
-              separatorBuilder: (_, __) => const SizedBox(width: 20),
+                );
+              },
+              separatorBuilder: (_, __) => Container(),
             ),
           ),
-          const SizedBox(height: 15),
-          Expanded(
+        ),
+        const SizedBox(height: 15),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 35.0),
             child: ListView.separated(
               itemBuilder: (_, index) => Container(
                 child: _buildSettingsCard(index),
@@ -125,9 +141,9 @@ class _ProfileState extends State<Profile> {
               separatorBuilder: (_, __) => const SizedBox(height: 20),
               itemCount: 4,
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 

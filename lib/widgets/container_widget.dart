@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/router/routes.dart';
 import 'package:jt2022_app/screens/calendar/calendar.dart';
 import 'package:jt2022_app/screens/home/home.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -35,16 +34,9 @@ class _ContainerWidgetState extends State<ContainerWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WillPopScope(
-        onWillPop: () async {
-          return !await Navigator.maybePop(
-            Routes.getKeys()[_currentTab].currentState!.context,
-          );
-        },
-        child: IndexedStack(
-          index: _currentTab,
-          children: _pages,
-        ),
+      body: IndexedStack(
+        index: _currentTab,
+        children: _pages,
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
