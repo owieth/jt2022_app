@@ -9,7 +9,6 @@ import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -19,14 +18,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late final User _user;
+  final User _user = FirebaseAuth.instance.currentUser!;
   late Future<List<Workshop>> _userWorkshops;
   int amountOfUserWorkshops = 0;
 
   @override
   void initState() {
     super.initState();
-    _user = Provider.of<User?>(context, listen: false)!;
     _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
     _setAmountOfUserWorkshops();
     WidgetsBinding.instance?.addPostFrameCallback(

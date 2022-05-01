@@ -4,14 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/user.dart';
-import 'package:jt2022_app/services/auth/authentication_service.dart';
-import 'package:jt2022_app/util/snackbar.dart';
 
 class UserService {
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
+
+  Future createUser(String userId) async {
+    await usersCollection.doc(userId).set({
+      'muncipality': '',
+      'region': '',
+      'workshops': [],
+      'isVolunteer': false
+    });
+  }
 
   Future<CustomUser> getCurrentUser() async {
     final User _user = FirebaseAuth.instance.currentUser!;
@@ -20,25 +26,15 @@ class UserService {
       id: _user.uid,
       email: _user.email!,
       displayName: _user.displayName!,
-      photoUrl: _user.photoURL!,
+      photoUrl: _user.photoURL,
       muncipality: _userAttributes['muncipality'],
       region: _userAttributes['region'],
+      isVolunteer: _userAttributes['isVolunteer'],
     );
   }
 
   Future<void> updateUser(BuildContext context, Map<String, dynamic> userData,
       User user, File? image) async {
-    try {
-      await user.updateEmail(userData['email']);
-    } on FirebaseAuthException {
-      GlobalSnackBar.show(
-          context,
-          'Du musst dich neu einloggen um Änderungen an deinem Profil machen zu können!',
-          CustomColors.errorSnackBarColor);
-      AuthenticationService(FirebaseAuth.instance).signOut();
-      return;
-    }
-
     await user.updateDisplayName(userData['displayName']);
 
     if (image != null) {
@@ -50,8 +46,9 @@ class UserService {
     }
 
     await usersCollection.doc(user.uid).update({
-      "region": userData['region'],
       "muncipality": userData['muncipality'],
+      "region": userData['region'],
+      "isVolunteer": userData['isVolunteer'],
     });
 
     Navigator.pop(context);

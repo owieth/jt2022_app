@@ -71,8 +71,12 @@ class WorkshopsService {
 
   Future<List<Workshop>> _mapToUsersWorkshopList(
       DocumentSnapshot snapshot) async {
-    final List<String> _workshops =
-        List<String>.from((snapshot.data() as Map)['workshops'] as List);
+    List<String> _workshops = [];
+
+    if (snapshot.data() != null) {
+      _workshops =
+          List<String>.from((snapshot.data() as Map)['workshops'] as List);
+    }
 
     List<Workshop> workshopDtos = [];
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:jt2022_app/widgets/container_widget.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({Key? key}) : super(key: key);
@@ -22,9 +21,7 @@ class Onboarding extends StatelessWidget {
     }
 
     void _onIntroEnd(context) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ContainerWidget()),
-      );
+      Navigator.pushReplacementNamed(context, '');
     }
 
     return IntroductionScreen(

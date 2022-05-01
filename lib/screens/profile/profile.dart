@@ -49,7 +49,7 @@ class _ProfileState extends State<Profile> {
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Stack(
                 children: [
@@ -59,30 +59,48 @@ class _ProfileState extends State<Profile> {
                   ),
                   ProfileEditButton(
                     icon: LineIcons.pen,
-                    callback: () =>
-                        Navigator.pushNamed(context, '/profile/edit')
-                            .then((_) => _getCurrentUser()),
+                    callback: () => Navigator.pushNamed(
+                      context,
+                      '/profile/edit',
+                      arguments: {
+                        "user": _user,
+                      },
+                    ).then((_) => _getCurrentUser()),
                   )
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _user?.displayName ?? '',
-                    style: Theme.of(context).textTheme.headline1,
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        _user?.displayName ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Text(
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 150),
+                    child: SingleChildScrollView(
+                      child: Text(
                         _user?.region ?? '',
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
-                      Text(
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 150),
+                    child: SingleChildScrollView(
+                      child: Text(
                         _user?.muncipality ?? '',
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
