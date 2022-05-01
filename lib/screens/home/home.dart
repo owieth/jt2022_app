@@ -81,7 +81,13 @@ class _HomeState extends State<Home> {
                 onPressed: () =>
                     Navigator.pushNamed(context, '/workshop/priority')
                         .then((dynamic value) => {
-                              if (value != null) {_getUsersWorkshop()}
+                              if (value != null)
+                                {
+                                  _getUsersWorkshop(
+                                    '🔃 Priorität der Workshops geändert!',
+                                    CustomColors.infoSnackBarColor,
+                                  )
+                                }
                             }),
                 icon: const Icon(
                   LineIcons.pen,
@@ -95,7 +101,7 @@ class _HomeState extends State<Home> {
           height: 200,
           child: _buildUserWorkshops(),
         ),
-        const SizedBox(height: 50.0),
+        const SizedBox(height: 30.0),
         Padding(
           padding: const EdgeInsets.only(left: 35),
           child: Text(
@@ -114,24 +120,27 @@ class _HomeState extends State<Home> {
     return Workshops(
       hasMaxAmountOfWorkshops:
           amountOfUserWorkshops >= WorkshopConstants.maxUserWorkshops,
-      emitWorkshopChange: () => _getUsersWorkshop(),
+      emitWorkshopChange: () => _getUsersWorkshop(
+          '🎫  Meine Workshops geändert!', CustomColors.infoSnackBarColor),
     );
   }
 
   Widget _buildUserWorkshops() {
     return UserWorkshops(
       userWorkshops: _userWorkshops,
-      emitWorkshopChange: () => _getUsersWorkshop(),
+      emitWorkshopChange: () => _getUsersWorkshop(
+          '🎫  Meine Workshops geändert!', CustomColors.infoSnackBarColor),
     );
   }
 
-  void _getUsersWorkshop() {
+  void _getUsersWorkshop(String snackBarText, Color snackBarColor) {
     setState(() {
       _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
     });
 
-    GlobalSnackBar.show(context, '🎫  Meine Workshops geändert!',
-        CustomColors.infoSnackBarColor);
+    _setAmountOfUserWorkshops();
+
+    GlobalSnackBar.show(context, snackBarText, snackBarColor);
   }
 
   _setAmountOfUserWorkshops() async {

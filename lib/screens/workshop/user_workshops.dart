@@ -19,7 +19,7 @@ class UserWorkshops extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> snapshot) {
         if (!snapshot.hasData) {
           return const Padding(
-            padding: EdgeInsets.only(top: 20),
+            padding: EdgeInsets.only(bottom: 20),
             child: SkeletonLoader(
               innerPadding: EdgeInsets.only(left: 35),
             ),
@@ -27,7 +27,7 @@ class UserWorkshops extends StatelessWidget {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(bottom: 20),
           scrollDirection: Axis.horizontal,
           itemCount: WorkshopConstants.maxUserWorkshops,
           itemBuilder: (BuildContext context, int index) {

@@ -14,8 +14,10 @@ class GlobalSnackBar {
     String message,
     Color color,
   ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
           elevation: 30.0,
           behavior: SnackBarBehavior.floating,
           backgroundColor: color,
@@ -26,7 +28,8 @@ class GlobalSnackBar {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
-          width: 200),
-    );
+          width: 200,
+        ),
+      );
   }
 }
