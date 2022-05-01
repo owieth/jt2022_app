@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/constants/workshop.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
+import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/profile/profile_edit_button.dart';
@@ -20,7 +21,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   CustomUser? _user;
-  String userId = '';
 
   final List<Map> _settings = [
     {'text': 'Ausloggen', 'icon': Icons.logout},
@@ -30,7 +30,6 @@ class _ProfileState extends State<Profile> {
   ];
 
   _getCurrentUser() async {
-    userId = Provider.of<User?>(context, listen: false)!.uid;
     CustomUser _user = await UserService().getCurrentUser();
     setState(() => this._user = _user);
   }
@@ -197,8 +196,24 @@ class _ProfileState extends State<Profile> {
         };
         break;
       case 3:
-        onTap = () {
-          // Todo Delete Account --> https://firebase.flutter.dev/docs/auth/usage/#linking-user-accounts
+        onTap = () async {
+          final result = await showOkCancelAlertDialog(
+              context: context,
+              title: 'Account löschen?',
+              message: 'Möchtest du wirklich deinen Account löschen?',
+              isDestructiveAction: true,
+              defaultType: OkCancelAlertDefaultType.cancel);
+          if (result == OkCancelResult.ok) {
+            for (var workshop in _user!.workshops) {
+              context
+                  .read<WorkshopsService>()
+                  .dropOutOfWorkshop(_user!.id, workshop);
+            }
+
+            await context.read<UserService>().deleteUser(_user!.id);
+
+            Navigator.pushReplacementNamed(context, '/login');
+          }
         };
         break;
     }

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/onboarding/onboarding.dart';
@@ -32,24 +33,20 @@ class App extends StatelessWidget {
   App({Key? key}) : super(key: key);
 
   final _authenticationService = AuthenticationService(FirebaseAuth.instance);
-  final _userService = UserService();
-  final _workshopsService = WorkshopsService();
 
   @override
   Widget build(BuildContext context) {
+    SVProgressHUD.setDefaultStyle(SVProgressHUDStyle.dark);
+
     return MultiProvider(
       providers: [
         Provider<AuthenticationService>(create: (_) => _authenticationService),
-        Provider<UserService>(create: (_) => _userService),
-        Provider<WorkshopsService>(create: (_) => _workshopsService),
+        Provider<UserService>(create: (_) => UserService()),
+        Provider<WorkshopsService>(create: (_) => WorkshopsService()),
         StreamProvider<User?>(
           create: (_) => _authenticationService.authStateChanges,
           initialData: null,
         ),
-        FutureProvider<List<Workshop>>(
-            create: (_) =>
-                _workshopsService.workshops as Future<List<Workshop>>,
-            initialData: const [])
       ],
       child: MaterialApp(
         theme: ThemeData(
