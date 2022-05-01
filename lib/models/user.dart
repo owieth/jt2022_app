@@ -4,7 +4,8 @@ class CustomUser {
   final String displayName;
   final String region;
   final String muncipality;
-  final String photoUrl;
+  final String? photoUrl;
+  final bool isVolunteer;
 
   CustomUser({
     required this.id,
@@ -13,5 +14,6 @@ class CustomUser {
     required this.region,
     required this.muncipality,
     required this.photoUrl,
+    required this.isVolunteer,
   });
 }

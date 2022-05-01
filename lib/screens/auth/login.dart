@@ -35,9 +35,9 @@ class _LoginState extends State<Login> {
       case ButtonEvent.signUp:
         await context
             .read<AuthenticationService>()
-            .signUp(data.email, data.password, data.name);
-
-        Navigator.pushReplacementNamed(context, "/onboarding");
+            .signUp(data.email, data.password, data.name)
+            .then((value) =>
+                Navigator.pushReplacementNamed(context, "/onboarding"));
         break;
 
       case ButtonEvent.forgotPassword:

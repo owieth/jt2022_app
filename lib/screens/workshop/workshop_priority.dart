@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/models/workshop.dart';
@@ -63,6 +65,41 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
                                 ),
                               ),
                             ),
+                          );
+                        },
+                        proxyDecorator: (child, _, animation) {
+                          return AnimatedBuilder(
+                            child: child,
+                            animation: animation,
+                            builder: (_, __) {
+                              final animValue =
+                                  Curves.easeInOut.transform(animation.value);
+                              final scale = lerpDouble(1, 1.05, animValue)!;
+                              return Transform.scale(
+                                scale: scale,
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.transparent,
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        top: 20,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        child: Material(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                        ),
+                                      ),
+                                      child,
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
                         onReorder: (int oldIndex, int newIndex) {
