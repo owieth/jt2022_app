@@ -30,6 +30,7 @@ class UserService {
       muncipality: _userAttributes['muncipality'],
       region: _userAttributes['region'],
       isVolunteer: _userAttributes['isVolunteer'],
+      workshops: _userAttributes['workshops'].cast<String>(),
     );
   }
 
@@ -52,5 +53,11 @@ class UserService {
     });
 
     Navigator.pop(context);
+  }
+
+  Future<void> deleteUser(String userId) async {
+    await FirebaseStorage.instance.ref('users/$userId').delete();
+    await usersCollection.doc(userId).delete();
+    await FirebaseAuth.instance.currentUser!.delete();
   }
 }

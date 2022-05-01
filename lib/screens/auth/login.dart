@@ -1,4 +1,5 @@
 import 'package:animated_login/animated_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
@@ -33,8 +34,12 @@ class _LoginState extends State<Login> {
         break;
 
       case ButtonEvent.signUp:
-        await context
-            .read<AuthenticationService>()
+        // await context
+        //     .read<AuthenticationService>()
+        //     .signUp(data.email, data.password, data.name)
+        //     .then((value) =>
+        //         Navigator.pushReplacementNamed(context, "/onboarding"));
+        await AuthenticationService(FirebaseAuth.instance)
             .signUp(data.email, data.password, data.name)
             .then((value) =>
                 Navigator.pushReplacementNamed(context, "/onboarding"));

@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:timelines/timelines.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 const activeTile = 0;
 
@@ -29,16 +30,13 @@ class _CalendarTimeLineState extends State<CalendarTimeLine> {
       future: _getCalendarEntries(),
       builder: (BuildContext context, AsyncSnapshot<List<Workshop>> workshop) {
         if (workshop.connectionState == ConnectionState.waiting) {
-          return NeumorphicTheme(
-            themeMode: ThemeMode.dark,
-            child: const NeumorphicProgressIndeterminate(
-              height: 10,
-              curve: Curves.ease,
-            ),
-          );
+          SVProgressHUD.show();
+          return Container();
         }
 
         final _itemCount = workshop.data?.length ?? 0;
+
+        SVProgressHUD.dismiss();
 
         return _itemCount == 0
             ? Expanded(

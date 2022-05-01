@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/user.dart';
@@ -100,6 +101,7 @@ class _EditProfileState extends State<EditProfile> {
                           buttonText: "Profil speichern",
                           callback: () async {
                             _formKey.currentState!.save();
+                            SVProgressHUD.show();
                             await context.read<UserService>().updateUser(
                                 context,
                                 {
@@ -108,6 +110,7 @@ class _EditProfileState extends State<EditProfile> {
                                 },
                                 FirebaseAuth.instance.currentUser!,
                                 imageFile);
+                            SVProgressHUD.dismiss();
                           },
                         ),
                       ],
