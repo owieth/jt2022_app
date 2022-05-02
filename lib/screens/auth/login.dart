@@ -40,9 +40,9 @@ class _LoginState extends State<Login> {
         //     .then((value) =>
         //         Navigator.pushReplacementNamed(context, "/onboarding"));
         await AuthenticationService(FirebaseAuth.instance)
-            .signUp(data.email, data.password, data.name)
-            .then((value) =>
-                Navigator.pushReplacementNamed(context, "/onboarding"));
+            .signUp(data.email, data.password, data.name);
+
+        Navigator.pushReplacementNamed(context, "/onboarding");
         break;
 
       case ButtonEvent.forgotPassword:
