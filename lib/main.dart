@@ -6,6 +6,7 @@ import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
+import 'package:jt2022_app/screens/members/members.dart';
 import 'package:jt2022_app/screens/onboarding/onboarding.dart';
 import 'package:jt2022_app/screens/profile/change_credentials.dart';
 import 'package:jt2022_app/screens/profile/edit_profile.dart';
@@ -88,6 +89,7 @@ class App extends StatelessWidget {
         routes: {
           "": (_) => const ContainerWidget(),
           "/login": (_) => const Login(),
+          "/members": (_) => const Members(),
           "/profile": (_) => const Profile(),
           "/workshop": (_) => const Workshop(),
           "/workshop/priority": (_) => const WorkshopPriority(),

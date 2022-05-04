@@ -9,6 +9,7 @@ import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,6 +19,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final Uri _url = Uri.parse(
+      'https://drive.google.com/drive/folders/1-2ayAxNqYfBqq__AYPZR3xNl-in_FZ6E?usp=sharing');
   final User _user = FirebaseAuth.instance.currentUser!;
   late Future<List<Workshop>> _userWorkshops;
   int amountOfUserWorkshops = 0;
@@ -44,24 +47,51 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.fromLTRB(35, 70, 35, 0),
           child: Row(
             children: [
-              Avatar(
-                radius: _user.photoURL != null ? 30 : 28,
-                image: _user.photoURL,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Expanded(
+                flex: 6,
+                child: Row(
                   children: [
-                    Text(
-                      'Hi 👋,',
-                      style: Theme.of(context).textTheme.bodyText1,
+                    Avatar(
+                      radius: _user.photoURL != null ? 30 : 28,
+                      image: _user.photoURL,
                     ),
-                    Text(
-                      _user.displayName ?? "",
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hi 👋,',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Text(
+                            _user.displayName ?? "",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          )
+                        ],
+                      ),
+                    ),
                   ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  onPressed: () => Navigator.pushNamed(context, '/members'),
+                  icon: const Icon(
+                    Icons.group_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: IconButton(
+                  onPressed: () => _launchLink(),
+                  icon: const Icon(
+                    Icons.upload_outlined,
+                    color: Colors.white,
+                  ),
                 ),
               )
             ],
@@ -147,5 +177,14 @@ class _HomeState extends State<Home> {
     List<Workshop> workshops =
         await WorkshopsService().getUserWorkshops(_user.uid);
     setState(() => amountOfUserWorkshops = workshops.length);
+  }
+
+  void _launchLink() async {
+    if (!await launchUrl(_url)) {
+      GlobalSnackBar.show(
+          context,
+          '🚫 Google Drive Ordner konnte nicht geöffnet werden!',
+          CustomColors.errorSnackBarColor);
+    }
   }
 }
