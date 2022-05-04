@@ -146,8 +146,6 @@ class _HomeState extends State<Home> {
   _setAmountOfUserWorkshops() async {
     List<Workshop> workshops =
         await WorkshopsService().getUserWorkshops(_user.uid);
-    setState(() {
-      amountOfUserWorkshops = workshops.length;
-    });
+    setState(() => amountOfUserWorkshops = workshops.length);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/constants/workshop.dart';
 import 'package:jt2022_app/models/user.dart';
@@ -210,7 +211,7 @@ class _ProfileState extends State<Profile> {
                   .dropOutOfWorkshop(_user!.id, workshop);
             }
 
-            await context.read<UserService>().deleteUser(_user!.id);
+            await context.read<UserService>().deleteUser(context, _user!.id);
 
             Navigator.pushReplacementNamed(context, '/login');
           }
@@ -219,7 +220,11 @@ class _ProfileState extends State<Profile> {
     }
 
     return ListTile(
-      onTap: onTap,
+      onTap: () {
+        SVProgressHUD.show();
+        onTap();
+        SVProgressHUD.dismiss();
+      },
       leading: Icon(_settings[index]['icon']),
       title: Text(
         _settings[index]['text'],

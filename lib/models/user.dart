@@ -6,6 +6,7 @@ class CustomUser {
   final String muncipality;
   final String? photoUrl;
   final bool isVolunteer;
+  final bool isOnboarded;
   final List<String> workshops;
 
   CustomUser({
@@ -16,6 +17,7 @@ class CustomUser {
     required this.muncipality,
     required this.photoUrl,
     required this.isVolunteer,
+    required this.isOnboarded,
     required this.workshops,
   });
 }

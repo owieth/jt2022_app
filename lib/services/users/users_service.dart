@@ -4,7 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/user.dart';
+import 'package:jt2022_app/services/auth/authentication_service.dart';
+import 'package:jt2022_app/util/snackbar.dart';
 
 class UserService {
   final CollectionReference usersCollection =
@@ -15,22 +18,40 @@ class UserService {
       'muncipality': '',
       'region': '',
       'workshops': [],
-      'isVolunteer': false
+      'isVolunteer': false,
+      'isOnboarded': false
     });
   }
 
   Future<CustomUser> getCurrentUser() async {
-    final User _user = FirebaseAuth.instance.currentUser!;
-    final _userAttributes = await usersCollection.doc(_user.uid).get();
+    final User? _user = FirebaseAuth.instance.currentUser;
+
+    if (_user != null) {
+      final _userAttributes = await usersCollection.doc(_user.uid).get();
+
+      return CustomUser(
+        id: _user.uid,
+        email: _user.email!,
+        displayName: _user.displayName!,
+        photoUrl: _user.photoURL,
+        muncipality: _userAttributes['muncipality'],
+        region: _userAttributes['region'],
+        isVolunteer: _userAttributes['isVolunteer'],
+        isOnboarded: _userAttributes['isOnboarded'],
+        workshops: _userAttributes['workshops'].cast<String>() ?? [],
+      );
+    }
+
     return CustomUser(
-      id: _user.uid,
-      email: _user.email!,
-      displayName: _user.displayName!,
-      photoUrl: _user.photoURL,
-      muncipality: _userAttributes['muncipality'],
-      region: _userAttributes['region'],
-      isVolunteer: _userAttributes['isVolunteer'],
-      workshops: _userAttributes['workshops'].cast<String>(),
+      id: '',
+      email: '',
+      displayName: '',
+      region: '',
+      muncipality: '',
+      photoUrl: '',
+      isVolunteer: false,
+      isOnboarded: false,
+      workshops: [],
     );
   }
 
@@ -55,9 +76,29 @@ class UserService {
     Navigator.pop(context);
   }
 
-  Future<void> deleteUser(String userId) async {
-    await FirebaseStorage.instance.ref('users/$userId').delete();
+  Future<void> deleteUser(BuildContext context, String userId) async {
+    try {
+      await FirebaseStorage.instance.ref('users/$userId').delete();
+    } catch (_) {}
+
     await usersCollection.doc(userId).delete();
-    await FirebaseAuth.instance.currentUser!.delete();
+
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        GlobalSnackBar.show(
+            context,
+            'Du musst dich neu einloggen um Änderungen an deinem Profil machen zu können!',
+            CustomColors.errorSnackBarColor);
+        AuthenticationService(FirebaseAuth.instance).signOut();
+      }
+    }
+  }
+
+  Future setOnboarding(String userId) async {
+    await usersCollection.doc(userId).update({
+      "isOnboarded": true,
+    });
   }
 }

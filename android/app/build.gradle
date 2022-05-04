@@ -6,7 +6,6 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def googleMapsApiKey = localProperties.getProperty('google.maps.api.key')
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -55,16 +54,20 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [
-            googleMapsApiKey: googleMapsApiKey
-        ]
     }
 
+    signingConfigs {
+        release {
+            keyAlias localProperties['keyAlias']
+            keyPassword localProperties['keyPassword']
+            storeFile localProperties['storeFile'] ? file(localProperties['storeFile']) : null
+            storePassword localProperties['storePassword']
+        }
+    }
+    
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
