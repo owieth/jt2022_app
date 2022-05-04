@@ -31,14 +31,10 @@ class _LoginState extends State<Login> {
               'Fehler bei der Anmeldung: ${onSignIn.authError}',
               CustomColors.errorSnackBarColor);
         }
+        Navigator.pushReplacementNamed(context, "");
         break;
 
       case ButtonEvent.signUp:
-        // await context
-        //     .read<AuthenticationService>()
-        //     .signUp(data.email, data.password, data.name)
-        //     .then((value) =>
-        //         Navigator.pushReplacementNamed(context, "/onboarding"));
         await AuthenticationService(FirebaseAuth.instance)
             .signUp(data.email, data.password, data.name);
 
@@ -84,6 +80,7 @@ class _LoginState extends State<Login> {
             formTitleStyle: Theme.of(context).textTheme.headline1,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             formFieldBackgroundColor: Colors.white,
+            errorTextStyle: const TextStyle(color: Colors.white),
             animationDuration: const Duration(seconds: 1),
             animationCurve: Curves.easeInOut,
             actionButtonStyle: ButtonStyle(

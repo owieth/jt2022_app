@@ -18,22 +18,40 @@ class UserService {
       'muncipality': '',
       'region': '',
       'workshops': [],
-      'isVolunteer': false
+      'isVolunteer': false,
+      'isOnboarded': false
     });
   }
 
   Future<CustomUser> getCurrentUser() async {
-    final User _user = FirebaseAuth.instance.currentUser!;
-    final _userAttributes = await usersCollection.doc(_user.uid).get();
+    final User? _user = FirebaseAuth.instance.currentUser;
+
+    if (_user != null) {
+      final _userAttributes = await usersCollection.doc(_user.uid).get();
+
+      return CustomUser(
+        id: _user.uid,
+        email: _user.email!,
+        displayName: _user.displayName!,
+        photoUrl: _user.photoURL,
+        muncipality: _userAttributes['muncipality'],
+        region: _userAttributes['region'],
+        isVolunteer: _userAttributes['isVolunteer'],
+        isOnboarded: _userAttributes['isOnboarded'],
+        workshops: _userAttributes['workshops'].cast<String>() ?? [],
+      );
+    }
+
     return CustomUser(
-      id: _user.uid,
-      email: _user.email!,
-      displayName: _user.displayName!,
-      photoUrl: _user.photoURL,
-      muncipality: _userAttributes['muncipality'] ?? '',
-      region: _userAttributes['region'] ?? '',
-      isVolunteer: _userAttributes['isVolunteer'] ?? '',
-      workshops: _userAttributes['workshops'].cast<String>() ?? [],
+      id: '',
+      email: '',
+      displayName: '',
+      region: '',
+      muncipality: '',
+      photoUrl: '',
+      isVolunteer: false,
+      isOnboarded: false,
+      workshops: [],
     );
   }
 
@@ -76,5 +94,11 @@ class UserService {
         AuthenticationService(FirebaseAuth.instance).signOut();
       }
     }
+  }
+
+  Future setOnboarding(String userId) async {
+    await usersCollection.doc(userId).update({
+      "isOnboarded": true,
+    });
   }
 }
