@@ -5,6 +5,7 @@ import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
+import 'package:line_icons/line_icons.dart';
 
 class Members extends StatefulWidget {
   const Members({Key? key}) : super(key: key);
@@ -14,6 +15,31 @@ class Members extends StatefulWidget {
 }
 
 class _MembersState extends State<Members> {
+  bool _showBackToTopButton = false;
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    _scrollController = ScrollController()
+      ..addListener(() {
+        setState(() {
+          if (_scrollController.offset >= 400) {
+            _showBackToTopButton = true;
+          } else {
+            _showBackToTopButton = false;
+          }
+        });
+      });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +55,7 @@ class _MembersState extends State<Members> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 35.0),
         child: ListView(
+          controller: _scrollController,
           children: [
             const SizedBox(height: 30.0),
             Text(
@@ -91,6 +118,23 @@ class _MembersState extends State<Members> {
           ],
         ),
       ),
+      floatingActionButton: _showBackToTopButton == false
+          ? null
+          : SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _scrollToTop,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  onPrimary: Colors.black,
+                  shape: const CircleBorder(),
+                ),
+                child: Icon(
+                  LineIcons.arrowUp,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
     );
   }
 
@@ -119,6 +163,14 @@ class _MembersState extends State<Members> {
           ],
         ),
       ),
+    );
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 2),
+      curve: Curves.linear,
     );
   }
 }
