@@ -54,8 +54,9 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     imageFile == null
                         ? Avatar(
-                            radius: _user.photoUrl != null ? 50 : 48,
-                            image: _user.photoUrl)
+                            radius: _user.photoUrl != '' ? 50 : 48,
+                            image: _user.photoUrl != '' ? _user.photoUrl : null,
+                          )
                         : CircleAvatar(
                             radius: 50,
                             backgroundImage: FileImage(
@@ -75,8 +76,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ..._buildFormTextField(
-                            'Name', 'displayName', _user.displayName),
+                        ..._buildFormTextField('Name', 'name', _user.name),
                         ..._buildFormTextField(
                             'Bezirk', 'region', _user.region),
                         ..._buildFormTextField(
@@ -108,7 +108,7 @@ class _EditProfileState extends State<EditProfile> {
                                   ..._formKey.currentState!.value,
                                   'isVolunteer': isVolunteer
                                 },
-                                FirebaseAuth.instance.currentUser!,
+                                FirebaseAuth.instance.currentUser!.uid,
                                 imageFile);
                             SVProgressHUD.dismiss();
                           },

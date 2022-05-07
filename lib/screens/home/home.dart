@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/constants/workshop.dart';
+import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/screens/workshop/user_workshops.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
+import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
@@ -21,25 +23,26 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final Uri _url = Uri.parse(
       'https://drive.google.com/drive/folders/1-2ayAxNqYfBqq__AYPZR3xNl-in_FZ6E?usp=sharing');
-  final User _user = FirebaseAuth.instance.currentUser!;
+  final User _firebaseUser = FirebaseAuth.instance.currentUser!;
   late Future<List<Workshop>> _userWorkshops;
-  int amountOfUserWorkshops = 0;
+  CustomUser? _user;
+  int _amountOfUserWorkshops = 0;
 
   @override
   void initState() {
     super.initState();
-    _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
+    _getCurrentUser();
+    _userWorkshops = WorkshopsService().getUserWorkshops(_firebaseUser.uid);
     _setAmountOfUserWorkshops();
-    WidgetsBinding.instance?.addPostFrameCallback(
-      (_) => GlobalSnackBar.show(
-          context,
-          '👋 Eingeloggt als ${_user.displayName}',
-          CustomColors.successSnackBarColor),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback(
+      (_) => GlobalSnackBar.show(context, '👋 Eingeloggt als ${_user?.name}',
+          CustomColors.successSnackBarColor),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,8 +55,8 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Avatar(
-                      radius: _user.photoURL != null ? 30 : 28,
-                      image: _user.photoURL,
+                      radius: _user?.photoUrl != '' ? 30 : 28,
+                      image: _user?.photoUrl != '' ? _user?.photoUrl : null,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 20.0),
@@ -65,7 +68,7 @@ class _HomeState extends State<Home> {
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           Text(
-                            _user.displayName ?? "",
+                            _user?.name ?? '',
                             style: Theme.of(context).textTheme.subtitle1,
                           )
                         ],
@@ -149,7 +152,7 @@ class _HomeState extends State<Home> {
   Workshops _buildWorkshops() {
     return Workshops(
       hasMaxAmountOfWorkshops:
-          amountOfUserWorkshops >= WorkshopConstants.maxUserWorkshops,
+          _amountOfUserWorkshops >= WorkshopConstants.maxUserWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(
           '🎫  Meine Workshops geändert!', CustomColors.infoSnackBarColor),
     );
@@ -165,7 +168,7 @@ class _HomeState extends State<Home> {
 
   void _getUsersWorkshop(String snackBarText, Color snackBarColor) {
     setState(() {
-      _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
+      _userWorkshops = WorkshopsService().getUserWorkshops(_firebaseUser.uid);
     });
 
     _setAmountOfUserWorkshops();
@@ -173,10 +176,15 @@ class _HomeState extends State<Home> {
     GlobalSnackBar.show(context, snackBarText, snackBarColor);
   }
 
-  _setAmountOfUserWorkshops() async {
+  void _getCurrentUser() async {
+    CustomUser user = await UserService().getCurrentUser();
+    setState(() => _user = user);
+  }
+
+  void _setAmountOfUserWorkshops() async {
     List<Workshop> workshops =
-        await WorkshopsService().getUserWorkshops(_user.uid);
-    setState(() => amountOfUserWorkshops = workshops.length);
+        await WorkshopsService().getUserWorkshops(_firebaseUser.uid);
+    setState(() => _amountOfUserWorkshops = workshops.length);
   }
 
   void _launchLink() async {

@@ -95,8 +95,11 @@ class _LocationState extends State<Location> {
                 width: 30,
                 height: 5,
                 decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12.0),
+                  ),
+                ),
               ),
             ],
           ),

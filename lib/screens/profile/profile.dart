@@ -30,11 +30,6 @@ class _ProfileState extends State<Profile> {
     {'text': 'Account löschen', 'icon': LineIcons.trash},
   ];
 
-  _getCurrentUser() async {
-    CustomUser _user = await UserService().getCurrentUser();
-    setState(() => this._user = _user);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -55,7 +50,7 @@ class _ProfileState extends State<Profile> {
                 children: [
                   Avatar(
                     radius: _user?.photoUrl != '' ? 50 : 48,
-                    image: _user?.photoUrl,
+                    image: _user?.photoUrl != '' ? _user?.photoUrl : null,
                   ),
                   ProfileEditButton(
                     icon: LineIcons.pen,
@@ -76,7 +71,7 @@ class _ProfileState extends State<Profile> {
                     constraints: const BoxConstraints(maxWidth: 200),
                     child: SingleChildScrollView(
                       child: Text(
-                        _user?.displayName ?? '',
+                        _user?.name ?? '',
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.headline1,
                       ),
@@ -156,6 +151,7 @@ class _ProfileState extends State<Profile> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0),
             child: ListView.separated(
+              itemCount: WorkshopConstants.maxUserWorkshopsAttendance,
               itemBuilder: (_, index) => Container(
                 child: _buildSettingsCard(index),
                 decoration: BoxDecoration(
@@ -167,7 +163,6 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               separatorBuilder: (_, __) => const SizedBox(height: 20),
-              itemCount: 4,
             ),
           ),
         )
@@ -243,5 +238,10 @@ class _ProfileState extends State<Profile> {
           ? CustomColors.errorSnackBarColor
           : Colors.white,
     );
+  }
+
+  _getCurrentUser() async {
+    CustomUser user = await UserService().getCurrentUser();
+    setState(() => _user = user);
   }
 }

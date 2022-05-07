@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/screens/calendar/calendar.dart';
 import 'package:jt2022_app/screens/home/home.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -52,6 +53,7 @@ class _ContainerWidgetState extends State<ContainerWidget> {
           tabs: _items.mapIndexed((index, _) => _buildItem(index)).toList(),
           selectedIndex: _currentTab,
           onTabChange: (int index) {
+            SVProgressHUD.dismiss();
             setState(
               () {
                 if (_pages[index] is SizedBox) {

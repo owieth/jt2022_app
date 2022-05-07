@@ -13,13 +13,17 @@ class UserService {
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Future createUser(String userId) async {
+  Future createUser(String userId, String email, String name) async {
     await usersCollection.doc(userId).set({
+      'id': userId,
+      'email': email,
+      'name': name,
+      'photoUrl': '',
       'muncipality': '',
       'region': '',
-      'workshops': [],
       'isVolunteer': false,
-      'isOnboarded': false
+      'isOnboarded': false,
+      'workshops': [],
     });
   }
 
@@ -30,25 +34,25 @@ class UserService {
       final _userAttributes = await usersCollection.doc(_user.uid).get();
 
       return CustomUser(
-        id: _user.uid,
-        email: _user.email!,
-        displayName: _user.displayName!,
-        photoUrl: _user.photoURL,
+        id: _userAttributes['id'],
+        email: _userAttributes['email'],
+        name: _userAttributes['name'],
+        photoUrl: _userAttributes['photoUrl'],
         muncipality: _userAttributes['muncipality'],
         region: _userAttributes['region'],
         isVolunteer: _userAttributes['isVolunteer'],
         isOnboarded: _userAttributes['isOnboarded'],
-        workshops: _userAttributes['workshops'].cast<String>() ?? [],
+        workshops: _userAttributes['workshops'].cast<String>(),
       );
     }
 
     return CustomUser(
       id: '',
       email: '',
-      displayName: '',
+      name: '',
+      photoUrl: '',
       region: '',
       muncipality: '',
-      photoUrl: '',
       isVolunteer: false,
       isOnboarded: false,
       workshops: [],
@@ -56,18 +60,18 @@ class UserService {
   }
 
   Future<void> updateUser(BuildContext context, Map<String, dynamic> userData,
-      User user, File? image) async {
-    await user.updateDisplayName(userData['displayName']);
+      String userId, File? image) async {
+    String photoUrl = '';
 
     if (image != null) {
-      TaskSnapshot uploadTask = await FirebaseStorage.instance
-          .ref('users/${user.uid}')
-          .putFile(image);
-      String profileImageUrl = await uploadTask.ref.getDownloadURL();
-      await user.updatePhotoURL(profileImageUrl);
+      TaskSnapshot uploadTask =
+          await FirebaseStorage.instance.ref('users/$userId').putFile(image);
+      photoUrl = await uploadTask.ref.getDownloadURL();
     }
 
-    await usersCollection.doc(user.uid).update({
+    await usersCollection.doc(userId).update({
+      'name': userData['name'],
+      'photoUrl': photoUrl,
       "muncipality": userData['muncipality'],
       "region": userData['region'],
       "isVolunteer": userData['isVolunteer'],
@@ -77,12 +81,6 @@ class UserService {
   }
 
   Future<void> deleteUser(BuildContext context, String userId) async {
-    try {
-      await FirebaseStorage.instance.ref('users/$userId').delete();
-    } catch (_) {}
-
-    await usersCollection.doc(userId).delete();
-
     try {
       await FirebaseAuth.instance.currentUser!.delete();
     } on FirebaseAuthException catch (e) {
@@ -94,6 +92,35 @@ class UserService {
         AuthenticationService(FirebaseAuth.instance).signOut();
       }
     }
+
+    try {
+      await FirebaseStorage.instance.ref('users/$userId').delete();
+    } catch (_) {}
+
+    await usersCollection.doc(userId).delete();
+  }
+
+  Future<List<CustomUser>> getAllUsers() async {
+    List<CustomUser> users = [];
+    QuerySnapshot snapshot = await usersCollection.get();
+    for (QueryDocumentSnapshot _userAttributes in snapshot.docs) {
+      {
+        CustomUser _user = CustomUser(
+          id: _userAttributes['id'],
+          email: _userAttributes['email'],
+          name: _userAttributes['name'],
+          photoUrl: _userAttributes['photoUrl'],
+          muncipality: _userAttributes['muncipality'],
+          region: _userAttributes['region'],
+          isVolunteer: _userAttributes['isVolunteer'],
+          isOnboarded: _userAttributes['isOnboarded'],
+          workshops: _userAttributes['workshops'].cast<String>(),
+        );
+        users.add(_user);
+      }
+    }
+
+    return users;
   }
 
   Future setOnboarding(String userId) async {
