@@ -29,7 +29,7 @@ class _MembersState extends State<Members> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 35.0),
         child: ListView(
-          children: <Widget>[
+          children: [
             const SizedBox(height: 30.0),
             Text(
               'Wichtige Nummern',
