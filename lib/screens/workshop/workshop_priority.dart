@@ -50,7 +50,7 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
                   return Expanded(
                     child: Center(
                       child: ReorderableListView.builder(
-                        itemCount: snapshot.data!.length,
+                        itemCount: workshops.length,
                         itemBuilder: (_, index) {
                           return Padding(
                             key: Key('$index'),
@@ -116,7 +116,9 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
                   );
                 }
 
-                return Container();
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.686,
+                );
               },
             ),
             ActionButton(

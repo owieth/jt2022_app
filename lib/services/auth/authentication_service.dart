@@ -50,8 +50,7 @@ class AuthenticationService {
       UserCredential newUser = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      await newUser.user!.updateDisplayName(name);
-      await UserService().createUser(newUser.user!.uid);
+      await UserService().createUser(newUser.user!.uid, email, name);
       return AuthenticationState(AuthStatus.signedIn, '');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
