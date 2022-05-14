@@ -27,6 +27,15 @@ class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormBuilderState>();
   File? imageFile;
 
+  List regions = [
+    {'label': 'Bern Süd', 'value': 'Bern Süd'},
+    {'label': 'Thun', 'value': 'Thun'},
+    {'label': 'Winterthur', 'value': 'Winterthur'},
+    {'label': 'Graubünden', 'value': 'Graubünden'},
+    {'label': 'Salzburg', 'value': 'Salzburg'},
+    {'label': 'Voralberg', 'value': 'Voralberg'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
@@ -81,6 +90,44 @@ class _EditProfileState extends State<EditProfile> {
                             'Bezirk', 'region', _user.region),
                         ..._buildFormTextField(
                             'Gemeinde', 'muncipality', _user.muncipality),
+                        // CoolDropdown(
+                        //   resultHeight: 65,
+                        //   resultWidth: MediaQuery.of(context).size.width,
+                        //   resultBD: BoxDecoration(
+                        //     border: Border.all(color: Colors.white, width: 2),
+                        //     borderRadius: BorderRadius.circular(20),
+                        //   ),
+                        //   resultTS: Theme.of(context).textTheme.subtitle1,
+                        //   placeholderTS: Theme.of(context).textTheme.subtitle1,
+                        //   placeholder: 'Bezirk auswählen',
+                        //   dropdownList: regions,
+                        //   dropdownHeight: 200,
+                        //   dropdownWidth:
+                        //       MediaQuery.of(context).size.width - 100,
+                        //   selectedItemTS: const TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 18,
+                        //   ),
+                        //   unselectedItemTS: const TextStyle(
+                        //     color: Colors.black,
+                        //     fontSize: 18,
+                        //   ),
+                        //   selectedItemBD: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(10),
+                        //     color: CustomColors.primaryColor,
+                        //   ),
+                        //   defaultValue: regions
+                        //       .where(
+                        //           (region) => region['label'] == _user.region)
+                        //       .toList()[0],
+                        //   isTriangle: false,
+                        //   gap: 5.0,
+                        //   onChange: (_) {},
+                        // ),
+                        FormBuilderDropdown(
+                          name: 'test',
+                          items: const [DropdownMenuItem(child: Text('test'))],
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -102,6 +149,9 @@ class _EditProfileState extends State<EditProfile> {
                           callback: () async {
                             _formKey.currentState!.save();
                             SVProgressHUD.show();
+                            print(
+                              _formKey.currentState!.value,
+                            );
                             await context.read<UserService>().updateUser(
                                 context,
                                 {

@@ -103,50 +103,6 @@ class _ProfileState extends State<Profile> {
           ),
         ),
         const SizedBox(height: 25),
-        Padding(
-          padding: const EdgeInsets.only(left: 35),
-          child: Text(
-            'Meine Workshops',
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.start,
-          ),
-        ),
-        const SizedBox(height: 25),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: SizedBox(
-            height: 100,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: WorkshopConstants.maxUserWorkshopsAttendance,
-              itemBuilder: (_, index) {
-                final _padding =
-                    index != WorkshopConstants.maxUserWorkshopsAttendance - 1
-                        ? const EdgeInsets.only(left: 20)
-                        : const EdgeInsets.symmetric(horizontal: 20);
-                return Padding(
-                  padding: _padding,
-                  child: Container(
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.pending_actions,
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (_, __) => Container(),
-            ),
-          ),
-        ),
-        const SizedBox(height: 15),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0),
@@ -203,7 +159,7 @@ class _ProfileState extends State<Profile> {
             for (var workshop in _user!.workshops) {
               context
                   .read<WorkshopsService>()
-                  .dropOutOfWorkshop(_user!.id, workshop);
+                  .dropOutOfWorkshop(_user!.id, workshop.id);
             }
 
             await context.read<UserService>().deleteUser(context, _user!.id);

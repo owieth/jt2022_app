@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
@@ -10,7 +11,6 @@ import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -38,11 +38,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance?.addPostFrameCallback(
-      (_) => GlobalSnackBar.show(context, '👋 Eingeloggt als ${_user?.name}',
-          CustomColors.successSnackBarColor),
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -123,7 +118,7 @@ class _HomeState extends State<Home> {
                                 }
                             }),
                 icon: const Icon(
-                  LineIcons.pen,
+                  EvaIcons.flip,
                   color: Colors.white,
                 ),
               )

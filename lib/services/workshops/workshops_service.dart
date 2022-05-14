@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/util/dates.dart';
 
@@ -29,10 +29,10 @@ class WorkshopsService {
     }
 
     List<Workshop> tempList = await workshops;
-    List<Workshop> sortedEvents = tempList
-        .where((workshop) => workshop.date == day)
-        .where((workshop) => workshop.attendees.contains(userId))
-        .toList();
+    List<Workshop> sortedEvents =
+        tempList.where((workshop) => workshop.date == day).toList();
+    // TODO
+    //     .where((workshop) => workshop.attendees.contains(userId))
 
     List<Workshop> events = [..._events, ...sortedEvents];
     events.sort((a, b) => a.startTime.compareTo(b.startTime));
@@ -40,13 +40,15 @@ class WorkshopsService {
   }
 
   Future<List<Workshop>> getUserWorkshops(String userId) async {
-    final workshops = await usersCollection.doc(userId).get();
-    return _mapToUsersWorkshopList(workshops);
+    final user = await usersCollection.doc(userId).get();
+    return _mapToUsersWorkshopList(user);
   }
 
   void dropOutOfWorkshop(String userId, String _workshopId) async {
     await usersCollection.doc(userId).update({
-      "workshops": FieldValue.arrayRemove([_workshopId])
+      "workshops": FieldValue.arrayRemove([
+        {'id': _workshopId, 'state': AttendanceState.wait.index}
+      ])
     });
 
     await workshopsCollection.doc(_workshopId).update({
@@ -56,7 +58,9 @@ class WorkshopsService {
 
   void signUpForWorkshop(String userId, String _workshopId) async {
     await usersCollection.doc(userId).update({
-      "workshops": FieldValue.arrayUnion([_workshopId])
+      "workshops": FieldValue.arrayUnion([
+        {'id': _workshopId, 'state': AttendanceState.wait.index}
+      ])
     });
 
     await workshopsCollection.doc(_workshopId).update({
@@ -65,28 +69,37 @@ class WorkshopsService {
   }
 
   void changePriorityOfUserWorkshops(
-      String userId, List<String> workshops) async {
-    await usersCollection.doc(userId).update({"workshops": workshops});
+      String userId, List<Workshop> workshops) async {
+    await usersCollection.doc(userId).update({
+      "workshops": workshops
+          .map((workshop) =>
+              {'id': workshop.id, 'state': AttendanceState.wait.index})
+          .toList()
+    });
   }
 
   Future<List<Workshop>> _mapToUsersWorkshopList(
       DocumentSnapshot snapshot) async {
-    List<String> _workshops = [];
+    List<WorkshopAttendee> _workshops = [];
 
     if (snapshot.data() != null) {
-      _workshops =
-          List<String>.from((snapshot.data() as Map)['workshops'] as List);
+      final workshops = (snapshot.data() as Map)['workshops'] as List;
+      _workshops = workshops
+          .map((workshop) =>
+              WorkshopAttendee(id: workshop['id'], state: AttendanceState.wait))
+          .toList();
     }
 
     List<Workshop> workshopDtos = [];
 
-    for (var workshopId in _workshops) {
+    for (var workshopAttendance in _workshops) {
       final workshop = workshopsCollection
-          .where(FieldPath.documentId, isEqualTo: workshopId)
+          .where(FieldPath.documentId, isEqualTo: workshopAttendance.id)
           .snapshots()
           .first;
 
-      Future<Workshop> _workshop = _mapToWorkshop(await workshop, workshopId);
+      Future<Workshop> _workshop =
+          _mapToWorkshop(await workshop, workshopAttendance.id);
       workshopDtos.add(await _workshop);
     }
 
@@ -113,40 +126,19 @@ class WorkshopsService {
 
   Future<Workshop> _returnWorkshop(
       String documentId, Map<dynamic, dynamic> workshop) async {
-    String image = await _getWorkshopImage(documentId);
     return Workshop(
       id: documentId,
       name: workshop['name'] ?? "",
-      attendees: workshop["attendees"] == null
-          ? []
-          : workshop["attendees"].cast<String>(),
-      date: workshop['date'] == null
-          ? ""
-          : Dates().formatDateToDay(workshop['date']?.toDate()),
-      endTime: workshop['endTime'] == null
-          ? ""
-          : Dates().formatDateToHM(workshop['endTime']?.toDate()),
-      image: image,
-      startTime: workshop['startTime'] == null
-          ? ""
-          : Dates().formatDateToHM(workshop['startTime']?.toDate()),
+      attendees: workshop["attendees"].cast<String>(),
+      date: Dates().formatDateToDay(
+          DateTime.fromMicrosecondsSinceEpoch(workshop['date'] * 1000)),
+      startTime: Dates().formatDateToHM(
+          DateTime.fromMicrosecondsSinceEpoch(workshop['startTime'] * 1000)),
+      endTime: Dates().formatDateToHM(
+          DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
+      image: workshop['image'],
       description: workshop['description'] ?? "",
     );
-  }
-
-  Future<String> _getWorkshopImage(String workshopId) async {
-    String image;
-    try {
-      image = await FirebaseStorage.instance
-          .ref('workshops/$workshopId')
-          .getDownloadURL();
-    } on FirebaseException catch (_) {
-      image = await FirebaseStorage.instance
-          .ref('workshops/placeholder')
-          .getDownloadURL();
-    }
-
-    return image;
   }
 
   Future<Workshop> _returnEvent(
@@ -154,13 +146,15 @@ class WorkshopsService {
     return Workshop(
       id: documentId,
       name: workshop['name'] ?? "",
+      date: Dates().formatDateToDay(
+          DateTime.fromMicrosecondsSinceEpoch(workshop['date'] * 1000)),
+      startTime: Dates().formatDateToHM(
+          DateTime.fromMicrosecondsSinceEpoch(workshop['startTime'] * 1000)),
+      endTime: Dates().formatDateToHM(
+          DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
+      // These Properties are not needed for an event
       attendees: [],
-      date: workshop['date'] == null
-          ? ""
-          : Dates().formatDateToDay(workshop['date']?.toDate()),
-      endTime: Dates().formatDateToHM(workshop['endTime']?.toDate()),
       image: '',
-      startTime: Dates().formatDateToHM(workshop['startTime']?.toDate()),
       description: '',
     );
   }

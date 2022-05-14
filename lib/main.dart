@@ -131,7 +131,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
       return const Login();
     }
 
-    if (user != null && !user!.isOnboarded && user!.id != '') {
+    //if (user != null && !user!.isOnboarded && user!.id != '') {
+    if (!user!.isOnboarded) {
       return const Onboarding();
     }
 

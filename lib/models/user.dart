@@ -1,3 +1,15 @@
+enum AttendanceState { wait, approved, refused }
+
+class WorkshopAttendee {
+  final String id;
+  final AttendanceState state;
+
+  WorkshopAttendee({
+    required this.id,
+    required this.state,
+  });
+}
+
 class CustomUser {
   final String id;
   final String email;
@@ -7,7 +19,7 @@ class CustomUser {
   final String photoUrl;
   final bool isVolunteer;
   final bool isOnboarded;
-  final List<String> workshops;
+  final List<WorkshopAttendee> workshops;
 
   CustomUser({
     required this.id,

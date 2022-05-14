@@ -23,7 +23,7 @@ class UserService {
       'region': '',
       'isVolunteer': false,
       'isOnboarded': false,
-      'workshops': [],
+      'workshops': [{}],
     });
   }
 
@@ -42,7 +42,10 @@ class UserService {
         region: _userAttributes['region'],
         isVolunteer: _userAttributes['isVolunteer'],
         isOnboarded: _userAttributes['isOnboarded'],
-        workshops: _userAttributes['workshops'].cast<String>(),
+        workshops: (_userAttributes['workshops'] as List)
+            .map((workshop) => WorkshopAttendee(
+                id: workshop['id'], state: AttendanceState.wait))
+            .toList(),
       );
     }
 
@@ -114,7 +117,7 @@ class UserService {
           region: _userAttributes['region'],
           isVolunteer: _userAttributes['isVolunteer'],
           isOnboarded: _userAttributes['isOnboarded'],
-          workshops: _userAttributes['workshops'].cast<String>(),
+          workshops: _userAttributes['workshops'],
         );
         users.add(_user);
       }

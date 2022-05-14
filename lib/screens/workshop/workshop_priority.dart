@@ -124,10 +124,8 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
             ActionButton(
               buttonText: "Priorisierung speichern",
               callback: () async {
-                WorkshopsService().changePriorityOfUserWorkshops(
-                  _user.uid,
-                  workshops.map((workshop) => workshop.id).toList(),
-                );
+                WorkshopsService()
+                    .changePriorityOfUserWorkshops(_user.uid, workshops);
                 Navigator.pop(context, true);
               },
             ),

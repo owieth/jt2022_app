@@ -21,7 +21,7 @@ class _LocationState extends State<Location> {
   double _maxPanelHeight = 0;
 
   final mapStyle =
-      'https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}';
+      'https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}';
   final accessToken =
       'pk.eyJ1Ijoib3J0ZXhoZCIsImEiOiJjbDFsMmZ3N2UwMWthM2NxcjY3cGFvNjJ2In0.-4xH_hTNDBZQVwGvdY0-UQ';
 
@@ -108,13 +108,15 @@ class _LocationState extends State<Location> {
   Widget _buildMap() {
     return FlutterMap(
       options: MapOptions(
-        minZoom: 17.75,
-        maxZoom: 17.75,
-        zoom: 17.75,
-        center: lat_lng.LatLng(46.663370, 7.275294),
-        swPanBoundary: lat_lng.LatLng(46.662652, 7.273872),
-        nePanBoundary: lat_lng.LatLng(46.664910, 7.278258),
-      ),
+          minZoom: 17.75,
+          maxZoom: 17.75,
+          zoom: 17.75,
+          center: lat_lng.LatLng(46.663370, 7.275294),
+          swPanBoundary: lat_lng.LatLng(46.662652, 7.273872),
+          nePanBoundary: lat_lng.LatLng(46.664910, 7.278258),
+          onTap: (_, __) => setState(() {
+                _selectedMarkerIndex = -1;
+              })),
       nonRotatedLayers: [
         TileLayerOptions(
           urlTemplate: mapStyle,
