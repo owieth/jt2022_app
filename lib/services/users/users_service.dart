@@ -74,7 +74,7 @@ class UserService {
 
     await usersCollection.doc(userId).update({
       'name': userData['name'],
-      'photoUrl': photoUrl,
+      if (image != null) 'photoUrl': photoUrl,
       "muncipality": userData['muncipality'],
       "region": userData['region'],
       "isVolunteer": userData['isVolunteer'],
@@ -115,9 +115,9 @@ class UserService {
           photoUrl: _userAttributes['photoUrl'],
           muncipality: _userAttributes['muncipality'],
           region: _userAttributes['region'],
-          isVolunteer: _userAttributes['isVolunteer'],
-          isOnboarded: _userAttributes['isOnboarded'],
-          workshops: _userAttributes['workshops'],
+          isVolunteer: false,
+          isOnboarded: false,
+          workshops: [],
         );
         users.add(_user);
       }

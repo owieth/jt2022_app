@@ -64,7 +64,7 @@ class Onboarding extends StatelessWidget {
         Icons.arrow_forward_ios_sharp,
         color: Colors.white,
       ),
-      done: Text('Done', style: _titleTextStyle.subtitle1),
+      done: Text('Fertig', style: _titleTextStyle.subtitle1),
       curve: Curves.fastLinearToSlowEaseIn,
       controlsMargin: const EdgeInsets.all(16),
       dotsDecorator: const DotsDecorator(
