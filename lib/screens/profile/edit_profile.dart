@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:cool_dropdown/cool_dropdown.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jt2022_app/constants/churches.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
@@ -27,19 +29,12 @@ class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormBuilderState>();
   File? imageFile;
 
-  List regions = [
-    {'label': 'Bern Süd', 'value': 'Bern Süd'},
-    {'label': 'Thun', 'value': 'Thun'},
-    {'label': 'Winterthur', 'value': 'Winterthur'},
-    {'label': 'Graubünden', 'value': 'Graubünden'},
-    {'label': 'Salzburg', 'value': 'Salzburg'},
-    {'label': 'Voralberg', 'value': 'Voralberg'},
-  ];
-
   @override
   Widget build(BuildContext context) {
     Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
     final CustomUser _user = _arguments['user'];
+    String region = _user.region;
+    String muncipality = _user.muncipality;
     bool isVolunteer = _user.isVolunteer;
 
     return Material(
@@ -63,7 +58,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     imageFile == null
                         ? Avatar(
-                            radius: _user.photoUrl != '' ? 50 : 48,
+                            radius: _user.photoUrl != '' ? 48 : 50,
                             image: _user.photoUrl != '' ? _user.photoUrl : null,
                           )
                         : CircleAvatar(
@@ -85,49 +80,111 @@ class _EditProfileState extends State<EditProfile> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ..._buildFormTextField('Name', 'name', _user.name),
-                        ..._buildFormTextField(
-                            'Bezirk', 'region', _user.region),
-                        ..._buildFormTextField(
-                            'Gemeinde', 'muncipality', _user.muncipality),
-                        // CoolDropdown(
-                        //   resultHeight: 65,
-                        //   resultWidth: MediaQuery.of(context).size.width,
-                        //   resultBD: BoxDecoration(
-                        //     border: Border.all(color: Colors.white, width: 2),
-                        //     borderRadius: BorderRadius.circular(20),
-                        //   ),
-                        //   resultTS: Theme.of(context).textTheme.subtitle1,
-                        //   placeholderTS: Theme.of(context).textTheme.subtitle1,
-                        //   placeholder: 'Bezirk auswählen',
-                        //   dropdownList: regions,
-                        //   dropdownHeight: 200,
-                        //   dropdownWidth:
-                        //       MediaQuery.of(context).size.width - 100,
-                        //   selectedItemTS: const TextStyle(
-                        //     color: Colors.white,
-                        //     fontSize: 18,
-                        //   ),
-                        //   unselectedItemTS: const TextStyle(
-                        //     color: Colors.black,
-                        //     fontSize: 18,
-                        //   ),
-                        //   selectedItemBD: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(10),
-                        //     color: CustomColors.primaryColor,
-                        //   ),
-                        //   defaultValue: regions
-                        //       .where(
-                        //           (region) => region['label'] == _user.region)
-                        //       .toList()[0],
-                        //   isTriangle: false,
-                        //   gap: 5.0,
-                        //   onChange: (_) {},
-                        // ),
-                        FormBuilderDropdown(
-                          name: 'test',
-                          items: const [DropdownMenuItem(child: Text('test'))],
+                        Text(
+                          'Name',
+                          style: Theme.of(context).textTheme.subtitle1,
                         ),
+                        const SizedBox(height: 8),
+                        FormBuilderTextField(
+                          name: 'name',
+                          initialValue: _user.name,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: CustomColors.primaryColor, width: 2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Bezirk',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        const SizedBox(height: 8),
+                        CoolDropdown(
+                          resultHeight: 65,
+                          resultWidth: MediaQuery.of(context).size.width,
+                          resultBD: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          resultTS: Theme.of(context).textTheme.subtitle1,
+                          placeholderTS: Theme.of(context).textTheme.subtitle1,
+                          placeholder: 'Bezirk auswählen',
+                          dropdownList: Churches().regions,
+                          dropdownHeight: 200,
+                          dropdownWidth:
+                              MediaQuery.of(context).size.width - 100,
+                          selectedItemTS: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                          unselectedItemTS: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                          selectedItemBD: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: CustomColors.primaryColor,
+                          ),
+                          defaultValue: Churches()
+                              .regions
+                              .where(
+                                  (element) => element['value'] == _user.region)
+                              .toList()[0],
+                          isTriangle: false,
+                          gap: 5.0,
+                          onChange: (attribute) => region = attribute['value'],
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Gemeinde',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        const SizedBox(height: 8),
+                        CoolDropdown(
+                          resultHeight: 65,
+                          resultWidth: MediaQuery.of(context).size.width,
+                          resultBD: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          resultTS: Theme.of(context).textTheme.subtitle1,
+                          placeholderTS: Theme.of(context).textTheme.subtitle1,
+                          placeholder: 'Gemeinde auswählen',
+                          dropdownList: Churches().municipalities,
+                          dropdownHeight: 200,
+                          dropdownWidth:
+                              MediaQuery.of(context).size.width - 100,
+                          selectedItemTS: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                          unselectedItemTS: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                          selectedItemBD: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: CustomColors.primaryColor,
+                          ),
+                          defaultValue: Churches()
+                              .municipalities
+                              .where((element) =>
+                                  element['value'] == _user.muncipality)
+                              .toList()[0],
+                          isTriangle: false,
+                          gap: 5.0,
+                          onChange: (attribute) =>
+                              muncipality = attribute['value'],
+                        ),
+                        const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -149,13 +206,12 @@ class _EditProfileState extends State<EditProfile> {
                           callback: () async {
                             _formKey.currentState!.save();
                             SVProgressHUD.show();
-                            print(
-                              _formKey.currentState!.value,
-                            );
                             await context.read<UserService>().updateUser(
                                 context,
                                 {
                                   ..._formKey.currentState!.value,
+                                  'region': region,
+                                  'muncipality': muncipality,
                                   'isVolunteer': isVolunteer
                                 },
                                 FirebaseAuth.instance.currentUser!.uid,
@@ -173,33 +229,6 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
     );
-  }
-
-  List<Widget> _buildFormTextField(
-      String fieldName, String userAttribute, String value) {
-    return [
-      Text(
-        fieldName,
-        style: Theme.of(context).textTheme.subtitle1,
-      ),
-      const SizedBox(height: 8),
-      FormBuilderTextField(
-        name: userAttribute,
-        initialValue: value,
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: CustomColors.primaryColor, width: 2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white, width: 2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-      ),
-      const SizedBox(height: 24),
-    ];
   }
 
   Future _pickImage() async {

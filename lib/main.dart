@@ -127,7 +127,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
 
-    if (firebaseUser == null) {
+    if (user == null || firebaseUser == null) {
       return const Login();
     }
 
