@@ -16,6 +16,7 @@ import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'package:switcher_button/switcher_button.dart';
 
 class EditProfile extends StatefulWidget {
@@ -42,15 +43,15 @@ class _EditProfileState extends State<EditProfile> {
       child: Stack(
         children: [
           Positioned(
-            top: 35,
-            left: 35,
+            top: 5.h,
+            left: 10.w,
             child: NavigationButton(
               icon: Icons.arrow_back_ios_new,
               onPressedButton: () => Navigator.pop(context),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
+            padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -58,7 +59,7 @@ class _EditProfileState extends State<EditProfile> {
                   children: [
                     imageFile == null
                         ? Avatar(
-                            radius: _user.photoUrl != '' ? 48 : 50,
+                            radius: 50,
                             image: _user.photoUrl != '' ? _user.photoUrl : null,
                           )
                         : CircleAvatar(

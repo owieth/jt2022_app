@@ -12,6 +12,7 @@ import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/profile/profile_edit_button.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -42,14 +43,14 @@ class _ProfileState extends State<Profile> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(35, 100, 35, 0),
+          padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Stack(
                 children: [
                   Avatar(
-                    radius: _user?.photoUrl != '' ? 50 : 48,
+                    radius: 50,
                     image: _user?.photoUrl != '' ? _user?.photoUrl : null,
                   ),
                   ProfileEditButton(
@@ -102,7 +103,7 @@ class _ProfileState extends State<Profile> {
             ],
           ),
         ),
-        const SizedBox(height: 25),
+        SizedBox(height: 10.h),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0),

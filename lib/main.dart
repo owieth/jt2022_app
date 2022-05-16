@@ -17,7 +17,7 @@ import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/container_widget.dart';
 import 'package:provider/provider.dart';
-
+import 'package:sizer/sizer.dart';
 import 'screens/workshop/workshop_priority.dart';
 
 Future<void> main() async {
@@ -50,59 +50,61 @@ class App extends StatelessWidget {
           initialData: null,
         ),
       ],
-      child: MaterialApp(
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.black,
-          primaryColor: Colors.black,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          fontFamily: 'Lufga',
-          textTheme: const TextTheme(
-            headline1: TextStyle(
-                fontSize: 24.0,
+      child: Sizer(builder: (context, orientation, deviceType) {
+        return MaterialApp(
+          theme: ThemeData(
+            scaffoldBackgroundColor: Colors.black,
+            primaryColor: Colors.black,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            fontFamily: 'Lufga',
+            textTheme: TextTheme(
+              headline1: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+              headline2: TextStyle(
+                fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.white),
-            headline2: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+                color: Colors.black,
+              ),
+              subtitle1: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              subtitle2: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              headline6: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w100,
+                color: Colors.white,
+              ),
+              bodyText1: TextStyle(fontSize: 10.sp, color: Colors.white),
+              bodyText2: TextStyle(fontSize: 10.sp, color: Colors.black),
             ),
-            subtitle1: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            subtitle2: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            headline6: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w100,
-              color: Colors.white,
-            ),
-            bodyText1: TextStyle(fontSize: 12.0, color: Colors.white),
-            bodyText2: TextStyle(fontSize: 12.0, color: Colors.black),
           ),
-        ),
-        routes: {
-          "": (_) => const ContainerWidget(),
-          "/login": (_) => const Login(),
-          "/members": (_) => const Members(),
-          "/profile": (_) => const Profile(),
-          "/workshop": (_) => const Workshop(),
-          "/workshop/priority": (_) => const WorkshopPriority(),
-          "/onboarding": (_) => const Onboarding(),
-          "/profile/edit": (_) => const EditProfile(),
-          "/profile/changeEmail": (_) => const ChangeCredentials(
-              changeUserCredentials: ChangeUserCredentials.email),
-          "/profile/changePw": (_) => const ChangeCredentials(
-              changeUserCredentials: ChangeUserCredentials.password),
-        },
-        localizationsDelegates: const [FormBuilderLocalizations.delegate],
-        home: const AuthenticationWrapper(),
-      ),
+          routes: {
+            "": (_) => const ContainerWidget(),
+            "/login": (_) => const Login(),
+            "/members": (_) => const Members(),
+            "/profile": (_) => const Profile(),
+            "/workshop": (_) => const Workshop(),
+            "/workshop/priority": (_) => const WorkshopPriority(),
+            "/onboarding": (_) => const Onboarding(),
+            "/profile/edit": (_) => const EditProfile(),
+            "/profile/changeEmail": (_) => const ChangeCredentials(
+                changeUserCredentials: ChangeUserCredentials.email),
+            "/profile/changePw": (_) => const ChangeCredentials(
+                changeUserCredentials: ChangeUserCredentials.password),
+          },
+          localizationsDelegates: const [FormBuilderLocalizations.delegate],
+          home: const AuthenticationWrapper(),
+        );
+      }),
     );
   }
 }

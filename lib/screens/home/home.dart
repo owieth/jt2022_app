@@ -12,6 +12,7 @@ import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sizer/sizer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(35, 70, 35, 0),
+          padding: EdgeInsets.fromLTRB(10.w, 7.5.h, 10.w, 0),
           child: Row(
             children: [
               Expanded(
@@ -50,7 +51,7 @@ class _HomeState extends State<Home> {
                 child: Row(
                   children: [
                     Avatar(
-                      radius: _user?.photoUrl != '' ? 30 : 28,
+                      radius: 30,
                       image: _user?.photoUrl != '' ? _user?.photoUrl : null,
                     ),
                     Padding(
@@ -95,9 +96,9 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        const SizedBox(height: 50.0),
+        SizedBox(height: 2.5.h),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35),
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -129,9 +130,8 @@ class _HomeState extends State<Home> {
           height: 200,
           child: _buildUserWorkshops(),
         ),
-        const SizedBox(height: 30.0),
         Padding(
-          padding: const EdgeInsets.only(left: 35),
+          padding: EdgeInsets.only(left: 10.w),
           child: Text(
             'Workshops',
             style: Theme.of(context).textTheme.subtitle1,
