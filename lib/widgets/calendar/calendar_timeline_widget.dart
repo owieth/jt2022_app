@@ -5,6 +5,7 @@ import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:sizer/sizer.dart';
 import 'package:timelines/timelines.dart';
 
 const activeTile = 0;
@@ -108,30 +109,9 @@ class CalendarEntry extends StatelessWidget {
       margin: const EdgeInsets.only(left: 30.0),
       height: 100.0,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15.0), color: Colors.white),
-      // TODO Maybe consider this variant?
-      // child: CachedNetworkImage(
-      //   imageUrl: workshop.image,
-      //   imageBuilder: (context, imageProvider) => Container(
-      //     decoration: BoxDecoration(
-      //       borderRadius: BorderRadius.circular(15.0),
-      //       gradient: const LinearGradient(
-      //         begin: Alignment.topCenter,
-      //         end: Alignment.bottomCenter,
-      //         colors: [
-      //           Color.fromARGB(255, 0, 0, 0),
-      //           Color(0x00000000),
-      //           Color(0x00000000),
-      //           Color(0xCC000000),
-      //         ],
-      //       ),
-      //       image: DecorationImage(
-      //         image: imageProvider,
-      //         fit: BoxFit.cover,
-      //       ),
-      //     ),
-      //   ),
-      // ),
+        borderRadius: BorderRadius.circular(15.0),
+        color: Colors.white,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -141,7 +121,7 @@ class CalendarEntry extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  constraints: const BoxConstraints(maxWidth: 175),
+                  constraints: BoxConstraints(maxWidth: 40.w),
                   child: SingleChildScrollView(
                     child: Text(
                       workshop.name,

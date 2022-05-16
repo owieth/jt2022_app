@@ -2,11 +2,13 @@ import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class WorkshopPriority extends StatefulWidget {
   const WorkshopPriority({Key? key}) : super(key: key);
@@ -32,7 +34,7 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(35, 100, 35, 35),
+        padding: EdgeInsets.fromLTRB(10.w, 2.5.h, 10.w, 2.5.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,12 +42,13 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
               icon: Icons.arrow_back_ios_new,
               onPressedButton: () => Navigator.pop(context),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 5.h),
             FutureBuilder(
               future: _userWorkshops,
               builder: (BuildContext context,
                   AsyncSnapshot<List<Workshop>> snapshot) {
                 if (snapshot.hasData) {
+                  SVProgressHUD.dismiss();
                   workshops = snapshot.data!;
                   return Expanded(
                     child: Center(
@@ -116,9 +119,8 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
                   );
                 }
 
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.686,
-                );
+                SVProgressHUD.show();
+                return Container();
               },
             ),
             ActionButton(

@@ -7,6 +7,7 @@ import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class Workshop extends StatefulWidget {
   const Workshop({Key? key}) : super(key: key);
@@ -45,8 +46,8 @@ class _WorkshopState extends State<Workshop> {
               ),
             ),
             Positioned(
-              top: 100,
-              left: 35,
+              top: 10.h,
+              left: 10.w,
               child: NavigationButton(
                 icon: Icons.arrow_back_ios_new,
                 onPressedButton: () => Navigator.pop(context),

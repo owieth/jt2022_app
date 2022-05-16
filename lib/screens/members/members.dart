@@ -100,7 +100,7 @@ class _MembersState extends State<Members> {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: ListTile(
                             leading: Avatar(
-                              radius: user.photoUrl != '' ? 30 : 28,
+                              radius: 30,
                               image: user.photoUrl != '' ? user.photoUrl : null,
                             ),
                             title: Text(user.name),

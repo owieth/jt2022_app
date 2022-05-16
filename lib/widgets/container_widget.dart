@@ -7,6 +7,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:jt2022_app/screens/map/location.dart';
 import 'package:jt2022_app/screens/profile/profile.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:sizer/sizer.dart';
 
 class ContainerWidget extends StatefulWidget {
   const ContainerWidget({Key? key}) : super(key: key);
@@ -40,14 +41,14 @@ class _ContainerWidgetState extends State<ContainerWidget> {
         children: _pages,
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.5.h),
         child: GNav(
           gap: 5,
           hoverColor: Colors.grey[100]!,
           activeColor: Colors.black,
           color: Colors.grey[800],
           tabBackgroundColor: Colors.white,
-          iconSize: 24,
+          iconSize: 18.sp,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           duration: const Duration(milliseconds: 400),
           tabs: _items.mapIndexed((index, _) => _buildItem(index)).toList(),
@@ -86,6 +87,7 @@ class _ContainerWidgetState extends State<ContainerWidget> {
     return GButton(
       icon: _items[index]['icon'],
       text: _items[index]['text'],
+      textStyle: Theme.of(context).textTheme.bodyText2,
     );
   }
 }

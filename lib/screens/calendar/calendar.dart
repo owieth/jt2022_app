@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:jt2022_app/models/calendar_item_model.dart';
 import 'package:jt2022_app/widgets/calendar/calendar_item_widget.dart';
 import 'package:jt2022_app/widgets/calendar/calendar_timeline_widget.dart';
+import 'package:sizer/sizer.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 35.0, top: 70.0, right: 35.0),
+      padding: EdgeInsets.fromLTRB(10.w, 7.5.h, 10.w, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
