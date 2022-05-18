@@ -64,6 +64,8 @@ class AuthenticationService {
   Future<void> changeEmail(BuildContext context, String credential) async {
     try {
       await _firebaseAuth.currentUser!.updateEmail(credential);
+      await UserService()
+          .updateEmail(credential, FirebaseAuth.instance.currentUser!.uid);
       GlobalSnackBar.show(context, 'Deine Email wurde geändert!',
           CustomColors.successSnackBarColor);
       Navigator.pop(context);
@@ -74,6 +76,14 @@ class AuthenticationService {
             'Du musst dich neu einloggen um Änderungen an deinem Profil machen zu können!',
             CustomColors.errorSnackBarColor);
         AuthenticationService(FirebaseAuth.instance).signOut();
+      } else if (e.code == 'invalid-email') {
+        GlobalSnackBar.show(context, 'Diese Email ist nicht gültig!',
+            CustomColors.errorSnackBarColor);
+      } else if (e.code == 'email-already-in-use') {
+        GlobalSnackBar.show(
+            context,
+            'Diese Email wird bereits von einem anderen User benutzt!',
+            CustomColors.errorSnackBarColor);
       }
     }
   }

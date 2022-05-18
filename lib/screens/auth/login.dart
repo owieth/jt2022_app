@@ -30,8 +30,9 @@ class _LoginState extends State<Login> {
               context,
               'Fehler bei der Anmeldung: ${onSignIn.authError}',
               CustomColors.errorSnackBarColor);
+        } else {
+          Navigator.pushReplacementNamed(context, "");
         }
-        Navigator.pushReplacementNamed(context, "");
         break;
 
       case ButtonEvent.signUp:

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/members/members.dart';
 import 'package:jt2022_app/screens/onboarding/onboarding.dart';
@@ -39,6 +38,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SVProgressHUD.setDefaultStyle(SVProgressHUDStyle.dark);
+    SVProgressHUD.setDefaultMaskType(SVProgressHUDMaskType.black);
 
     return MultiProvider(
       providers: [
@@ -109,40 +109,17 @@ class App extends StatelessWidget {
   }
 }
 
-class AuthenticationWrapper extends StatefulWidget {
+class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({Key? key}) : super(key: key);
-
-  @override
-  State<AuthenticationWrapper> createState() => _AuthenticationWrapperState();
-}
-
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-  CustomUser? user;
-
-  @override
-  void initState() {
-    _getCurrentUser();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
 
-    if (user == null || firebaseUser == null) {
+    if (firebaseUser == null) {
       return const Login();
     }
 
-    //if (user != null && !user!.isOnboarded && user!.id != '') {
-    if (!user!.isOnboarded) {
-      return const Onboarding();
-    }
-
     return const ContainerWidget();
-  }
-
-  void _getCurrentUser() async {
-    final _user = await UserService().getCurrentUser();
-    setState(() => user = _user);
   }
 }
