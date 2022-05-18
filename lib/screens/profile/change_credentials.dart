@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
@@ -45,36 +46,49 @@ class _ChangeCredentialsState extends State<ChangeCredentials> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (widget.changeUserCredentials ==
-                          ChangeUserCredentials.password) ...{
-                        ..._buildFormTextField('Neues Passwort', 'password'),
-                        ..._buildFormTextField(
-                            'Passwort wiederholen', 'confirmPassword'),
-                        ActionButton(
-                          buttonText: "Passwort speichern",
-                          callback: () async {
-                            _formKey.currentState!.save();
+                      ..._buildFormTextField(
+                          widget.changeUserCredentials ==
+                                  ChangeUserCredentials.password
+                              ? 'Neues Passwort'
+                              : 'Neue Email',
+                          widget.changeUserCredentials ==
+                                  ChangeUserCredentials.password
+                              ? 'password'
+                              : 'email'),
+                      ..._buildFormTextField(
+                          widget.changeUserCredentials ==
+                                  ChangeUserCredentials.password
+                              ? 'Passwort wiederholen'
+                              : 'Email wiederholen',
+                          widget.changeUserCredentials ==
+                                  ChangeUserCredentials.password
+                              ? 'confirmPassword'
+                              : 'confirmEmail'),
+                      ActionButton(
+                        buttonText: widget.changeUserCredentials ==
+                                ChangeUserCredentials.password
+                            ? 'Passwort speichern'
+                            : 'Email speichern',
+                        callback: () async {
+                          SVProgressHUD.show();
+                          _formKey.currentState!.save();
+
+                          if (widget.changeUserCredentials ==
+                              ChangeUserCredentials.password) {
                             await context
                                 .read<AuthenticationService>()
                                 .changePassword(context,
                                     _formKey.currentState!.value['password']);
-                          },
-                        ),
-                      } else ...{
-                        ..._buildFormTextField('Neue Email', 'email'),
-                        ..._buildFormTextField(
-                            'Email wiederholen', 'confirmEmail'),
-                        ActionButton(
-                          buttonText: "Email speichern",
-                          callback: () async {
-                            _formKey.currentState!.save();
+                            SVProgressHUD.dismiss();
+                          } else {
                             await context
                                 .read<AuthenticationService>()
                                 .changeEmail(context,
                                     _formKey.currentState!.value['email']);
-                          },
-                        ),
-                      },
+                            SVProgressHUD.dismiss();
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -96,6 +110,10 @@ class _ChangeCredentialsState extends State<ChangeCredentials> {
       FormBuilderTextField(
         name: userAttribute,
         initialValue: '',
+        obscureText:
+            widget.changeUserCredentials == ChangeUserCredentials.password
+                ? true
+                : false,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide:

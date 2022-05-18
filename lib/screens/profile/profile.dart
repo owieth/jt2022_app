@@ -157,6 +157,7 @@ class _ProfileState extends State<Profile> {
               isDestructiveAction: true,
               defaultType: OkCancelAlertDefaultType.cancel);
           if (result == OkCancelResult.ok) {
+            SVProgressHUD.show();
             for (var workshop in _user!.workshops) {
               context
                   .read<WorkshopsService>()
@@ -164,6 +165,7 @@ class _ProfileState extends State<Profile> {
             }
 
             await context.read<UserService>().deleteUser(context, _user!.id);
+            SVProgressHUD.dismiss();
 
             Navigator.pushReplacementNamed(context, '/login');
           }
@@ -172,11 +174,7 @@ class _ProfileState extends State<Profile> {
     }
 
     return ListTile(
-      onTap: () {
-        SVProgressHUD.show();
-        onTap();
-        SVProgressHUD.dismiss();
-      },
+      onTap: () => onTap(),
       leading: Icon(_settings[index]['icon']),
       title: Text(
         _settings[index]['text'],

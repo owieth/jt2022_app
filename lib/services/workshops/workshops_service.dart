@@ -29,10 +29,10 @@ class WorkshopsService {
     }
 
     List<Workshop> tempList = await workshops;
-    List<Workshop> sortedEvents =
-        tempList.where((workshop) => workshop.date == day).toList();
-    // TODO
-    //     .where((workshop) => workshop.attendees.contains(userId))
+    List<Workshop> sortedEvents = tempList
+        .where((workshop) => workshop.date == day)
+        .where((workshop) => workshop.attendees.contains(userId))
+        .toList();
 
     List<Workshop> events = [..._events, ...sortedEvents];
     events.sort((a, b) => a.startTime.compareTo(b.startTime));
@@ -127,18 +127,18 @@ class WorkshopsService {
   Future<Workshop> _returnWorkshop(
       String documentId, Map<dynamic, dynamic> workshop) async {
     return Workshop(
-      id: documentId,
-      name: workshop['name'] ?? "",
-      attendees: workshop["attendees"].cast<String>(),
-      date: Dates().formatDateToDay(
-          DateTime.fromMicrosecondsSinceEpoch(workshop['date'] * 1000)),
-      startTime: Dates().formatDateToHM(
-          DateTime.fromMicrosecondsSinceEpoch(workshop['startTime'] * 1000)),
-      endTime: Dates().formatDateToHM(
-          DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
-      image: workshop['image'],
-      description: workshop['description'] ?? "",
-    );
+        id: documentId,
+        name: workshop['name'] ?? "",
+        attendees: workshop["attendees"].cast<String>(),
+        date: Dates().formatDateToDay(
+            DateTime.fromMicrosecondsSinceEpoch(workshop['date'] * 1000)),
+        startTime: Dates().formatDateToHM(
+            DateTime.fromMicrosecondsSinceEpoch(workshop['startTime'] * 1000)),
+        endTime: Dates().formatDateToHM(
+            DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
+        image: workshop['image'],
+        description: workshop['description'] ?? "",
+        house: workshop['house']);
   }
 
   Future<Workshop> _returnEvent(
@@ -152,6 +152,7 @@ class WorkshopsService {
           DateTime.fromMicrosecondsSinceEpoch(workshop['startTime'] * 1000)),
       endTime: Dates().formatDateToHM(
           DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
+      house: workshop['house'],
       // These Properties are not needed for an event
       attendees: [],
       image: '',

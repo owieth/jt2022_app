@@ -7,6 +7,7 @@ class Workshop {
   final String startTime;
   final String image;
   final String name;
+  final int house;
 
   Workshop({
     required this.id,
@@ -17,5 +18,6 @@ class Workshop {
     required this.startTime,
     required this.image,
     required this.name,
+    required this.house,
   });
 }

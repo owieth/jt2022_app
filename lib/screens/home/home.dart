@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,11 @@ class _HomeState extends State<Home> {
     _getCurrentUser();
     _userWorkshops = WorkshopsService().getUserWorkshops(_firebaseUser.uid);
     _setAmountOfUserWorkshops();
+
+    if (_user != null && _user!.isOnboarded) {
+      WidgetsBinding.instance
+          ?.addPostFrameCallback((_) => _showOnboardingDialog());
+    }
   }
 
   @override
@@ -155,6 +161,7 @@ class _HomeState extends State<Home> {
 
   Widget _buildUserWorkshops() {
     return UserWorkshops(
+      user: _user,
       userWorkshops: _userWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(
           '🎫  Meine Workshops geändert!', CustomColors.infoSnackBarColor),
@@ -188,6 +195,19 @@ class _HomeState extends State<Home> {
           context,
           '🚫 Google Drive Ordner konnte nicht geöffnet werden!',
           CustomColors.errorSnackBarColor);
+    }
+  }
+
+  _showOnboardingDialog() async {
+    final result = await showOkCancelAlertDialog(
+        context: context,
+        title: '👋 Hello!',
+        message: 'Du bist neu hier richtig?',
+        isDestructiveAction: true,
+        defaultType: OkCancelAlertDefaultType.cancel);
+    print(result);
+    if (result == OkCancelResult.ok) {
+      Navigator.pushReplacementNamed(context, '/onboarding');
     }
   }
 }

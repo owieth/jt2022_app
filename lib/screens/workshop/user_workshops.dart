@@ -1,15 +1,21 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/constants/workshop.dart';
+import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/workshop_item_widget.dart';
 
 class UserWorkshops extends StatelessWidget {
+  final CustomUser? user;
   final Future<List<Workshop>> userWorkshops;
   final Function emitWorkshopChange;
   const UserWorkshops(
-      {Key? key, required this.userWorkshops, required this.emitWorkshopChange})
+      {Key? key,
+      required this.user,
+      required this.userWorkshops,
+      required this.emitWorkshopChange})
       : super(key: key);
 
   @override
@@ -35,11 +41,14 @@ class UserWorkshops extends StatelessWidget {
                 ? const EdgeInsets.only(left: 35)
                 : const EdgeInsets.symmetric(horizontal: 35);
 
+            final workshop = snapshot.data?.asMap()[index];
+            final _icon = getIcon(workshop);
+
             return Stack(
               children: [
                 Padding(
                   padding: _padding,
-                  child: snapshot.data?.asMap()[index] != null
+                  child: workshop != null
                       ? WorkshopItem(
                           width: 200,
                           workshop: snapshot.data![index],
@@ -61,6 +70,15 @@ class UserWorkshops extends StatelessWidget {
                 ),
                 Positioned(
                   top: 10,
+                  left: 45,
+                  child: Icon(
+                    _icon,
+                    size: Theme.of(context).textTheme.headline1!.fontSize,
+                    color: Theme.of(context).textTheme.headline1!.color,
+                  ),
+                ),
+                Positioned(
+                  top: 10,
                   left: 185,
                   child: CircleAvatar(
                     backgroundColor: CustomColors.primaryColor,
@@ -76,5 +94,24 @@ class UserWorkshops extends StatelessWidget {
         );
       },
     );
+  }
+
+  IconData getIcon(Workshop? workshop) {
+    if (workshop != null) {
+      switch (user!.workshops
+          .firstWhere((element) => element.id == workshop.id)
+          .state) {
+        case AttendanceState.approved:
+          return EvaIcons.checkmarkCircle2Outline;
+
+        case AttendanceState.refused:
+          return EvaIcons.closeCircleOutline;
+
+        default:
+          return EvaIcons.clockOutline;
+      }
+    }
+
+    return EvaIcons.clockOutline;
   }
 }

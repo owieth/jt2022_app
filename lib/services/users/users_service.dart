@@ -131,4 +131,10 @@ class UserService {
       "isOnboarded": true,
     });
   }
+
+  Future<void> updateEmail(String email, String userId) async {
+    await usersCollection.doc(userId).update({
+      'email': email,
+    });
+  }
 }
