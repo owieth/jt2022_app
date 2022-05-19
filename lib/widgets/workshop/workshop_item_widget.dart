@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/text_overlay_widget.dart';
@@ -10,15 +11,17 @@ class WorkshopItem extends StatelessWidget {
   final bool isUserAlreadySignedUp;
   final bool hasMaxAmountOfWorkshops;
   final Function emitWorkshopChange;
+  final AttendanceState state;
 
-  const WorkshopItem(
-      {Key? key,
-      required this.width,
-      required this.workshop,
-      required this.isUserAlreadySignedUp,
-      required this.emitWorkshopChange,
-      required this.hasMaxAmountOfWorkshops})
-      : super(key: key);
+  const WorkshopItem({
+    Key? key,
+    required this.width,
+    required this.workshop,
+    required this.isUserAlreadySignedUp,
+    required this.emitWorkshopChange,
+    required this.hasMaxAmountOfWorkshops,
+    required this.state,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,8 @@ class WorkshopItem extends StatelessWidget {
         arguments: {
           "workshop": workshop,
           "isUserAlreadySignedUp": isUserAlreadySignedUp,
-          "hasMaxAmountOfWorkshops": hasMaxAmountOfWorkshops
+          "hasMaxAmountOfWorkshops": hasMaxAmountOfWorkshops,
+          "state": state
         },
       ).then((dynamic value) => {
             if (value != null) {emitWorkshopChange()}

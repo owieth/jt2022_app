@@ -2,14 +2,13 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/constants/colors.dart';
-import 'package:jt2022_app/constants/workshop.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
-import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/profile/profile_edit_button.dart';
+import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -25,6 +24,7 @@ class _ProfileState extends State<Profile> {
   CustomUser? _user;
 
   final List<Map> _settings = [
+    {'text': 'Einführung starten', 'icon': LineIcons.lightbulb},
     {'text': 'Ausloggen', 'icon': Icons.logout},
     {'text': 'Email ändern', 'icon': Icons.change_circle_outlined},
     {'text': 'Passwort ändern', 'icon': Icons.change_circle_outlined},
@@ -108,7 +108,7 @@ class _ProfileState extends State<Profile> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0),
             child: ListView.separated(
-              itemCount: WorkshopConstants.maxUserWorkshopsAttendance,
+              itemCount: 5,
               itemBuilder: (_, index) => Container(
                 child: _buildSettingsCard(index),
                 decoration: BoxDecoration(
@@ -132,23 +132,28 @@ class _ProfileState extends State<Profile> {
     switch (index) {
       case 0:
         onTap = () {
+          Navigator.pushReplacementNamed(context, '/onboarding');
+        };
+        break;
+      case 1:
+        onTap = () {
           context.read<AuthenticationService>().signOut();
           Navigator.pushReplacementNamed(context, '/login');
           GlobalSnackBar.show(
               context, '👋 Tschüss!', CustomColors.infoSnackBarColor);
         };
         break;
-      case 1:
+      case 2:
         onTap = () {
           Navigator.pushNamed(context, '/profile/changeEmail');
         };
         break;
-      case 2:
+      case 3:
         onTap = () {
           Navigator.pushNamed(context, '/profile/changePw');
         };
         break;
-      case 3:
+      case 4:
         onTap = () async {
           final result = await showOkCancelAlertDialog(
               context: context,

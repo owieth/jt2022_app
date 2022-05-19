@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
+import 'package:jt2022_app/constants/houses.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
@@ -25,14 +26,6 @@ class _LocationState extends State<Location> {
       'https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}';
   final accessToken =
       'pk.eyJ1Ijoib3J0ZXhoZCIsImEiOiJjbDFsMmZ3N2UwMWthM2NxcjY3cGFvNjJ2In0.-4xH_hTNDBZQVwGvdY0-UQ';
-
-  final List _houses = [
-    {'key': 0, 'value': 'Verwaltungsgebäude (A)'},
-    {'key': 1, 'value': 'Schulungsgebäude (B)'},
-    {'key': 2, 'value': 'Unterkunft (C)'},
-    {'key': 3, 'value': 'Unterkunft (D)'},
-    {'key': 4, 'value': 'Turnhalle (E)'}
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +143,7 @@ class _LocationState extends State<Location> {
       child: Column(
         children: [
           Text(
-            _houses.firstWhere(
+            Houses().houses.firstWhere(
                 (house) => house['key'] == _selectedMarkerIndex)['value'],
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.subtitle1,

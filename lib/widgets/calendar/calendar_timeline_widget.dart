@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/constants/houses.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:line_icons/line_icons.dart';
@@ -10,19 +11,14 @@ import 'package:timelines/timelines.dart';
 
 const activeTile = 0;
 
-class CalendarTimeLine extends StatefulWidget {
+class CalendarTimeLine extends StatelessWidget {
   final String date;
 
   const CalendarTimeLine({Key? key, required this.date}) : super(key: key);
 
-  @override
-  State<CalendarTimeLine> createState() => _CalendarTimeLineState();
-}
-
-class _CalendarTimeLineState extends State<CalendarTimeLine> {
   Future<List<Workshop>> _getCalendarEntries() {
     final _user = FirebaseAuth.instance.currentUser;
-    return WorkshopsService().getUserWorkshopsByDay(widget.date, _user!.uid);
+    return WorkshopsService().getUserWorkshopsByDay(date, _user!.uid);
   }
 
   @override
@@ -160,12 +156,20 @@ class CalendarEntry extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  children: const [
-                    Icon(
+                  children: [
+                    const Icon(
                       LineIcons.mapMarker,
                       size: 16,
                     ),
-                    Text("3. Stock"),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 30.w),
+                      child: SingleChildScrollView(
+                        child: Text(
+                          "${Houses().houses.firstWhere((house) => house['key'] == workshop.house)['value']}",
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 Text("${workshop.startTime} - ${workshop.endTime}"),

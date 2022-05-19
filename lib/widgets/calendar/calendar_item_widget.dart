@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CalendarItem extends StatefulWidget {
+class CalendarItem extends StatelessWidget {
   final bool isActive;
   final String date;
   final String day;
@@ -15,21 +15,16 @@ class CalendarItem extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CalendarItem> createState() => _CalendarItemState();
-}
-
-class _CalendarItemState extends State<CalendarItem> {
-  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => widget.emitClick(widget.date),
+      onTap: () => emitClick(date),
       child: Container(
         height: 80.0,
         width: 60.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
           border: Border.all(
-            color: widget.isActive ? Colors.white : Colors.transparent,
+            color: isActive ? Colors.white : Colors.transparent,
             width: 2,
           ),
         ),
@@ -39,11 +34,11 @@ class _CalendarItemState extends State<CalendarItem> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.date,
+                date,
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               Text(
-                widget.day,
+                day,
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ],

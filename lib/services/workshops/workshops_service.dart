@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/util/dates.dart';
+import 'package:collection/collection.dart';
 
 class WorkshopsService {
   final CollectionReference workshopsCollection =
@@ -69,11 +70,11 @@ class WorkshopsService {
   }
 
   void changePriorityOfUserWorkshops(
-      String userId, List<Workshop> workshops) async {
+      String userId, List<Workshop> workshops, List<int> workshopState) async {
     await usersCollection.doc(userId).update({
       "workshops": workshops
-          .map((workshop) =>
-              {'id': workshop.id, 'state': AttendanceState.wait.index})
+          .mapIndexed((index, workshop) =>
+              {'id': workshop.id, 'state': workshopState[index]})
           .toList()
     });
   }

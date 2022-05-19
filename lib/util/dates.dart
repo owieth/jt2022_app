@@ -10,6 +10,6 @@ class Dates {
   }
 
   String formatDateToDay(DateTime date) {
-    return DateFormat.d().format(date);
+    return DateFormat('dd').format(date);
   }
 }
