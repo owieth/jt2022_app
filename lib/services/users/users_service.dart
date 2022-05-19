@@ -44,7 +44,8 @@ class UserService {
         isOnboarded: _userAttributes['isOnboarded'],
         workshops: (_userAttributes['workshops'] as List)
             .map((workshop) => WorkshopAttendee(
-                id: workshop['id'], state: AttendanceState.wait))
+                id: workshop['id'],
+                state: AttendanceState.values[workshop['state']]))
             .toList(),
       );
     }

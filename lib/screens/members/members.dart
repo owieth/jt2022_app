@@ -63,8 +63,7 @@ class _MembersState extends State<Members> {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             const SizedBox(height: 15.0),
-            SizedBox(
-              height: 200,
+            Expanded(
               child: Container(
                 padding: const EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
@@ -98,12 +97,26 @@ class _MembersState extends State<Members> {
                       users.map(
                         (user) => Padding(
                           padding: const EdgeInsets.only(bottom: 20),
-                          child: ListTile(
-                            leading: Avatar(
-                              radius: 30,
-                              image: user.photoUrl != '' ? user.photoUrl : null,
+                          child: InkWell(
+                            onTap: () => _showSimpleDialog(user),
+                            child: ListTile(
+                              leading: Avatar(
+                                radius: 30,
+                                image:
+                                    user.photoUrl != '' ? user.photoUrl : null,
+                              ),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(user.name),
+                                  Text(
+                                    '${user.region} - ${user.muncipality}',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                ],
+                              ),
                             ),
-                            title: Text(user.name),
                           ),
                         ),
                       ),
@@ -143,8 +156,9 @@ class _MembersState extends State<Members> {
       ImportantNumbers("Feuerwehr", "118"),
       ImportantNumbers("Polizei", "117"),
       ImportantNumbers("Sanität", "144"),
-      ImportantNumbers("Yasmin Bühlmann", "079 669 48 39"),
-      ImportantNumbers("Tania Doppmann", "079 669 48 39"),
+      ImportantNumbers("Yasmin Bühlmann", "079 555 10 51"),
+      ImportantNumbers("Tania Doppmann", "079 532 76 18"),
+      ImportantNumbers("Olivier Winkler", "078 652 77 00"),
     ];
 
     return List.from(
@@ -172,5 +186,61 @@ class _MembersState extends State<Members> {
       duration: const Duration(seconds: 2),
       curve: Curves.linear,
     );
+  }
+
+  Future<void> _showSimpleDialog(CustomUser user) async {
+    await showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            shape: const RoundedRectangleBorder(
+              side: BorderSide(color: Colors.white, width: 1),
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            children: [
+              Avatar(
+                radius: 50,
+                image: user.photoUrl != '' ? user.photoUrl : null,
+              ),
+              Column(
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        user.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 150),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        user.region,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 150),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        user.muncipality,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 }

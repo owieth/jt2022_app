@@ -3,12 +3,14 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
+import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:collection/collection.dart';
 
 class WorkshopPriority extends StatefulWidget {
   const WorkshopPriority({Key? key}) : super(key: key);
@@ -18,15 +20,22 @@ class WorkshopPriority extends StatefulWidget {
 }
 
 class _WorkshopPriorityState extends State<WorkshopPriority> {
+  CustomUser? user;
   late final User _user;
   late Future<List<Workshop>> _userWorkshops;
   List<Workshop> workshops = [];
+  List<int> workshopState = [];
 
   @override
   void initState() {
     super.initState();
     _user = Provider.of<User?>(context, listen: false)!;
     _userWorkshops = WorkshopsService().getUserWorkshops(_user.uid);
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Map _arguments = ModalRoute.of(context)!.settings.arguments as Map;
+      user = _arguments['user'];
+    });
   }
 
   @override
@@ -50,6 +59,14 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
                 if (snapshot.hasData) {
                   SVProgressHUD.dismiss();
                   workshops = snapshot.data!;
+                  workshopState = workshops.mapIndexed((index, workshop) {
+                    return user!.workshops
+                        .firstWhere(
+                            (element) => element.id == workshops[index].id)
+                        .state
+                        .index;
+                  }).toList();
+
                   return Expanded(
                     child: Center(
                       child: ReorderableListView.builder(
@@ -110,8 +127,11 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
                             if (oldIndex < newIndex) {
                               newIndex -= 1;
                             }
-                            final Workshop item = workshops.removeAt(oldIndex);
-                            workshops.insert(newIndex, item);
+                            final Workshop workshop =
+                                workshops.removeAt(oldIndex);
+                            workshops.insert(newIndex, workshop);
+                            final int state = workshopState.removeAt(oldIndex);
+                            workshopState.insert(newIndex, state);
                           });
                         },
                       ),
@@ -126,8 +146,8 @@ class _WorkshopPriorityState extends State<WorkshopPriority> {
             ActionButton(
               buttonText: "Priorisierung speichern",
               callback: () async {
-                WorkshopsService()
-                    .changePriorityOfUserWorkshops(_user.uid, workshops);
+                WorkshopsService().changePriorityOfUserWorkshops(
+                    user!.id, workshops, workshopState);
                 Navigator.pop(context, true);
               },
             ),

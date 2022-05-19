@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
+import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
@@ -19,6 +20,7 @@ class Workshop extends StatefulWidget {
 class _WorkshopState extends State<Workshop> {
   bool isUserAlreadySignedUp = false;
   bool hasMaxAmountOfWorkshops = false;
+  AttendanceState state = AttendanceState.wait;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class _WorkshopState extends State<Workshop> {
     final _workshop = _arguments['workshop'];
     isUserAlreadySignedUp = _arguments['isUserAlreadySignedUp'];
     hasMaxAmountOfWorkshops = _arguments['hasMaxAmountOfWorkshops'];
+    state = _arguments['state'];
     final _user = Provider.of<User?>(context, listen: false);
 
     return Scaffold(
@@ -98,6 +101,16 @@ class _WorkshopState extends State<Workshop> {
                           context,
                           'Du hast bereits die maximale Workshopanzahl erreicht!',
                           CustomColors.errorSnackBarColor,
+                        );
+                        return;
+                      }
+
+                      if (state == AttendanceState.approved ||
+                          state == AttendanceState.refused) {
+                        GlobalSnackBar.show(
+                          context,
+                          'Du kannst dich nicht mehr für diesen Workshop anmelden / abmelden',
+                          CustomColors.infoSnackBarColor,
                         );
                         return;
                       }

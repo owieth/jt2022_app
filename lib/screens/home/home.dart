@@ -37,10 +37,15 @@ class _HomeState extends State<Home> {
     _userWorkshops = WorkshopsService().getUserWorkshops(_firebaseUser.uid);
     _setAmountOfUserWorkshops();
 
-    if (_user != null && _user!.isOnboarded) {
-      WidgetsBinding.instance
-          ?.addPostFrameCallback((_) => _showOnboardingDialog());
-    }
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) async => await Future.delayed(
+              const Duration(seconds: 2),
+              () {
+                if (_user != null && !_user!.isOnboarded) {
+                  _showOnboardingDialog();
+                }
+              },
+            ));
   }
 
   @override
@@ -113,17 +118,18 @@ class _HomeState extends State<Home> {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               IconButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, '/workshop/priority')
-                        .then((dynamic value) => {
-                              if (value != null)
-                                {
-                                  _getUsersWorkshop(
-                                    '🔃 Priorität der Workshops geändert!',
-                                    CustomColors.infoSnackBarColor,
-                                  )
-                                }
-                            }),
+                onPressed: () => Navigator.pushNamed(
+                    context, '/workshop/priority', arguments: {
+                  'user': _user
+                }).then((dynamic value) => {
+                      if (value != null)
+                        {
+                          _getUsersWorkshop(
+                            '🔃 Priorität der Workshops geändert!',
+                            CustomColors.infoSnackBarColor,
+                          )
+                        }
+                    }),
                 icon: const Icon(
                   EvaIcons.flip,
                   color: Colors.white,
@@ -152,6 +158,7 @@ class _HomeState extends State<Home> {
 
   Workshops _buildWorkshops() {
     return Workshops(
+      user: _user,
       hasMaxAmountOfWorkshops:
           _amountOfUserWorkshops >= WorkshopConstants.maxUserWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(
@@ -174,6 +181,7 @@ class _HomeState extends State<Home> {
     });
 
     _setAmountOfUserWorkshops();
+    _getCurrentUser();
 
     GlobalSnackBar.show(context, snackBarText, snackBarColor);
   }
@@ -200,12 +208,14 @@ class _HomeState extends State<Home> {
 
   _showOnboardingDialog() async {
     final result = await showOkCancelAlertDialog(
-        context: context,
-        title: '👋 Hello!',
-        message: 'Du bist neu hier richtig?',
-        isDestructiveAction: true,
-        defaultType: OkCancelAlertDefaultType.cancel);
-    print(result);
+      context: context,
+      title: '👋 Hello!',
+      message:
+          'Du bist neu hier richtig? Wir haben für dich eine Erklärung der App Funktionen bereit. Möchtest du diese Einführung starten?',
+      okLabel: 'Einführung jetzt starten',
+      cancelLabel: 'Später',
+      defaultType: OkCancelAlertDefaultType.ok,
+    );
     if (result == OkCancelResult.ok) {
       Navigator.pushReplacementNamed(context, '/onboarding');
     }

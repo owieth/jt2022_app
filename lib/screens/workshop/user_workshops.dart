@@ -6,6 +6,7 @@ import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
 import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/workshop_item_widget.dart';
+import 'package:collection/collection.dart';
 
 class UserWorkshops extends StatelessWidget {
   final CustomUser? user;
@@ -42,53 +43,67 @@ class UserWorkshops extends StatelessWidget {
                 : const EdgeInsets.symmetric(horizontal: 35);
 
             final workshop = snapshot.data?.asMap()[index];
-            final _icon = getIcon(workshop);
 
-            return Stack(
-              children: [
-                Padding(
-                  padding: _padding,
-                  child: workshop != null
-                      ? WorkshopItem(
-                          width: 200,
-                          workshop: snapshot.data![index],
-                          isUserAlreadySignedUp: true,
-                          hasMaxAmountOfWorkshops: false,
-                          emitWorkshopChange: () => emitWorkshopChange(),
-                        )
-                      : Container(
-                          height: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
+            final int? _index = user!.workshops
+                .firstWhereOrNull((element) => element.id == workshop?.id)
+                ?.state
+                .index;
+
+            final AttendanceState state = _index != null
+                ? AttendanceState.values[_index]
+                : AttendanceState.wait;
+
+            final _icon = getIcon(workshop, state);
+
+            return Opacity(
+              opacity: state == AttendanceState.refused ? 0.5 : 1.0,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: _padding,
+                    child: workshop != null
+                        ? WorkshopItem(
+                            width: 200,
+                            workshop: snapshot.data![index],
+                            isUserAlreadySignedUp: true,
+                            hasMaxAmountOfWorkshops: false,
+                            emitWorkshopChange: () => emitWorkshopChange(),
+                            state: state,
+                          )
+                        : Container(
+                            height: 200,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
                             ),
                           ),
-                        ),
-                ),
-                Positioned(
-                  top: 10,
-                  left: 45,
-                  child: Icon(
-                    _icon,
-                    size: Theme.of(context).textTheme.headline1!.fontSize,
-                    color: Theme.of(context).textTheme.headline1!.color,
                   ),
-                ),
-                Positioned(
-                  top: 10,
-                  left: 185,
-                  child: CircleAvatar(
-                    backgroundColor: CustomColors.primaryColor,
-                    child: Text(
-                      "#${index + 1}",
-                      style: Theme.of(context).textTheme.bodyText1,
+                  Positioned(
+                    top: 10,
+                    left: 45,
+                    child: Icon(
+                      _icon,
+                      size: Theme.of(context).textTheme.headline1!.fontSize,
+                      color: Theme.of(context).textTheme.headline1!.color,
                     ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    top: 10,
+                    left: 185,
+                    child: CircleAvatar(
+                      backgroundColor: CustomColors.primaryColor,
+                      child: Text(
+                        "#${index + 1}",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         );
@@ -96,11 +111,9 @@ class UserWorkshops extends StatelessWidget {
     );
   }
 
-  IconData getIcon(Workshop? workshop) {
+  IconData getIcon(Workshop? workshop, AttendanceState attendanceState) {
     if (workshop != null) {
-      switch (user!.workshops
-          .firstWhere((element) => element.id == workshop.id)
-          .state) {
+      switch (attendanceState) {
         case AttendanceState.approved:
           return EvaIcons.checkmarkCircle2Outline;
 
