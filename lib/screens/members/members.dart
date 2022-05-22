@@ -63,7 +63,8 @@ class _MembersState extends State<Members> {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             const SizedBox(height: 15.0),
-            Expanded(
+            SizedBox(
+              height: 130,
               child: Container(
                 padding: const EdgeInsets.all(15.0),
                 decoration: BoxDecoration(

@@ -178,7 +178,7 @@ class _LocationState extends State<Location> {
                         width: 5.w,
                       ),
                       Container(
-                        constraints: BoxConstraints(maxWidth: 50.w),
+                        constraints: BoxConstraints(maxWidth: 45.w),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
