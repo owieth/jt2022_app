@@ -1,8 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
+import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/util/dates.dart';
 import 'package:collection/collection.dart';
+
+/*
+  Workshop Placeholder
+  1. YaxflPKreihbjTjA273N
+  2. l40wEgRQDUwRs0NoJ021
+  3. xACJjltu3dwRYzKxXGca
+  4. 7YJwDyXwnJgjE1eMbeOK
+*/
+const List<String> placeholders = [
+  'YaxflPKreihbjTjA273N',
+  'l40wEgRQDUwRs0NoJ021',
+  'xACJjltu3dwRYzKxXGca',
+  '7YJwDyXwnJgjE1eMbeOK'
+];
 
 class WorkshopsService {
   final CollectionReference workshopsCollection =
@@ -22,20 +37,31 @@ class WorkshopsService {
       String day, String userId) async {
     List<Workshop> _events = [];
     QuerySnapshot snapshot = await eventsCollection.get();
+    List<CustomUser> users = await UserService().getAllUsers();
+    List<Workshop> userWorkshops = await getUserWorkshops(userId);
+    CustomUser user = await UserService().getCurrentUser();
+
+    List<Workshop> sortedWorkshops =
+        userWorkshops.where((workshop) => workshop.date == day).toList();
+
+    final workshopsWithStateWait = sortedWorkshops.where((workshop) =>
+        user.workshops.firstWhere((v) => v.id == workshop.id).state ==
+        AttendanceState.wait);
 
     for (QueryDocumentSnapshot doc in snapshot.docs) {
       final eventObject = doc.data() as Map;
-      final workshop = await _returnEvent(doc.id, eventObject);
-      if (workshop.date == day) _events.add(workshop);
+      final workshop = await _returnEvent(
+          doc.id, eventObject, users.map((user) => user.id).toList());
+      if (workshopsWithStateWait.isEmpty && workshop.date == day) {
+        if (!placeholders.contains(workshop.id)) _events.add(workshop);
+      } else if (workshop.date == day) {
+        _events.add(workshop);
+      }
     }
 
-    List<Workshop> tempList = await workshops;
-    List<Workshop> sortedEvents = tempList
-        .where((workshop) => workshop.date == day)
-        .where((workshop) => workshop.attendees.contains(userId))
-        .toList();
+    if (workshopsWithStateWait.isNotEmpty) sortedWorkshops = [];
 
-    List<Workshop> events = [..._events, ...sortedEvents];
+    List<Workshop> events = [..._events, ...sortedWorkshops];
     events.sort((a, b) => a.startTime.compareTo(b.startTime));
     return events;
   }
@@ -142,8 +168,8 @@ class WorkshopsService {
         house: workshop['house']);
   }
 
-  Future<Workshop> _returnEvent(
-      String documentId, Map<dynamic, dynamic> workshop) async {
+  Future<Workshop> _returnEvent(String documentId,
+      Map<dynamic, dynamic> workshop, List<String> attendees) async {
     return Workshop(
       id: documentId,
       name: workshop['name'] ?? "",
@@ -154,8 +180,8 @@ class WorkshopsService {
       endTime: Dates().formatDateToHM(
           DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
       house: workshop['house'],
+      attendees: attendees,
       // These Properties are not needed for an event
-      attendees: [],
       image: '',
       description: '',
     );
