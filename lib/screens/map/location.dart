@@ -10,6 +10,7 @@ import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:sizer/sizer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:collection/collection.dart';
+import 'package:grouped_list/grouped_list.dart';
 
 class Location extends StatefulWidget {
   const Location({Key? key}) : super(key: key);
@@ -59,7 +60,7 @@ class _LocationState extends State<Location> {
             context: context,
             removeTop: true,
             child: FutureBuilder(
-              future: WorkshopsService().workshops,
+              future: WorkshopsService().getEventsAndWorkshops(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<Workshop>> snapshot) {
                 if (snapshot.hasData) {
@@ -115,6 +116,7 @@ class _LocationState extends State<Location> {
       lat_lng.LatLng(46.663050, 7.275300),
       lat_lng.LatLng(46.663960, 7.275372),
       lat_lng.LatLng(46.663920, 7.276075),
+      lat_lng.LatLng(46.663454, 7.275300),
     ];
 
     return coordinates
@@ -153,54 +155,68 @@ class _LocationState extends State<Location> {
             height: _maxPanelHeight,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 80),
-              child: ListView.separated(
-                itemCount: workshopsByHouse.length,
-                itemBuilder: ((context, index) {
-                  return Row(
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: CachedNetworkImage(
-                          imageUrl: workshops[index].image,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
+              child: GroupedListView<Workshop, String>(
+                elements: workshopsByHouse.toList(),
+                groupBy: (workshop) => workshop.date,
+                itemComparator: (workshop1, workshop2) =>
+                    workshop1.startTime.compareTo(workshop2.startTime),
+                order: GroupedListOrder.ASC,
+                groupSeparatorBuilder: (String value) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "$value. September",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+                itemBuilder: (_, workshop) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 1.h),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: CachedNetworkImage(
+                            imageUrl: workshop.image,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(maxWidth: 45.w),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                workshops[index].name,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              Text(
-                                "${workshops[index].startTime} - ${workshops[index].endTime}",
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-                            ],
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Container(
+                          constraints: BoxConstraints(maxWidth: 45.w),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  workshop.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                                Text(
+                                  "${workshop.startTime} - ${workshop.endTime}",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
-                }),
-                separatorBuilder: (_, __) => const SizedBox(height: 20),
+                },
               ),
             ),
           ),

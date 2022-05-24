@@ -194,7 +194,7 @@ class _HomeState extends State<Home> {
   void _setAmountOfUserWorkshops() async {
     List<Workshop> workshops =
         await WorkshopsService().getUserWorkshops(_firebaseUser.uid);
-    setState(() => _amountOfUserWorkshops = workshops.length);
+    if (mounted) setState(() => _amountOfUserWorkshops = workshops.length);
   }
 
   void _launchLink() async {

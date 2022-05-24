@@ -66,6 +66,24 @@ class WorkshopsService {
     return events;
   }
 
+  Future<List<Workshop>> getEventsAndWorkshops() async {
+    List<Workshop> _events = [];
+    QuerySnapshot snapshot = await eventsCollection.get();
+    List<CustomUser> users = await UserService().getAllUsers();
+    List<Workshop> userWorkshops = await workshops;
+
+    for (QueryDocumentSnapshot doc in snapshot.docs) {
+      final eventObject = doc.data() as Map;
+      final workshop = await _returnEvent(
+          doc.id, eventObject, users.map((user) => user.id).toList());
+      if (![...placeholders, 'sMsdg17BvwPM8muCbzmf'].contains(workshop.id)) {
+        _events.add(workshop);
+      }
+    }
+
+    return [..._events, ...userWorkshops];
+  }
+
   Future<List<Workshop>> getUserWorkshops(String userId) async {
     final user = await usersCollection.doc(userId).get();
     return _mapToUsersWorkshopList(user);
@@ -181,8 +199,8 @@ class WorkshopsService {
           DateTime.fromMicrosecondsSinceEpoch(workshop['endTime'] * 1000)),
       house: workshop['house'],
       attendees: attendees,
+      image: workshop['image'],
       // These Properties are not needed for an event
-      image: '',
       description: '',
     );
   }
