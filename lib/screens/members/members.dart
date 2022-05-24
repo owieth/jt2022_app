@@ -64,7 +64,7 @@ class _MembersState extends State<Members> {
             ),
             const SizedBox(height: 15.0),
             SizedBox(
-              height: 130,
+              height: 150,
               child: Container(
                 padding: const EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
@@ -76,6 +76,7 @@ class _MembersState extends State<Members> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: _buildImportantNumbers(),
                 ),
               ),
@@ -206,6 +207,7 @@ class _MembersState extends State<Members> {
                 radius: 50,
                 image: user.photoUrl != '' ? user.photoUrl : null,
               ),
+              const SizedBox(height: 10),
               Column(
                 children: [
                   Container(
@@ -218,8 +220,9 @@ class _MembersState extends State<Members> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 150),
+                    constraints: const BoxConstraints(maxWidth: 200),
                     child: SingleChildScrollView(
                       child: Text(
                         user.region,
@@ -229,7 +232,7 @@ class _MembersState extends State<Members> {
                     ),
                   ),
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 150),
+                    constraints: const BoxConstraints(maxWidth: 200),
                     child: SingleChildScrollView(
                       child: Text(
                         user.muncipality,
