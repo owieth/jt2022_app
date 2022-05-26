@@ -18,6 +18,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:switcher_button/switcher_button.dart';
+import 'package:collection/collection.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -134,11 +135,8 @@ class _EditProfileState extends State<EditProfile> {
                             borderRadius: BorderRadius.circular(10),
                             color: CustomColors.primaryColor,
                           ),
-                          defaultValue: Churches()
-                              .regions
-                              .where(
-                                  (element) => element['value'] == _user.region)
-                              .toList()[0],
+                          defaultValue: Churches().regions.firstWhereOrNull(
+                              (element) => element['value'] == _user.region),
                           isTriangle: false,
                           gap: 5.0,
                           onChange: (attribute) => region = attribute['value'],
@@ -177,9 +175,8 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           defaultValue: Churches()
                               .municipalities
-                              .where((element) =>
-                                  element['value'] == _user.muncipality)
-                              .toList()[0],
+                              .firstWhereOrNull((element) =>
+                                  element['value'] == _user.muncipality),
                           isTriangle: false,
                           gap: 5.0,
                           onChange: (attribute) =>

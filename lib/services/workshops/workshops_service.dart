@@ -129,10 +129,12 @@ class WorkshopsService {
 
     if (snapshot.data() != null) {
       final workshops = (snapshot.data() as Map)['workshops'] as List;
-      _workshops = workshops
-          .map((workshop) =>
-              WorkshopAttendee(id: workshop['id'], state: AttendanceState.wait))
-          .toList();
+      const DeepCollectionEquality().equals(workshops, [{}])
+          ? []
+          : _workshops = workshops
+              .map((workshop) => WorkshopAttendee(
+                  id: workshop['id'], state: AttendanceState.wait))
+              .toList();
     }
 
     List<Workshop> workshopDtos = [];

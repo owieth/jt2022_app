@@ -73,6 +73,7 @@ class App extends StatelessWidget {
       ],
       child: Sizer(builder: (context, orientation, deviceType) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             scaffoldBackgroundColor: Colors.black,
             primaryColor: Colors.black,

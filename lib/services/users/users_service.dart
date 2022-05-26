@@ -8,6 +8,7 @@ import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/auth/authentication_service.dart';
 import 'package:jt2022_app/util/snackbar.dart';
+import 'package:collection/collection.dart';
 
 class UserService {
   final CollectionReference usersCollection =
@@ -42,11 +43,14 @@ class UserService {
         region: _userAttributes['region'],
         isVolunteer: _userAttributes['isVolunteer'],
         isOnboarded: _userAttributes['isOnboarded'],
-        workshops: (_userAttributes['workshops'] as List)
-            .map((workshop) => WorkshopAttendee(
-                id: workshop['id'],
-                state: AttendanceState.values[workshop['state']]))
-            .toList(),
+        workshops: const DeepCollectionEquality()
+                .equals((_userAttributes['workshops'] as List), [{}])
+            ? []
+            : (_userAttributes['workshops'] as List)
+                .map((workshop) => WorkshopAttendee(
+                    id: workshop['id'],
+                    state: AttendanceState.values[workshop['state']]))
+                .toList(),
       );
     }
 
