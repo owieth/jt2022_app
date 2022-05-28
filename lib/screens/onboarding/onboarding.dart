@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({Key? key}) : super(key: key);
@@ -13,10 +14,11 @@ class Onboarding extends StatelessWidget {
     final _bodyTextStyle = Theme.of(context).textTheme;
 
     final pageDecoration = PageDecoration(
+      imageFlex: 2,
       titleTextStyle: _titleTextStyle.headline1!,
       bodyTextStyle: _bodyTextStyle.headline6!,
-      bodyPadding: const EdgeInsets.all(35.0),
-      imagePadding: EdgeInsets.zero,
+      bodyPadding: EdgeInsets.only(bottom: 15.w),
+      imagePadding: EdgeInsets.only(top: 10.w),
     );
 
     return IntroductionScreen(
@@ -26,32 +28,32 @@ class Onboarding extends StatelessWidget {
           title: "Auswahl Workshops",
           body:
               "Du kannst bis zu 6 Workshops auswählen. Am Jugendtag wirst du 4 besuchen können, priorisiere also richtig 😉",
-          image: _buildImage('church.jpeg'),
+          image: _buildGif('onboard1.gif'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Priorisierung deiner Workshops",
           body: "Stelle ein welche Workshops du umbedingt besuchen möchtest",
-          image: _buildImage('church.jpeg'),
+          image: _buildGif('onboard2.gif'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Behalte den Überblick über das Programm",
           body: "Hier kannst du alle Programmpunkte & deine Workshops einsehen",
-          image: _buildImage('church.jpeg'),
+          image: _buildGif('onboard3.gif'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Sehe den Standort deiner Aktivitäten ein",
           body: "Behalte den Überblick über die Standorte der Aktivitäten",
-          image: _buildImage('church.jpeg'),
+          image: _buildGif('onboard4.gif'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Gestalte dein Profil",
           body:
-              "Hier kannst du dein Profil ergänzen und Einstellungen vornehmen. Du siehst hier zu welchen Workshops du definitiv ausgewählt wurdest. Du wirst benachrichtigt, wenn ein Workshop dir bestätigt wird",
-          image: _buildImage('church.jpeg'),
+              "Hier kannst du dein Profil ergänzen und Einstellungen vornehmen.",
+          image: _buildGif('onboard5.gif'),
           decoration: pageDecoration,
         ),
       ],
@@ -80,8 +82,10 @@ class Onboarding extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset('assets/images/$assetName', width: width);
+  Widget _buildGif(String assetName) {
+    return Image.asset(
+      'assets/onboard/$assetName',
+    );
   }
 
   void _onIntroEnd(context) async {
