@@ -10,6 +10,7 @@ import 'package:jt2022_app/screens/workshop/user_workshops.dart';
 import 'package:jt2022_app/screens/workshop/workshops.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
+import 'package:jt2022_app/util/deadline.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -118,18 +119,30 @@ class _HomeState extends State<Home> {
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               IconButton(
-                onPressed: () => Navigator.pushNamed(
-                    context, '/workshop/priority', arguments: {
-                  'user': _user
-                }).then((dynamic value) => {
-                      if (value != null)
-                        {
-                          _getUsersWorkshop(
-                            '🔃 Priorität der Workshops geändert!',
-                            CustomColors.infoSnackBarColor,
-                          )
-                        }
-                    }),
+                onPressed: () => {
+                  if (!Deadline().isDeadline())
+                    {
+                      Navigator.pushNamed(
+                          context, '/workshop/priority', arguments: {
+                        'user': _user
+                      }).then((dynamic value) => {
+                            if (value != null)
+                              {
+                                _getUsersWorkshop(
+                                  '🔃 Priorität der Workshops geändert!',
+                                  CustomColors.infoSnackBarColor,
+                                )
+                              }
+                          }),
+                    }
+                  else
+                    {
+                      GlobalSnackBar.show(
+                          context,
+                          'Du kannst nach Anmeldeschluss der Workshops nicht mehr priorisieren!',
+                          CustomColors.errorSnackBarColor)
+                    }
+                },
                 icon: const Icon(
                   EvaIcons.flip,
                   color: Colors.white,

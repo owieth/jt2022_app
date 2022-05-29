@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/services/workshops/workshops_service.dart';
+import 'package:jt2022_app/util/deadline.dart';
 import 'package:jt2022_app/util/snackbar.dart';
 import 'package:jt2022_app/widgets/shared/action_button.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
@@ -102,6 +103,14 @@ class _WorkshopState extends State<Workshop> {
                           'Du hast bereits die maximale Workshopanzahl erreicht!',
                           CustomColors.errorSnackBarColor,
                         );
+                        return;
+                      }
+
+                      if (Deadline().isDeadline()) {
+                        GlobalSnackBar.show(
+                            context,
+                            'Du kannst nach Anmeldeschluss der Workshops dich nicht mehr an/abmelden!',
+                            CustomColors.errorSnackBarColor);
                         return;
                       }
 

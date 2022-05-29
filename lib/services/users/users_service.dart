@@ -89,6 +89,12 @@ class UserService {
   }
 
   Future<void> deleteUser(BuildContext context, String userId) async {
+    await usersCollection.doc(userId).delete();
+
+    try {
+      await FirebaseStorage.instance.ref('users/$userId').delete();
+    } catch (_) {}
+
     try {
       await FirebaseAuth.instance.currentUser!.delete();
     } on FirebaseAuthException catch (e) {
@@ -100,12 +106,6 @@ class UserService {
         AuthenticationService(FirebaseAuth.instance).signOut();
       }
     }
-
-    try {
-      await FirebaseStorage.instance.ref('users/$userId').delete();
-    } catch (_) {}
-
-    await usersCollection.doc(userId).delete();
   }
 
   Future<List<CustomUser>> getAllUsers() async {

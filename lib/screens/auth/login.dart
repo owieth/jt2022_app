@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:animated_login/animated_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,13 @@ class _LoginState extends State<Login> {
         break;
 
       case ButtonEvent.forgotPassword:
+        await showOkCancelAlertDialog(
+          context: context,
+          title: 'Passwort vergessen?',
+          message:
+              'Melde dich beim Administrator (region4jugendtag2022@gmail.com) um das Passwort zurückzusetzen',
+          defaultType: OkCancelAlertDefaultType.ok,
+        );
         break;
     }
 
@@ -74,6 +82,7 @@ class _LoginState extends State<Login> {
             passwordHint: "Passwort",
             confirmPasswordHint: "Passwort bestätigen",
             login: "Anmelden",
+            passwordMatchingError: "Passwörter stimmen nicht überein!",
           ),
           loginMobileTheme: LoginViewTheme(
             formPadding: const EdgeInsets.symmetric(vertical: 50),
