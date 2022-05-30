@@ -24,7 +24,7 @@ class UserService {
       'region': '',
       'isVolunteer': false,
       'isOnboarded': false,
-      'workshops': [{}],
+      'workshops': [],
     });
   }
 
@@ -44,7 +44,7 @@ class UserService {
         isVolunteer: _userAttributes['isVolunteer'],
         isOnboarded: _userAttributes['isOnboarded'],
         workshops: const DeepCollectionEquality()
-                .equals((_userAttributes['workshops'] as List), [{}])
+                .equals((_userAttributes['workshops'] as List), [])
             ? []
             : (_userAttributes['workshops'] as List)
                 .map((workshop) => WorkshopAttendee(

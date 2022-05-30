@@ -83,7 +83,7 @@ class _MembersState extends State<Members> {
             ),
             const SizedBox(height: 30.0),
             Text(
-              'C4MP Teilnehmer',
+              'C4MP Teilnehmer:innen',
               style: Theme.of(context).textTheme.subtitle1,
             ),
             const SizedBox(height: 15.0),
@@ -203,9 +203,14 @@ class _MembersState extends State<Members> {
             ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             children: [
-              Avatar(
-                radius: 50,
-                image: user.photoUrl != '' ? user.photoUrl : null,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Avatar(
+                    radius: 50,
+                    image: user.photoUrl != '' ? user.photoUrl : null,
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
               Column(

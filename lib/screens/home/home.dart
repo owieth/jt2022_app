@@ -200,8 +200,10 @@ class _HomeState extends State<Home> {
   }
 
   void _getCurrentUser() async {
-    CustomUser user = await UserService().getCurrentUser();
-    if (mounted) setState(() => _user = user);
+    if (mounted) {
+      CustomUser user = await UserService().getCurrentUser();
+      setState(() => _user = user);
+    }
   }
 
   void _setAmountOfUserWorkshops() async {

@@ -48,6 +48,12 @@ class WorkshopsService {
         user.workshops.firstWhere((v) => v.id == workshop.id).state ==
         AttendanceState.wait);
 
+    final workshopsWithStateRefused = sortedWorkshops
+        .where((workshop) =>
+            user.workshops.firstWhere((v) => v.id == workshop.id).state ==
+            AttendanceState.refused)
+        .toList();
+
     for (QueryDocumentSnapshot doc in snapshot.docs) {
       final eventObject = doc.data() as Map;
       final workshop = await _returnEvent(
@@ -63,6 +69,10 @@ class WorkshopsService {
 
     List<Workshop> events = [..._events, ...sortedWorkshops];
     events.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    for (Workshop workshop in workshopsWithStateRefused) {
+      events.removeAt(events.indexOf(workshop));
+    }
     return events;
   }
 
@@ -129,7 +139,7 @@ class WorkshopsService {
 
     if (snapshot.data() != null) {
       final workshops = (snapshot.data() as Map)['workshops'] as List;
-      const DeepCollectionEquality().equals(workshops, [{}])
+      const DeepCollectionEquality().equals(workshops, [])
           ? []
           : _workshops = workshops
               .map((workshop) => WorkshopAttendee(
@@ -139,7 +149,7 @@ class WorkshopsService {
 
     List<Workshop> workshopDtos = [];
 
-    for (var workshopAttendance in _workshops) {
+    for (WorkshopAttendee workshopAttendance in _workshops) {
       final workshop = workshopsCollection
           .where(FieldPath.documentId, isEqualTo: workshopAttendance.id)
           .snapshots()

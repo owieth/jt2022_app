@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:jt2022_app/constants/onboard.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -28,32 +30,32 @@ class Onboarding extends StatelessWidget {
           title: "Auswahl Workshops",
           body:
               "Du kannst bis zu 6 Workshops auswählen. Am Jugendtag wirst du 4 besuchen können, priorisiere also richtig 😉",
-          image: _buildGif('onboard1.gif'),
+          image: _buildGif('onboard1'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Priorisierung deiner Workshops",
           body: "Stelle ein welche Workshops du umbedingt besuchen möchtest",
-          image: _buildGif('onboard2.gif'),
+          image: _buildGif('onboard2'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Behalte den Überblick über das Programm",
           body: "Hier kannst du alle Programmpunkte & deine Workshops einsehen",
-          image: _buildGif('onboard3.gif'),
+          image: _buildGif('onboard3'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Sehe den Standort deiner Aktivitäten ein",
           body: "Behalte den Überblick über die Standorte der Aktivitäten",
-          image: _buildGif('onboard4.gif'),
+          image: _buildGif('onboard4'),
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: "Gestalte dein Profil",
           body:
               "Hier kannst du dein Profil ergänzen und Einstellungen vornehmen.",
-          image: _buildGif('onboard5.gif'),
+          image: _buildGif('onboard5'),
           decoration: pageDecoration,
         ),
       ],
@@ -83,9 +85,10 @@ class Onboarding extends StatelessWidget {
   }
 
   Widget _buildGif(String assetName) {
-    return Image.asset(
-      'assets/onboard/$assetName',
-    );
+    return CachedNetworkImage(
+        imageUrl: Onboard()
+            .gifs
+            .firstWhere((gif) => gif['key'] == assetName)['value']);
   }
 
   void _onIntroEnd(context) async {

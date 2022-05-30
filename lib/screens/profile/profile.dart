@@ -163,7 +163,7 @@ class _ProfileState extends State<Profile> {
               defaultType: OkCancelAlertDefaultType.cancel);
           if (result == OkCancelResult.ok) {
             SVProgressHUD.show();
-            for (var workshop in _user!.workshops) {
+            for (WorkshopAttendee workshop in _user!.workshops) {
               context
                   .read<WorkshopsService>()
                   .dropOutOfWorkshop(_user!.id, workshop.id);

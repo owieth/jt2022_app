@@ -37,10 +37,17 @@ class _LoginState extends State<Login> {
         break;
 
       case ButtonEvent.signUp:
-        await AuthenticationService(FirebaseAuth.instance)
-            .signUp(data.email, data.password, data.name);
-
-        Navigator.pushReplacementNamed(context, "/onboarding");
+        AuthenticationState onSignUp =
+            await AuthenticationService(FirebaseAuth.instance)
+                .signUp(data.email, data.password, data.name);
+        if (onSignUp.authStatus == AuthStatus.error) {
+          GlobalSnackBar.show(
+              context,
+              'Fehler bei der Registrierung: ${onSignUp.authError}',
+              CustomColors.errorSnackBarColor);
+        } else {
+          Navigator.pushReplacementNamed(context, "");
+        }
         break;
 
       case ButtonEvent.forgotPassword:
@@ -49,6 +56,7 @@ class _LoginState extends State<Login> {
           title: 'Passwort vergessen?',
           message:
               'Melde dich beim Administrator (region4jugendtag2022@gmail.com) um das Passwort zurückzusetzen',
+          cancelLabel: "Abbrechen",
           defaultType: OkCancelAlertDefaultType.ok,
         );
         break;
