@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class CalendarItem extends StatelessWidget {
   final bool isActive;
@@ -19,8 +20,8 @@ class CalendarItem extends StatelessWidget {
     return InkWell(
       onTap: () => emitClick(date),
       child: Container(
-        height: 80.0,
-        width: 60.0,
+        height: 10.h,
+        width: 15.w,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
           border: Border.all(

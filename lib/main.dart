@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
@@ -19,31 +21,27 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'screens/workshop/workshop_priority.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   await Firebase.initializeApp();
 
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
+  /*
+    For Debugpurposes :D
+  
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print(fcmToken);
+  */
 
-  // NotificationSettings settings = await messaging.requestPermission(
-  //   alert: true,
-  //   announcement: false,
-  //   badge: true,
-  //   carPlay: false,
-  //   criticalAlert: false,
-  //   provisional: false,
-  //   sound: true,
-  // );
+  FirebaseMessaging.onMessage.listen((_) => {});
 
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   print('Got a message whilst in the foreground!');
-  //   print('Message data: ${message.data}');
-
-  //   if (message.notification != null) {
-  //     print('Message also contained a notification: ${message.notification}');
-  //   }
-  // });
+  FirebaseInAppMessaging.instance.triggerEvent('');
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 

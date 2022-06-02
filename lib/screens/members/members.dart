@@ -185,7 +185,7 @@ class _MembersState extends State<Members> {
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 250),
       curve: Curves.linear,
     );
   }

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:jt2022_app/constants/onboard.dart';
 import 'package:jt2022_app/services/users/users_service.dart';
@@ -88,12 +89,20 @@ class Onboarding extends StatelessWidget {
     return CachedNetworkImage(
         imageUrl: Onboard()
             .gifs
-            .firstWhere((gif) => gif['key'] == assetName)['value']);
+            .firstWhere((gif) => gif['key'] == assetName)['value'],
+        placeholder: (_, __) => _returnLoadingIndicator());
   }
 
   void _onIntroEnd(context) async {
     await UserService()
         .setOnboarding(Provider.of<User?>(context, listen: false)!.uid);
     Navigator.pushReplacementNamed(context, '');
+  }
+
+  Widget _returnLoadingIndicator() {
+    return const SpinKitFadingCircle(
+      color: Colors.white,
+      size: 50.0,
+    );
   }
 }
