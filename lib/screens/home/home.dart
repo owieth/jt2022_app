@@ -1,5 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:expandable_widgets/expandable_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jt2022_app/constants/colors.dart';
@@ -55,7 +56,7 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(10.w, 7.5.h, 10.w, 0),
+          padding: EdgeInsets.fromLTRB(7.5.w, 7.5.h, 7.5.w, 0),
           child: Row(
             children: [
               Expanded(
@@ -109,51 +110,63 @@ class _HomeState extends State<Home> {
           ),
         ),
         SizedBox(height: 2.5.h),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Meine Workshops',
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              IconButton(
-                onPressed: () => {
-                  if (!Deadline().isDeadline())
-                    {
-                      Navigator.pushNamed(
-                          context, '/workshop/priority', arguments: {
-                        'user': _user
-                      }).then((dynamic value) => {
-                            if (value != null)
-                              {
-                                _getUsersWorkshop(
-                                  '🔃 Priorität der Workshops geändert!',
-                                  CustomColors.infoSnackBarColor,
-                                )
-                              }
-                          }),
-                    }
-                  else
-                    {
-                      GlobalSnackBar.show(
-                          context,
-                          'Du kannst nach Anmeldeschluss der Workshops nicht mehr priorisieren!',
-                          CustomColors.errorSnackBarColor)
-                    }
-                },
-                icon: const Icon(
-                  EvaIcons.flip,
-                  color: Colors.white,
+        Expandable(
+          firstChild: Padding(
+            padding: EdgeInsets.only(right: 12.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Meine Workshops',
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
-              )
-            ],
+                IconButton(
+                  onPressed: () => {
+                    if (!Deadline().isDeadline())
+                      {
+                        Navigator.pushNamed(context, '/workshop/priority',
+                                arguments: {'user': _user})
+                            .then((dynamic value) => {
+                                  if (value != null)
+                                    {
+                                      _getUsersWorkshop(
+                                        '🔃 Priorität der Workshops geändert!',
+                                        CustomColors.infoSnackBarColor,
+                                      )
+                                    }
+                                }),
+                      }
+                    else
+                      {
+                        GlobalSnackBar.show(
+                            context,
+                            'Du kannst nach Anmeldeschluss der Workshops nicht mehr priorisieren!',
+                            CustomColors.errorSnackBarColor)
+                      }
+                  },
+                  icon: const Icon(
+                    EvaIcons.flip,
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          height: 200,
-          child: _buildUserWorkshops(),
+          secondChild: SizedBox(
+            height: 200,
+            child: _buildUserWorkshops(),
+          ),
+          showArrowWidget: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          initiallyExpanded: true,
+          centralizeFirstChild: false,
+          boxShadow: const [],
+          borderRadius: BorderRadius.zero,
+          arrowWidget: const Icon(
+            EvaIcons.arrowDownOutline,
+            color: Colors.white,
+            size: 25.0,
+          ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10.w),

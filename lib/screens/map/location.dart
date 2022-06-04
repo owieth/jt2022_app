@@ -95,7 +95,7 @@ class _LocationState extends State<Location> {
           minZoom: 17.75,
           maxZoom: 17.75,
           zoom: 17.75,
-          center: lat_lng.LatLng(46.663370, 7.275294),
+          center: lat_lng.LatLng(46.662870, 7.275294),
           swPanBoundary: lat_lng.LatLng(46.662652, 7.273872),
           nePanBoundary: lat_lng.LatLng(46.664910, 7.278258),
           onTap: (_, __) => setState(() => _selectedMarkerIndex = -1)),
@@ -122,13 +122,13 @@ class _LocationState extends State<Location> {
     return coordinates
         .mapIndexed(
           (index, location) => Marker(
-            height: _selectedMarkerIndex == index ? 60 : 50,
+            height: 50,
             width: 50,
             point: location,
             builder: (_) => InkWell(
               onTap: () => setState(() => _selectedMarkerIndex = index),
               child: SvgPicture.asset(
-                'assets/icon/marker.svg',
+                'assets/icon/${_selectedMarkerIndex == index ? 'marker_active' : 'marker'}.svg',
               ),
             ),
           ),
