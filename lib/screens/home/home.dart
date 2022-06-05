@@ -169,7 +169,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 10.w),
+          padding: EdgeInsets.only(left: 9.w),
           child: Text(
             'Workshops',
             style: Theme.of(context).textTheme.subtitle1,

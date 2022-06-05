@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:jt2022_app/constants/colors.dart';
 import 'package:jt2022_app/screens/auth/login.dart';
 import 'package:jt2022_app/screens/members/members.dart';
 import 'package:jt2022_app/screens/onboarding/onboarding.dart';
@@ -21,56 +22,53 @@ import 'package:sizer/sizer.dart';
 import 'screens/workshop/workshop_priority.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-// }
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
-  //firebase push notification
   AwesomeNotifications().createNotificationFromJsonData(message.data);
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   await Firebase.initializeApp();
 
   /*
     For Debugpurposes :D
   */
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  print(fcmToken);
-
-  // FirebaseMessaging.onMessage.listen((_) => {print('got message')});
+  // final fcmToken = await FirebaseMessaging.instance.getToken();
+  // print(fcmToken);
 
   AwesomeNotifications().initialize(
-      // set the icon to null if you want to use the default app icon
-      'resource://drawable/res_app_icon',
-      [
-        NotificationChannel(
-            channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: const Color(0xFF9D50DD),
-            ledColor: Colors.white)
-      ],
-      // Channel groups are only visual and are not required
-      channelGroups: [
-        NotificationChannelGroup(
-            channelGroupkey: 'basic_channel_group',
-            channelGroupName: 'Basic group')
-      ],
-      debug: true);
+    null,
+    [
+      NotificationChannel(
+        channelGroupKey: 'basic_channel_group',
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel for basic tests',
+        channelShowBadge: true,
+        defaultColor: CustomColors.primaryColor,
+        ledColor: Colors.white,
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+          channelGroupkey: 'basic_channel_group',
+          channelGroupName: 'Basic group')
+    ],
+  );
 
-  AwesomeNotifications()
-      .actionStream
-      .listen((ReceivedNotification receivedNotification) {
-    print("Handling a message: $receivedNotification");
-  });
+  FirebaseMessaging.onMessage.listen(
+    (RemoteMessage message) => {
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 0,
+          channelKey: 'basic_channel',
+          title: message.notification?.title,
+          body: message.notification?.body,
+        ),
+      )
+    },
+  );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

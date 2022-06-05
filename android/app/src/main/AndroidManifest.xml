@@ -2,7 +2,7 @@
     package="com.example.jt2022_app">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="JT 2022 App"
+        android:label="JT2022 App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
