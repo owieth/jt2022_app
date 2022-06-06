@@ -37,7 +37,6 @@ class Workshops extends StatelessWidget {
 
         return ListView.builder(
           padding: const EdgeInsets.only(top: 20),
-          cacheExtent: 9999,
           scrollDirection: Axis.vertical,
           itemCount: snapshot.data!.length,
           itemBuilder: (BuildContext context, int index) {

@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jt2022_app/models/user.dart';
 import 'package:jt2022_app/models/workshop.dart';
-import 'package:jt2022_app/widgets/shared/skeleton.dart';
 import 'package:jt2022_app/widgets/workshop/text_overlay_widget.dart';
 
 class WorkshopItem extends StatelessWidget {
@@ -54,8 +54,8 @@ class WorkshopItem extends StatelessWidget {
                   ),
                 ),
               ),
-              placeholder: (_, __) => _returnSkeletonLoader(),
-              errorWidget: (_, __, ___) => _returnSkeletonLoader(),
+              placeholder: (_, __) => _returnLoadingIndicator(),
+              errorWidget: (_, __, ___) => _returnLoadingIndicator(),
             ),
           ),
           TextOverlay(
@@ -67,11 +67,10 @@ class WorkshopItem extends StatelessWidget {
     );
   }
 
-  Widget _returnSkeletonLoader() {
-    return SkeletonLoader(
-      width: width,
-      axis: width > 200 ? Axis.vertical : Axis.horizontal,
-      innerPadding: EdgeInsets.zero,
+  Widget _returnLoadingIndicator() {
+    return const SpinKitFadingCircle(
+      color: Colors.white,
+      size: 50.0,
     );
   }
 }

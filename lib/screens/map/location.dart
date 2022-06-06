@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:jt2022_app/constants/houses.dart';
@@ -188,6 +189,9 @@ class _LocationState extends State<Location> {
                                 ),
                               ),
                             ),
+                            placeholder: (_, __) => _returnLoadingIndicator(),
+                            errorWidget: (_, __, ___) =>
+                                _returnLoadingIndicator(),
                           ),
                         ),
                         SizedBox(
@@ -222,6 +226,13 @@ class _LocationState extends State<Location> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _returnLoadingIndicator() {
+    return const SpinKitFadingCircle(
+      color: Colors.white,
+      size: 50.0,
     );
   }
 }

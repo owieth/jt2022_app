@@ -130,7 +130,7 @@ class _HomeState extends State<Home> {
                                   if (value != null)
                                     {
                                       _getUsersWorkshop(
-                                        '🔃 Priorität der Workshops geändert!',
+                                        'Priorität der Workshops geändert!',
                                         CustomColors.infoSnackBarColor,
                                       )
                                     }
@@ -188,7 +188,7 @@ class _HomeState extends State<Home> {
       hasMaxAmountOfWorkshops:
           _amountOfUserWorkshops >= WorkshopConstants.maxUserWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(
-          '🎫  Meine Workshops geändert!', CustomColors.infoSnackBarColor),
+          'Meine Workshops geändert!', CustomColors.infoSnackBarColor),
     );
   }
 
@@ -197,7 +197,7 @@ class _HomeState extends State<Home> {
       user: _user,
       userWorkshops: _userWorkshops,
       emitWorkshopChange: () => _getUsersWorkshop(
-          '🎫  Meine Workshops geändert!', CustomColors.infoSnackBarColor),
+          'Meine Workshops geändert!', CustomColors.infoSnackBarColor),
     );
   }
 

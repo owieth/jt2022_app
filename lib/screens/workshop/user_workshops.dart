@@ -35,6 +35,7 @@ class UserWorkshops extends StatelessWidget {
 
         return ListView.builder(
           padding: const EdgeInsets.only(bottom: 20),
+          cacheExtent: 1000,
           scrollDirection: Axis.horizontal,
           itemCount: WorkshopConstants.maxUserWorkshops,
           itemBuilder: (BuildContext context, int index) {
