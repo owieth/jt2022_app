@@ -74,16 +74,8 @@ class CalendarTimeLine extends StatelessWidget {
                         CalendarEntry(workshop: workshop.data![index]),
                     connectorBuilder: (_, __, ___) =>
                         const SolidLineConnector(),
-                    indicatorBuilder: (_, index) {
-                      // TODO Should dynamically changed based on Date
-                      // if (index == activeTile) {
-                      //   return const OutlinedDotIndicator(
-                      //     color: Colors.white,
-                      //   );
-                      // }
-
-                      return const DotIndicator(color: Colors.white);
-                    },
+                    indicatorBuilder: (_, index) =>
+                        const DotIndicator(color: Colors.white),
                     itemExtent: 150,
                     itemCount: _itemCount,
                   ),
