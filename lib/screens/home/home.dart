@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
     _setAmountOfUserWorkshops();
 
     WidgetsBinding.instance
-        ?.addPostFrameCallback((_) async => await Future.delayed(
+        .addPostFrameCallback((_) async => await Future.delayed(
               const Duration(seconds: 2),
               () {
                 if (_user != null && !_user!.isOnboarded) {
@@ -237,6 +237,7 @@ class _HomeState extends State<Home> {
   _showOnboardingDialog() async {
     final result = await showOkCancelAlertDialog(
       context: context,
+      style: AdaptiveStyle.iOS,
       title: '👋 Hello!',
       message:
           'Du bist neu hier richtig? Wir haben für dich eine Erklärung der App Funktionen bereit. Möchtest du diese Einführung starten?',

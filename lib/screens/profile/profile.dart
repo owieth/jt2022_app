@@ -157,7 +157,9 @@ class _ProfileState extends State<Profile> {
         onTap = () async {
           final result = await showOkCancelAlertDialog(
               context: context,
+              style: AdaptiveStyle.iOS,
               title: 'Account löschen?',
+              cancelLabel: 'Abbrechen',
               message: 'Möchtest du wirklich deinen Account löschen?',
               isDestructiveAction: true,
               defaultType: OkCancelAlertDefaultType.cancel);

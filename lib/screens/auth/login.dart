@@ -53,6 +53,7 @@ class _LoginState extends State<Login> {
       case ButtonEvent.forgotPassword:
         await showOkCancelAlertDialog(
           context: context,
+          style: AdaptiveStyle.iOS,
           title: 'Passwort vergessen?',
           message:
               'Melde dich beim Administrator (region4jugendtag2022@gmail.com) um das Passwort zurückzusetzen',
