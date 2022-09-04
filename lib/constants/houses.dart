@@ -5,6 +5,7 @@ class Houses {
     {'key': 2, 'value': 'Unterkunft (C)'},
     {'key': 3, 'value': 'Unterkunft (D)'},
     {'key': 4, 'value': 'Turnhalle (E)'},
-    {'key': 5, 'value': 'Campus'}
+    {'key': 5, 'value': 'Campus'},
+    {'key': 6, 'value': 'Forum Fribourg'},
   ];
 }
