@@ -6,6 +6,7 @@ import 'package:jt2022_app/services/users/users_service.dart';
 import 'package:jt2022_app/widgets/shared/avatar_widget.dart';
 import 'package:jt2022_app/widgets/shared/navigation_button_widget.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:sizer/sizer.dart';
 
 class Members extends StatefulWidget {
   const Members({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class _MembersState extends State<Members> {
             ),
             const SizedBox(height: 15.0),
             SizedBox(
-              height: 150,
+              height: 25.h,
               child: Container(
                 padding: const EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
@@ -161,6 +162,8 @@ class _MembersState extends State<Members> {
       ImportantNumbers("Yasmin Bühlmann", "079 555 10 51"),
       ImportantNumbers("Tania Doppmann", "079 532 76 18"),
       ImportantNumbers("Olivier Winkler", "078 652 77 00"),
+      ImportantNumbers("(Sanität) Christof Tschanz", "076 337 88 00"),
+      ImportantNumbers("(Sanität) Kyra Kühni", "079 900 32 51"),
     ];
 
     return List.from(
